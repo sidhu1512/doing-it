@@ -4,6 +4,17 @@
 
 A **state-of-the-art** Windows desktop productivity widget — floating always-on-top panel with notes, tasks, reminders, focus timer, and calendar. Deeply integrated with Windows 11 via native Mica material, command palette, markdown rendering, task-driven focus timers, and 20+ premium features. v4.0.1 adds invisible polish: universal #hashtags, markdown checklists, unified My Day view, auto-DND, and cleaner UX with no toast interruptions.
 
+<p align="center">
+  <img src="imgs/Screenshot%202026-03-31%20133503.png" width="32%">
+  <img src="imgs/Screenshot%202026-03-31%20133541.png" width="32%">
+  <img src="imgs/Screenshot%202026-03-31%20133715.png" width="32%">
+</p>
+<p align="center">
+  <img src="imgs/Screenshot%202026-03-31%20133732.png" width="32%">
+  <img src="imgs/Screenshot%202026-03-31%20133742.png" width="32%">
+  <img src="imgs/Screenshot%202026-03-31%20133756.png" width="32%">
+</p>
+
 ---
 
 ## Overview
