@@ -143,6 +143,48 @@ function initWindowControls() {
   document.getElementById('btn-minimize').addEventListener('click', () => window.api.minimizeWindow());
   document.getElementById('btn-close').addEventListener('click', () => window.api.closeWindow());
   document.getElementById('btn-settings').addEventListener('click', () => openSettings());
+
+  const themes = ['', 'orange', 'red', 'yellow'];
+  let currentThemeIdx = 0;
+
+  // Load saved theme preference
+  window.api.getSettings().then(settings => {
+    if (settings && settings.theme) {
+      const idx = themes.indexOf(settings.theme);
+      currentThemeIdx = idx !== -1 ? idx : 0;
+      if (themes[currentThemeIdx]) {
+        document.documentElement.setAttribute('data-theme', themes[currentThemeIdx]);
+      }
+    }
+  });
+
+  // Cycle themes on click
+  document.getElementById('btn-theme').addEventListener('click', async () => {
+    currentThemeIdx = (currentThemeIdx + 1) % themes.length;
+    const newTheme = themes[currentThemeIdx];
+    
+    if (newTheme) {
+      document.documentElement.setAttribute('data-theme', newTheme);
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+    }
+    
+    // Persist theme choice
+    const settings = await window.api.getSettings();
+    settings.theme = newTheme;
+    await window.api.saveSettings(settings);
+  });
+
+  // Listen for theme sync broadcasts
+  window.api.onThemeUpdated((theme) => {
+    const idx = themes.indexOf(theme);
+    currentThemeIdx = idx !== -1 ? idx : 0;
+    if (themes[currentThemeIdx]) {
+      document.documentElement.setAttribute('data-theme', themes[currentThemeIdx]);
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+    }
+  });
 }
 
 // ─── KEYBOARD SHORTCUTS ─────────────────────────────────

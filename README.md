@@ -1,8 +1,8 @@
 # Doing It
 
-[![Download for Windows](https://img.shields.io/badge/Download-Windows_Setup-blue?style=for-the-badge&logo=windows)](https://github.com/sidhu1512/doing-it/releases/download/v4.1.9/Doing.It.Setup.4.1.9.exe)
+[![Download for Windows](https://img.shields.io/badge/Download-Windows_Setup-blue?style=for-the-badge&logo=windows)](https://github.com/sidhu1512/doing-it/releases/download/v4.2.0/Doing.It.Setup.4.2.0.exe)
 
-A **state-of-the-art** Windows desktop productivity widget — floating always-on-top panel with notes, tasks, reminders, focus timer, and calendar. Deeply integrated with Windows 11 via native Mica material, command palette, markdown rendering, task-driven focus timers, and 20+ premium features. v4.0.1 adds invisible polish: universal #hashtags, markdown checklists, unified My Day view, auto-DND, and cleaner UX with no toast interruptions.
+A **state-of-the-art** Windows desktop productivity widget — floating always-on-top panel with notes, tasks, reminders, focus timer, and calendar. Deeply integrated with Windows 11 via native Mica material, command palette, markdown rendering, task-driven focus timers, and 20+ premium features. v4.2.0 introduces 4 luxury dynamic glassmorphism color themes (Dark, Orange, Red, Yellow).
 
 <p align="center">
   <img src="imgs/Screenshot%202026-03-31%20133503.png" width="32%">

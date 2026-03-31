@@ -21,12 +21,25 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     currentSettings = await window.api.getSettings();
     
+    if (currentSettings.theme) {
+      document.documentElement.setAttribute('data-theme', currentSettings.theme);
+    }
+
     if (currentSettings.icsUrl) {
       icsInput.value = currentSettings.icsUrl;
     }
   } catch (err) {
     console.error('Failed to init settings:', err);
   }
+
+  // Listen for real-time theme changes
+  window.api.onThemeUpdated((theme) => {
+    if (theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+    }
+  });
 
   // Handle path change
   btnChangePath.addEventListener('click', async () => {

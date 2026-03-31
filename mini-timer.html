@@ -6,6 +6,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -22,8 +23,8 @@
       align-items: center;
       justify-content: center;
       gap: 10px;
-      background: rgba(22, 22, 24, 0.82);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: var(--bg-app, rgba(22, 22, 24, 0.82));
+      border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.08));
       border-radius: 28px;
       padding: 10px 20px;
       height: 48px;
@@ -33,7 +34,7 @@
     }
 
     .mini-timer:hover {
-      border-color: rgba(176, 176, 184, 0.25);
+      border-color: var(--border-active, rgba(176, 176, 184, 0.25));
     }
 
     .timer-dot {
@@ -58,14 +59,14 @@
     .timer-time {
       font-size: 18px;
       font-weight: 600;
-      color: #e8e8ec;
+      color: var(--text-primary, #e8e8ec);
       font-variant-numeric: tabular-nums;
       letter-spacing: 0.05em;
     }
 
     .timer-label {
       font-size: 10px;
-      color: rgba(160, 160, 168, 0.6);
+      color: var(--text-muted, rgba(160, 160, 168, 0.6));
       font-weight: 400;
       letter-spacing: 0.03em;
     }
@@ -113,6 +114,22 @@
           dotEl.classList.add('paused');
           labelEl.textContent = 'Paused';
         }
+      }
+    });
+
+    // Initial theme load
+    window.api.getSettings().then(settings => {
+      if (settings && settings.theme) {
+        document.documentElement.setAttribute('data-theme', settings.theme);
+      }
+    });
+
+    // Listen for theme changes dynamically
+    window.api.onThemeUpdated((theme) => {
+      if (theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+      } else {
+        document.documentElement.removeAttribute('data-theme');
       }
     });
 

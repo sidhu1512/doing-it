@@ -570,6 +570,16 @@ if (!gotTheLock) {
 
       storeFile = newStoreFile;
       saveStore(storeData);
+
+      // Broadcast theme change to all active windows
+      if (settings && settings.theme !== undefined) {
+        BrowserWindow.getAllWindows().forEach(win => {
+          if (!win.isDestroyed()) {
+            win.webContents.send('theme-updated', settings.theme);
+          }
+        });
+      }
+
       return true;
     });
 

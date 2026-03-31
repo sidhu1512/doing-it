@@ -54,6 +54,7 @@ contextBridge.exposeInMainWorld('api', {
   miniTimerUpdate: (timerState) => ipcRenderer.send('mini-timer-update', timerState),
   onTimerSync: (callback) => ipcRenderer.on('timer-sync', (_, state) => callback(state)),
   onFabTimerSync: (callback) => ipcRenderer.on('fab-timer-sync', (_, state) => callback(state)),
+  onThemeUpdated: (callback) => ipcRenderer.on('theme-updated', (_, theme) => callback(theme)),
 
   // Smart Timer (lock screen)
   onTimerPause: (callback) => ipcRenderer.on('timer-pause', () => callback()),
