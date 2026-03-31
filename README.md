@@ -4,6 +4,11 @@
 
 A **state-of-the-art** Windows desktop productivity widget — floating always-on-top panel with notes, tasks, reminders, focus timer, and calendar. Deeply integrated with Windows 11 via native Mica material, command palette, markdown rendering, task-driven focus timers, and 20+ premium features. v4.2.0 introduces 4 luxury dynamic glassmorphism color themes (Dark, Orange, Red, Yellow).
 
+> [!NOTE]
+> **Windows SmartScreen Alert during Installation**
+> Because this is a free, open-source tool, the `.exe` installer does not include an expensive corporate Code Signing Certificate. When you first launch the downloaded `Doing.It.Setup.exe`, Windows Defender SmartScreen might show a blue *"Windows protected your PC"* popup indicating an "Unknown Publisher". 
+> **To bypass this:** Click **"More Info"** in the text, and then click **"Run Anyway"**.
+
 <p align="center">
   <img src="imgs/Screenshot%202026-03-31%20133503.png" width="32%">
   <img src="imgs/Screenshot%202026-03-31%20133541.png" width="32%">
