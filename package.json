@@ -1,0 +1,77 @@
+{
+  "name": "doing-it",
+  "version": "4.1.9",
+  "description": "SOTA desktop productivity widget — notes, tasks, focus timer, command palette, markdown, calendar sync, edge docking",
+  "main": "main.js",
+  "scripts": {
+    "start": "node start.js",
+    "dev": "node start.js --dev",
+    "build": "electron-builder --win",
+    "build:portable": "electron-builder --win portable"
+  },
+  "author": "Doing It",
+  "license": "MIT",
+  "build": {
+    "appId": "com.doingit.desktop",
+    "productName": "Doing It",
+    "afterPack": "./afterPack.js",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "index.html",
+      "fab.html",
+      "quickadd.html",
+      "mini-timer.html",
+      "uninstall.html",
+      "settings.html",
+      "styles.css",
+      "renderer.js",
+      "settings.js",
+      "*.ps1",
+      "assets/**/*",
+      "!assets/icon_256.png",
+      "!assets/tray_icon_32.png"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.ico",
+      "signAndEditExecutable": false
+    },
+    "forceCodeSigning": false,
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Doing It",
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "runAfterFinish": true,
+      "include": "build/installer.nsh"
+    }
+  },
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^25.1.8",
+    "png-to-ico": "^3.0.1",
+    "rcedit": "^5.0.2",
+    "sharp": "^0.33.5"
+  },
+  "dependencies": {
+    "chrono-node": "^2.9.0",
+    "dompurify": "^3.3.3",
+    "link-preview-js": "^4.0.0",
+    "marked": "^17.0.5"
+  }
+}

@@ -1,0 +1,1 @@
+const {app, clipboard} = require('electron'); app.whenReady().then(() => { console.log('Formats:', clipboard.availableFormats()); console.log('isEmpty:', clipboard.readImage().isEmpty()); app.quit(); });

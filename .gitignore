@@ -1,0 +1,8 @@
+node_modules/
+dist/
+doing-it-data.json
+images/
+backups/
+.DS_Store
+Thumbs.db
+*.log

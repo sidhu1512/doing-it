@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Focus Timer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: transparent;
+      overflow: hidden;
+      cursor: pointer;
+      -webkit-app-region: drag;
+    }
+
+    .mini-timer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: rgba(22, 22, 24, 0.82);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 28px;
+      padding: 10px 20px;
+      height: 48px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      transition: border-color 0.3s ease;
+    }
+
+    .mini-timer:hover {
+      border-color: rgba(176, 176, 184, 0.25);
+    }
+
+    .timer-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #8a8;
+      flex-shrink: 0;
+      animation: pulseDot 1.5s ease-in-out infinite;
+    }
+
+    .timer-dot.paused {
+      background: #a88;
+      animation: none;
+    }
+
+    @keyframes pulseDot {
+      0%, 100% { opacity: 0.6; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    .timer-time {
+      font-size: 18px;
+      font-weight: 600;
+      color: #e8e8ec;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.05em;
+    }
+
+    .timer-label {
+      font-size: 10px;
+      color: rgba(160, 160, 168, 0.6);
+      font-weight: 400;
+      letter-spacing: 0.03em;
+    }
+
+    .close-hint {
+      font-size: 8px;
+      color: rgba(140, 140, 148, 0.4);
+      position: absolute;
+      bottom: 2px;
+      right: 12px;
+      opacity: 0;
+      transition: opacity 0.2s;
+      -webkit-app-region: no-drag;
+    }
+
+    .mini-timer:hover .close-hint {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="mini-timer" id="mini-timer">
+    <div class="timer-dot" id="timer-dot"></div>
+    <span class="timer-time" id="timer-time">25:00</span>
+    <span class="timer-label" id="timer-label">Focus</span>
+    <span class="close-hint">click to return</span>
+  </div>
+
+  <script>
+    const timeEl = document.getElementById('timer-time');
+    const dotEl = document.getElementById('timer-dot');
+    const labelEl = document.getElementById('timer-label');
+
+    // Listen for timer state updates from main process
+    window.api.onTimerSync((state) => {
+      if (state) {
+        const mins = Math.floor(state.remaining / 60);
+        const secs = state.remaining % 60;
+        timeEl.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+
+        if (state.running) {
+          dotEl.classList.remove('paused');
+          labelEl.textContent = 'Focus';
+        } else {
+          dotEl.classList.add('paused');
+          labelEl.textContent = 'Paused';
+        }
+      }
+    });
+
+    // Click to return to main window
+    document.getElementById('mini-timer').addEventListener('click', () => {
+      window.api.miniTimerClose();
+    });
+  </script>
+</body>
+</html>

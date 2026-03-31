@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Settings - Doing It</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      padding: 0;
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      /* Force transparent window rounding */
+      clip-path: inset(0 round 8px);
+    }
+    .app-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-subtle);
+    }
+    /* Draggable window header */
+    .window-header {
+      height: 48px;
+      -webkit-app-region: drag;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 16px;
+      border-bottom: 1px solid var(--border-subtle);
+      background: var(--bg-header);
+    }
+    .window-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .window-controls {
+      display: flex;
+      gap: 8px;
+      -webkit-app-region: no-drag;
+    }
+    /* Inherit setting layout from main styles */
+    .settings-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+    }
+    .settings-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <div class="window-header">
+      <div class="window-title">Settings</div>
+      <div class="window-controls">
+        <button class="btn-control btn-close" id="btn-close-window" title="Close">
+          <svg width="12" height="12" viewBox="0 0 12 12"><path d="M1 1L11 11M11 1L1 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="settings-scroll">
+      <div class="settings-section">
+        <div class="settings-label">Storage Location</div>
+        <div class="settings-description">Point this to OneDrive, Google Drive, or Dropbox for free cloud sync across devices.</div>
+        <div class="settings-path" id="settings-path">Loading...</div>
+        <div class="settings-actions">
+          <button class="settings-btn" id="btn-change-path">Change Location</button>
+          <button class="settings-btn secondary" id="btn-reset-path">Reset to Default</button>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-label">Keyboard Shortcuts</div>
+        <div class="settings-shortcuts">
+          <div class="shortcut-row"><span class="shortcut-key">Ctrl+Shift+N</span><span>Toggle widget</span></div>
+          <div class="shortcut-row"><span class="shortcut-key">Ctrl+Shift+C</span><span>Clip from clipboard</span></div>
+          <div class="shortcut-row"><span class="shortcut-key">Ctrl+K</span><span>Command palette</span></div>
+          <div class="shortcut-row"><span class="shortcut-key">Ctrl+1-5</span><span>Switch tabs</span></div>
+          <div class="shortcut-row"><span class="shortcut-key">Arrows</span><span>Navigate lists</span></div>
+          <div class="shortcut-row"><span class="shortcut-key">Esc</span><span>Close popups / Hide app</span></div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-label">Data Protection</div>
+        <div class="settings-description">Rolling backups are created automatically on every app launch. Up to 5 days of history are kept.</div>
+      </div>
+      
+      <div class="settings-section">
+        <div class="settings-label">External Calendar (.ics)</div>
+        <div class="settings-description">Paste a secret .ics URL from Google Calendar, Outlook, or Apple Calendar to show external events on your calendar.</div>
+        <div class="settings-path-row">
+          <input type="text" id="ics-url-input" class="settings-input" placeholder="https://calendar.google.com/...basic.ics" />
+          <button class="settings-btn" id="btn-save-ics">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="settings.js"></script>
+</body>
+</html>
