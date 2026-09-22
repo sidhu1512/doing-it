@@ -131,6 +131,98 @@ $sb.ToString()
       if (typeof callback === 'function') callback(!err);
     });
   }
+
+  /**
+   * Parses Spotify window title into structured track, artist, and status
+   */
+  parseSpotifyTitle(raw) {
+    if (!raw || typeof raw !== 'string') {
+      return { isRunning: false, isPlaying: false, track: null, artist: null, rawTitle: null };
+    }
+    const clean = raw.trim();
+    if (!clean) {
+      return { isRunning: true, isPlaying: false, track: null, artist: null, rawTitle: clean };
+    }
+    const idleNames = ['spotify', 'spotify free', 'spotify premium', 'spotify music'];
+    if (idleNames.includes(clean.toLowerCase())) {
+      return { isRunning: true, isPlaying: false, track: null, artist: null, rawTitle: clean };
+    }
+    const dashIdx = clean.indexOf(' - ');
+    if (dashIdx !== -1) {
+      const artist = clean.substring(0, dashIdx).trim();
+      const track = clean.substring(dashIdx + 3).trim();
+      return { isRunning: true, isPlaying: true, track, artist, rawTitle: clean };
+    }
+    return { isRunning: true, isPlaying: true, track: clean, artist: null, rawTitle: clean };
+  }
+
+  /**
+   * Safe Windows Spotify process query and current playing track resolution
+   */
+  async getSpotifyStatus() {
+    return new Promise((resolve) => {
+      const ps = `Get-Process spotify -ErrorAction SilentlyContinue | Where-Object { $_.MainWindowTitle } | Select-Object -ExpandProperty MainWindowTitle -First 1`;
+      exec(`powershell -NoProfile -Command "${ps}"`, { timeout: 1800 }, (err, stdout) => {
+        if (err) {
+          resolve({ isRunning: false, isPlaying: false, track: null, artist: null, rawTitle: null });
+          return;
+        }
+        const out = (stdout || '').trim();
+        if (!out) {
+          exec(`powershell -NoProfile -Command "Get-Process spotify -ErrorAction SilentlyContinue | Select-Object -First 1"`, { timeout: 1500 }, (e2, s2) => {
+            const hasProc = !e2 && (s2 || '').trim().length > 0;
+            resolve({ isRunning: hasProc, isPlaying: false, track: null, artist: null, rawTitle: null });
+          });
+          return;
+        }
+        resolve(this.parseSpotifyTitle(out));
+      });
+    });
+  }
+
+  /**
+   * Dispatches Windows virtual media keys (Play/Pause, Next, Prev) via user32.dll
+   */
+  async sendMediaCommand(action) {
+    return new Promise((resolve) => {
+      let vkCode;
+      switch (action) {
+        case 'next':
+          vkCode = 0xB0; // VK_MEDIA_NEXT_TRACK
+          break;
+        case 'prev':
+          vkCode = 0xB1; // VK_MEDIA_PREV_TRACK
+          break;
+        case 'stop':
+          vkCode = 0xB2; // VK_MEDIA_STOP
+          break;
+        case 'playpause':
+        default:
+          vkCode = 0xB3; // VK_MEDIA_PLAY_PAUSE
+          break;
+      }
+      const psCommand = `
+Add-Type @"
+using System;
+using System.Runtime.InteropServices;
+public class NativeMedia {
+  [DllImport("user32.dll")] public static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, UIntPtr dwExtraInfo);
+  public static void Send(byte code) {
+    keybd_event(code, 0, 0, UIntPtr.Zero);
+    keybd_event(code, 0, 2, UIntPtr.Zero);
+  }
+}
+"@
+[NativeMedia]::Send(${vkCode})
+`.replace(/\r?\n/g, ' ').replace(/"/g, '\"');
+
+      exec(`powershell -NoProfile -Command "${psCommand}"`, { timeout: 2000 }, (err) => {
+        if (err) console.error('[SystemIntegration] Media command failed:', err.message);
+        resolve(!err);
+      });
+    });
+  }
 }
 
 module.exports = new SystemIntegration();
+

@@ -291,6 +291,31 @@ function setupIpcHandlers(storeManager, windowManager, system) {
     }
   });
 
+  // Spotify Native Integration
+  ipcMain.handle('get-spotify-status', async () => {
+    return system.getSpotifyStatus();
+  });
+
+  ipcMain.handle('spotify-media-command', async (_, command) => {
+    return system.sendMediaCommand(command);
+  });
+
+  ipcMain.on('open-spotify-uri', (_, uri) => {
+    if (uri && typeof uri === 'string') {
+      if (uri.startsWith('spotify:') || /^https?:\/\//i.test(uri)) {
+        shell.openExternal(uri).catch(() => {
+          if (uri.startsWith('spotify:playlist:')) {
+            const id = uri.replace('spotify:playlist:', '');
+            shell.openExternal(`https://open.spotify.com/playlist/${id}`).catch(() => {});
+          } else if (uri.startsWith('spotify:track:')) {
+            const id = uri.replace('spotify:track:', '');
+            shell.openExternal(`https://open.spotify.com/track/${id}`).catch(() => {});
+          }
+        });
+      }
+    }
+  });
+
   // Active Window & System
   ipcMain.handle('get-active-window', async () => {
     return system.getActiveWindowTitle();

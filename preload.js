@@ -94,6 +94,11 @@ contextBridge.exposeInMainWorld('api', {
   // Focus Assist (DND)
   toggleFocusAssist: (state) => ipcRenderer.invoke('toggle-focus-assist', state),
 
+  // Spotify Native Integration
+  getSpotifyStatus: () => ipcRenderer.invoke('get-spotify-status'),
+  sendSpotifyMediaCommand: (command) => ipcRenderer.invoke('spotify-media-command', command),
+  openSpotifyUri: (uri) => ipcRenderer.send('open-spotify-uri', uri),
+
   // Data sync (from quick add / clipboard)
   onDataChanged: (callback) => ipcRenderer.on('data-changed', (_, source) => callback(source))
 });

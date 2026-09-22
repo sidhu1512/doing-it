@@ -24,6 +24,16 @@ class ReactiveStore {
         lastDate: null
       },
       calendarEvents: [],
+      spotify: {
+        isRunning: false,
+        isPlaying: false,
+        track: null,
+        artist: null,
+        rawTitle: null,
+        customPlaylistUrl: '',
+        autoPlayOnFocus: false,
+        autoPauseOnComplete: true
+      },
       activeFilter: 'all',
       noteTagFilter: 'all',
       searchQuery: '',
@@ -91,6 +101,13 @@ class ReactiveStore {
         };
       }
 
+      if (settings.spotify) {
+        this.state.spotify = {
+          ...this.state.spotify,
+          ...settings.spotify
+        };
+      }
+
       // Check midnight resets for daily habits
       this._checkDailyHabits();
 
@@ -98,6 +115,9 @@ class ReactiveStore {
       if (this.state.theme) {
         document.documentElement.setAttribute('data-theme', this.state.theme);
       }
+
+      // Initial Spotify status check
+      this.refreshSpotifyStatus();
 
       // Fetch initial calendar events if URL set
       if (settings.icsUrl && window.api.fetchIcsCalendar) {
@@ -113,6 +133,7 @@ class ReactiveStore {
       this.notify('notes');
       this.notify('scratchpad');
       this.notify('focus');
+      this.notify('spotify');
       this.notify('*');
     } catch (err) {
       console.error('[Store] Initialization failed:', err);
@@ -288,6 +309,15 @@ class ReactiveStore {
       window.audioEngine.startAmbient(this.state.focus.soundscape);
     }
 
+    // Auto-play Spotify if configured
+    if (this.state.spotify?.autoPlayOnFocus && window.api?.sendSpotifyMediaCommand) {
+      if (!this.state.spotify.isPlaying) {
+        window.api.sendSpotifyMediaCommand('playpause').then(() => {
+          setTimeout(() => this.refreshSpotifyStatus(), 500);
+        });
+      }
+    }
+
     clearInterval(this.timerInterval);
     this.timerInterval = setInterval(() => {
       if (!this.state.focus.running) return;
@@ -311,6 +341,15 @@ class ReactiveStore {
     if (window.audioEngine) {
       window.audioEngine.stopAmbient();
     }
+
+    // Auto-pause Spotify if configured
+    if (this.state.spotify?.autoPauseOnComplete && window.api?.sendSpotifyMediaCommand) {
+      if (this.state.spotify.isPlaying) {
+        window.api.sendSpotifyMediaCommand('playpause').then(() => {
+          setTimeout(() => this.refreshSpotifyStatus(), 500);
+        });
+      }
+    }
   }
 
   resetFocus() {
@@ -322,6 +361,14 @@ class ReactiveStore {
 
     if (window.audioEngine) {
       window.audioEngine.stopAmbient();
+    }
+
+    if (this.state.spotify?.autoPauseOnComplete && window.api?.sendSpotifyMediaCommand) {
+      if (this.state.spotify.isPlaying) {
+        window.api.sendSpotifyMediaCommand('playpause').then(() => {
+          setTimeout(() => this.refreshSpotifyStatus(), 500);
+        });
+      }
     }
   }
 
@@ -341,6 +388,14 @@ class ReactiveStore {
       window.api.toggleFocusAssist('off');
     }
 
+    if (this.state.spotify?.autoPauseOnComplete && window.api?.sendSpotifyMediaCommand) {
+      if (this.state.spotify.isPlaying) {
+        window.api.sendSpotifyMediaCommand('playpause').then(() => {
+          setTimeout(() => this.refreshSpotifyStatus(), 500);
+        });
+      }
+    }
+
     if (window.api && window.api.showNotification) {
       window.api.showNotification('Focus Session Complete!', 'Great work! Take a short break to recharge.');
     }
@@ -348,6 +403,32 @@ class ReactiveStore {
     this.notify('focus');
     this.persistFocus();
     this.syncTimerWithWindows();
+  }
+
+  // ─── SPOTIFY ACTIONS ───────────────────────────────────────
+  async refreshSpotifyStatus() {
+    if (!window.api?.getSpotifyStatus) return;
+    try {
+      const status = await window.api.getSpotifyStatus();
+      if (status) {
+        this.state.spotify = {
+          ...this.state.spotify,
+          ...status
+        };
+        this.notify('spotify');
+      }
+    } catch (e) {}
+  }
+
+  async sendSpotifyMedia(cmd) {
+    if (!window.api?.sendSpotifyMediaCommand) return;
+    await window.api.sendSpotifyMediaCommand(cmd);
+    setTimeout(() => this.refreshSpotifyStatus(), 400);
+  }
+
+  openSpotify(uri) {
+    if (!window.api?.openSpotifyUri) return;
+    window.api.openSpotifyUri(uri);
   }
 
   syncTimerWithWindows() {

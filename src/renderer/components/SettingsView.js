@@ -111,7 +111,38 @@ class SettingsViewComponent {
               </div>
             </div>
 
-            <!-- 6. Shortcuts -->
+            <!-- 6. Spotify Integration -->
+            <div class="settings-card">
+              <div class="settings-card-header">
+                <span class="settings-card-title">Spotify Focus Integration</span>
+                <span class="settings-card-desc">Control Spotify playback and auto-sync with your focus sessions</span>
+              </div>
+              <div style="display:flex; flex-direction:column; gap:10px; margin-top:8px;">
+                <div class="settings-toggle-row">
+                  <div>
+                    <div style="font-size:12px; font-weight:500; color:var(--text-primary);">Auto-play on Focus Start</div>
+                    <div class="settings-card-desc">Automatically unpause Spotify when starting a focus session</div>
+                  </div>
+                  <input type="checkbox" id="inapp-toggle-spotify-autoplay" style="width:16px; height:16px; accent-color:var(--accent-primary); cursor:pointer;" />
+                </div>
+                <div class="settings-toggle-row">
+                  <div>
+                    <div style="font-size:12px; font-weight:500; color:var(--text-primary);">Auto-pause on Complete</div>
+                    <div class="settings-card-desc">Automatically pause Spotify when session completes or pauses</div>
+                  </div>
+                  <input type="checkbox" id="inapp-toggle-spotify-autopause" style="width:16px; height:16px; accent-color:var(--accent-primary); cursor:pointer;" checked />
+                </div>
+                <div>
+                  <div style="font-size:11.5px; font-weight:500; color:var(--text-secondary); margin-bottom:4px;">Custom Focus Playlist Link:</div>
+                  <div style="display:flex; gap:8px;">
+                    <input type="text" id="inapp-spotify-custom-url" class="settings-text-input" placeholder="spotify:playlist:... or https://open.spotify.com/playlist/..." />
+                    <button class="settings-action-btn primary" id="inapp-btn-save-spotify-url">Save</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 7. Shortcuts -->
             <div class="settings-card">
               <div class="settings-card-header">
                 <span class="settings-card-title">Keyboard Shortcuts</span>
@@ -198,6 +229,21 @@ class SettingsViewComponent {
       const icsInput = this.container.querySelector('#inapp-ics-input');
       if (icsInput) {
         icsInput.value = settings.icsUrl || '';
+      }
+
+      // Spotify Settings
+      const spotifySettings = settings.spotify || {};
+      const spotifyAutoplay = this.container.querySelector('#inapp-toggle-spotify-autoplay');
+      if (spotifyAutoplay) {
+        spotifyAutoplay.checked = !!spotifySettings.autoPlayOnFocus;
+      }
+      const spotifyAutopause = this.container.querySelector('#inapp-toggle-spotify-autopause');
+      if (spotifyAutopause) {
+        spotifyAutopause.checked = spotifySettings.autoPauseOnComplete !== false;
+      }
+      const spotifyUrlInput = this.container.querySelector('#inapp-spotify-custom-url');
+      if (spotifyUrlInput) {
+        spotifyUrlInput.value = spotifySettings.customPlaylistUrl || '';
       }
     } catch (e) {
       console.error('[SettingsView] Error refreshing settings:', e);
@@ -315,6 +361,53 @@ class SettingsViewComponent {
 
       if (window.toast) window.toast.show('Calendar settings saved', 'success');
     });
+
+    // Spotify Autoplay Toggle
+    const spotifyAutoplayToggle = this.container.querySelector('#inapp-toggle-spotify-autoplay');
+    if (spotifyAutoplayToggle) {
+      spotifyAutoplayToggle.addEventListener('change', async (e) => {
+        if (!window.api) return;
+        const checked = e.target.checked;
+        const settings = (await window.api.getSettings()) || {};
+        if (!settings.spotify) settings.spotify = {};
+        settings.spotify.autoPlayOnFocus = checked;
+        await window.api.saveSettings(settings);
+        this.store.state.spotify.autoPlayOnFocus = checked;
+        if (window.toast) window.toast.show(checked ? 'Spotify auto-play enabled' : 'Spotify auto-play disabled', 'info');
+      });
+    }
+
+    // Spotify Autopause Toggle
+    const spotifyAutopauseToggle = this.container.querySelector('#inapp-toggle-spotify-autopause');
+    if (spotifyAutopauseToggle) {
+      spotifyAutopauseToggle.addEventListener('change', async (e) => {
+        if (!window.api) return;
+        const checked = e.target.checked;
+        const settings = (await window.api.getSettings()) || {};
+        if (!settings.spotify) settings.spotify = {};
+        settings.spotify.autoPauseOnComplete = checked;
+        await window.api.saveSettings(settings);
+        this.store.state.spotify.autoPauseOnComplete = checked;
+        if (window.toast) window.toast.show(checked ? 'Spotify auto-pause enabled' : 'Spotify auto-pause disabled', 'info');
+      });
+    }
+
+    // Save Custom Spotify Playlist URL
+    const spotifySaveUrlBtn = this.container.querySelector('#inapp-btn-save-spotify-url');
+    if (spotifySaveUrlBtn) {
+      spotifySaveUrlBtn.addEventListener('click', async () => {
+        if (!window.api) return;
+        const input = this.container.querySelector('#inapp-spotify-custom-url');
+        const url = input.value.trim();
+        const settings = (await window.api.getSettings()) || {};
+        if (!settings.spotify) settings.spotify = {};
+        settings.spotify.customPlaylistUrl = url;
+        await window.api.saveSettings(settings);
+        this.store.state.spotify.customPlaylistUrl = url;
+        this.store.notify('spotify');
+        if (window.toast) window.toast.show('Spotify playlist saved', 'success');
+      });
+    }
 
     // Uninstall Button (1-Click Direct Uninstall)
     const btnUninstall = this.container.querySelector('#inapp-btn-uninstall');

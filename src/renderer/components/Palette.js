@@ -101,6 +101,11 @@ class PaletteComponent {
       { type: 'cmd', label: 'View: Day Planner Agenda', action: () => this.store.set('activeView', 'planner') },
       { type: 'cmd', label: 'Timer: Start Deep Focus', action: () => { this.store.set('activeView', 'focus'); this.store.startFocus(); } },
       { type: 'cmd', label: 'Timer: Reset Timer', action: () => this.store.resetFocus() },
+      { type: 'cmd', label: 'Spotify: Play / Pause', action: () => this.store.sendSpotifyMedia('playpause') },
+      { type: 'cmd', label: 'Spotify: Next Track', action: () => this.store.sendSpotifyMedia('next') },
+      { type: 'cmd', label: 'Spotify: Previous Track', action: () => this.store.sendSpotifyMedia('prev') },
+      { type: 'cmd', label: 'Spotify: Open Deep Focus Playlist', action: () => this.store.openSpotify('spotify:playlist:37i9dQZF1DWZeKCadgRdKQ') },
+      { type: 'cmd', label: 'Spotify: Open Lofi Beats Playlist', action: () => this.store.openSpotify('spotify:playlist:37i9dQZF1DXdLEN7aqioXM') },
       { type: 'cmd', label: 'Settings: Open Preferences', action: () => this.store.set('settingsOpen', true) }
     ];
 
