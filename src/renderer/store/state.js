@@ -310,11 +310,11 @@ class ReactiveStore {
     }
 
     // Auto-play Spotify if configured
-    if (this.state.spotify?.autoPlayOnFocus && window.api?.sendSpotifyMediaCommand) {
-      if (!this.state.spotify.isPlaying) {
-        window.api.sendSpotifyMediaCommand('playpause').then(() => {
-          setTimeout(() => this.refreshSpotifyStatus(), 500);
-        });
+    if (this.state.spotify?.autoPlayOnFocus) {
+      if (window.spotifyEmbedController) {
+        try { window.spotifyEmbedController.play(); } catch (e) {}
+      } else if (window.api?.sendSpotifyMediaCommand && !this.state.spotify.isPlaying) {
+        window.api.sendSpotifyMediaCommand('playpause');
       }
     }
 
@@ -343,11 +343,11 @@ class ReactiveStore {
     }
 
     // Auto-pause Spotify if configured
-    if (this.state.spotify?.autoPauseOnComplete && window.api?.sendSpotifyMediaCommand) {
-      if (this.state.spotify.isPlaying) {
-        window.api.sendSpotifyMediaCommand('playpause').then(() => {
-          setTimeout(() => this.refreshSpotifyStatus(), 500);
-        });
+    if (this.state.spotify?.autoPauseOnComplete) {
+      if (window.spotifyEmbedController) {
+        try { window.spotifyEmbedController.pause(); } catch (e) {}
+      } else if (window.api?.sendSpotifyMediaCommand && this.state.spotify.isPlaying) {
+        window.api.sendSpotifyMediaCommand('playpause');
       }
     }
   }
@@ -363,11 +363,11 @@ class ReactiveStore {
       window.audioEngine.stopAmbient();
     }
 
-    if (this.state.spotify?.autoPauseOnComplete && window.api?.sendSpotifyMediaCommand) {
-      if (this.state.spotify.isPlaying) {
-        window.api.sendSpotifyMediaCommand('playpause').then(() => {
-          setTimeout(() => this.refreshSpotifyStatus(), 500);
-        });
+    if (this.state.spotify?.autoPauseOnComplete) {
+      if (window.spotifyEmbedController) {
+        try { window.spotifyEmbedController.pause(); } catch (e) {}
+      } else if (window.api?.sendSpotifyMediaCommand && this.state.spotify.isPlaying) {
+        window.api.sendSpotifyMediaCommand('playpause');
       }
     }
   }
@@ -388,11 +388,11 @@ class ReactiveStore {
       window.api.toggleFocusAssist('off');
     }
 
-    if (this.state.spotify?.autoPauseOnComplete && window.api?.sendSpotifyMediaCommand) {
-      if (this.state.spotify.isPlaying) {
-        window.api.sendSpotifyMediaCommand('playpause').then(() => {
-          setTimeout(() => this.refreshSpotifyStatus(), 500);
-        });
+    if (this.state.spotify?.autoPauseOnComplete) {
+      if (window.spotifyEmbedController) {
+        try { window.spotifyEmbedController.pause(); } catch (e) {}
+      } else if (window.api?.sendSpotifyMediaCommand && this.state.spotify.isPlaying) {
+        window.api.sendSpotifyMediaCommand('playpause');
       }
     }
 

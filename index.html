@@ -52,6 +52,15 @@
   <script src="src/renderer/components/SettingsView.js"></script>
 
   <!-- App Controller Entry Point -->
+  <script>
+    window.onSpotifyIframeApiReady = (IFrameAPI) => {
+      window.SpotifyIFrameAPI = IFrameAPI;
+      if (typeof window.onSpotifyApiLoaded === 'function') {
+        window.onSpotifyApiLoaded(IFrameAPI);
+      }
+    };
+  </script>
+  <script src="https://open.spotify.com/embed/iframe-api/v1" async></script>
   <script src="src/renderer/app.js"></script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 /**
  * FocusView Component — Endel & Flow Inspired Focus Studio
- * High-precision circular countdown ring, linked active task, synthesized ambient audio, and volume control.
+ * High-precision circular countdown ring, linked active task, synthesized ambient audio, and embedded Spotify player.
  */
 
 class FocusViewComponent {
@@ -8,21 +8,38 @@ class FocusViewComponent {
     this.container = document.getElementById(containerId);
     this.store = store;
     this.CIRCUMFERENCE = 2 * Math.PI * 96; // ~603.18
+    this.activeAudioTab = 'ambient';
+    this.spotifyController = null;
+    this.currentSpotifyUri = 'spotify:playlist:37i9dQZF1DWZeKCadgRdKQ';
+    this.isSpotifyInitialized = false;
 
     this.render();
     this.bindEvents();
     this.syncFocusUI(this.store.get('focus'));
 
-    this.activeAudioTab = 'ambient';
     this.store.subscribe('focus', (focus) => this.syncFocusUI(focus));
     this.store.subscribe('spotify', (spotify) => this.syncSpotifyUI(spotify));
     this.syncSpotifyUI(this.store.get('spotify'));
+  }
 
-    setInterval(() => {
-      if (this.store.get('activeView') === 'focus' && this.activeAudioTab === 'spotify') {
-        this.store.refreshSpotifyStatus();
-      }
-    }, 3500);
+  toSpotifyUri(input) {
+    if (!input || typeof input !== 'string') return 'spotify:playlist:37i9dQZF1DWZeKCadgRdKQ';
+    input = input.trim();
+    if (input.startsWith('spotify:')) return input;
+    const match = input.match(/open\.spotify\.com\/(playlist|track|album|artist)\/([a-zA-Z0-9]+)/);
+    if (match) return `spotify:${match[1]}:${match[2]}`;
+    return 'spotify:playlist:37i9dQZF1DWZeKCadgRdKQ';
+  }
+
+  toEmbedUrl(uriOrUrl) {
+    const uri = this.toSpotifyUri(uriOrUrl);
+    const parts = uri.split(':');
+    if (parts.length >= 3) {
+      const type = parts[1];
+      const id = parts[2];
+      return `https://open.spotify.com/embed/${type}/${id}?utm_source=generator&theme=0`;
+    }
+    return 'https://open.spotify.com/embed/playlist/37i9dQZF1DWZeKCadgRdKQ?utm_source=generator&theme=0';
   }
 
   render() {
@@ -68,23 +85,23 @@ class FocusViewComponent {
             </button>
           </div>
 
-          <!-- Audio Control Card (Ambient & Spotify) -->
+          <!-- Audio & Music Companion Card -->
           <div class="audio-control-card">
             <div class="audio-tab-header">
               <div class="audio-tab-buttons">
                 <button class="audio-tab-btn active" id="tab-btn-ambient">Ambient Sounds</button>
-                <button class="audio-tab-btn" id="tab-btn-spotify">Spotify Focus</button>
+                <button class="audio-tab-btn" id="tab-btn-spotify">Spotify Player</button>
               </div>
-              <span id="audio-type-label" style="font-size:10.5px; color:var(--text-muted);">None</span>
+              <span id="audio-type-label" class="audio-status-tag">None</span>
             </div>
 
-            <!-- Panel 1: Ambient Soundscapes -->
+            <!-- Panel 1: Synthesized Ambient Audio -->
             <div id="panel-ambient-audio">
-              <div class="soundscapes-row" id="soundscapes-row">
+              <div class="soundscapes-grid" id="soundscapes-row">
                 <button class="sound-btn active" data-sound="none">Mute</button>
                 <button class="sound-btn" data-sound="brown">Brown Noise</button>
                 <button class="sound-btn" data-sound="rain">Rainfall</button>
-                <button class="sound-btn" data-sound="forest">Forest Breeze</button>
+                <button class="sound-btn" data-sound="forest">Forest</button>
                 <button class="sound-btn" data-sound="binaural">Lo-Fi Calm</button>
               </div>
               <div class="volume-row">
@@ -93,37 +110,19 @@ class FocusViewComponent {
               </div>
             </div>
 
-            <!-- Panel 2: Spotify Focus -->
+            <!-- Panel 2: Embedded Spotify Mini Player -->
             <div id="panel-spotify-audio" style="display:none; flex-direction:column; gap:8px;">
-              <div class="spotify-now-playing-box">
-                <div class="spotify-track-info">
-                  <div class="spotify-track-title" id="spotify-track-title">Spotify Idle</div>
-                  <div class="spotify-track-artist" id="spotify-track-artist">Start playback or pick a focus playlist</div>
-                </div>
-                <div class="spotify-controls">
-                  <button class="spotify-ctrl-btn" id="btn-spotify-prev" title="Previous Track">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="19" x2="5" y2="5" stroke="currentColor" stroke-width="2"/></svg>
-                  </button>
-                  <button class="spotify-ctrl-btn play" id="btn-spotify-playpause" title="Play / Pause">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" id="icon-spotify-play"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" id="icon-spotify-pause" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
-                  </button>
-                  <button class="spotify-ctrl-btn" id="btn-spotify-next" title="Next Track">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19" stroke="currentColor" stroke-width="2"/></svg>
-                  </button>
-                </div>
+              <div class="spotify-presets-bar" id="spotify-presets-bar">
+                <button class="spotify-preset-btn active" data-uri="spotify:playlist:37i9dQZF1DWZeKCadgRdKQ">Deep Focus</button>
+                <button class="spotify-preset-btn" data-uri="spotify:playlist:37i9dQZF1DXdLEN7aqioXM">Lofi Beats</button>
+                <button class="spotify-preset-btn" data-uri="spotify:playlist:37i9dQZF1DX4sWSpwq3LiO">Piano</button>
+                <button class="spotify-preset-btn" data-uri="spotify:playlist:37i9dQZF1DX2UXRTq7HHvd">Brain Food</button>
+                <button class="spotify-preset-btn" data-uri="spotify:playlist:37i9dQZF1DXd9rSDyQguIk">Synthwave</button>
+                <button class="spotify-preset-btn custom" id="btn-spotify-custom-preset" style="display:none;" data-uri="">My Playlist</button>
               </div>
 
-              <div class="spotify-playlists-row">
-                <span style="font-size:10.5px; color:var(--text-muted); font-weight:500;">Focus Playlists:</span>
-                <div class="spotify-chips-wrap">
-                  <button class="spotify-playlist-chip" data-uri="spotify:playlist:37i9dQZF1DWZeKCadgRdKQ">Deep Focus</button>
-                  <button class="spotify-playlist-chip" data-uri="spotify:playlist:37i9dQZF1DXdLEN7aqioXM">Lofi Beats</button>
-                  <button class="spotify-playlist-chip" data-uri="spotify:playlist:37i9dQZF1DX4sWSpwq3LiO">Peaceful Piano</button>
-                  <button class="spotify-playlist-chip" data-uri="spotify:playlist:37i9dQZF1DX2UXRTq7HHvd">Brain Food</button>
-                  <button class="spotify-playlist-chip" data-uri="spotify:playlist:37i9dQZF1DXd9rSDyQguIk">Synthwave</button>
-                  <button class="spotify-playlist-chip custom" id="btn-spotify-custom-chip" style="display:none;" data-uri="">My Playlist</button>
-                </div>
+              <div class="spotify-embed-wrapper">
+                <div id="spotify-embed-container" class="spotify-embed-container"></div>
               </div>
             </div>
           </div>
@@ -143,6 +142,82 @@ class FocusViewComponent {
         </div>
       </div>
     `;
+  }
+
+  initSpotifyEmbed() {
+    if (this.isSpotifyInitialized) return;
+    this.isSpotifyInitialized = true;
+
+    const container = this.container.querySelector('#spotify-embed-container');
+    if (!container) return;
+
+    const initialUri = this.currentSpotifyUri;
+
+    const mountIframe = () => {
+      if (container.querySelector('iframe')) return;
+      const embedUrl = this.toEmbedUrl(initialUri);
+      container.innerHTML = `
+        <iframe
+          id="spotify-embed-frame"
+          src="${embedUrl}"
+          width="100%"
+          height="152"
+          frameBorder="0"
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+          loading="lazy">
+        </iframe>
+      `;
+    };
+
+    if (window.SpotifyIFrameAPI) {
+      this.createSpotifyController(window.SpotifyIFrameAPI, container, initialUri, mountIframe);
+    } else {
+      window.onSpotifyApiLoaded = (IFrameAPI) => {
+        this.createSpotifyController(IFrameAPI, container, initialUri, mountIframe);
+      };
+      mountIframe();
+    }
+  }
+
+  createSpotifyController(IFrameAPI, container, initialUri, fallbackFn) {
+    try {
+      IFrameAPI.createController(container, {
+        width: '100%',
+        height: '152',
+        uri: initialUri
+      }, (EmbedController) => {
+        this.spotifyController = EmbedController;
+        window.spotifyEmbedController = EmbedController;
+        this.spotifyController.on('playback_update', (e) => {
+          this.store.state.spotify.isPlaying = !e.data.isPaused;
+        });
+      });
+    } catch (e) {
+      console.warn('[FocusView] Spotify IFrame API fallback to standard iframe:', e);
+      fallbackFn();
+    }
+  }
+
+  setSpotifyUri(uriOrUrl) {
+    const uri = this.toSpotifyUri(uriOrUrl);
+    this.currentSpotifyUri = uri;
+
+    if (this.spotifyController) {
+      try {
+        this.spotifyController.loadUri(uri);
+        return;
+      } catch (err) {
+        console.warn('[FocusView] Error loading URI into controller:', err);
+      }
+    }
+
+    const container = this.container.querySelector('#spotify-embed-container');
+    if (container) {
+      const iframe = container.querySelector('iframe');
+      if (iframe) {
+        iframe.src = this.toEmbedUrl(uri);
+      }
+    }
   }
 
   bindEvents() {
@@ -184,7 +259,6 @@ class FocusViewComponent {
       }
     });
 
-    // Listen for controls dispatched from the Mini-Timer PiP window
     if (window.api && window.api.onTimerToggleFromMini) {
       window.api.onTimerToggleFromMini(() => {
         const focus = this.store.get('focus');
@@ -263,48 +337,33 @@ class FocusViewComponent {
       panelAmbient.style.display = 'none';
       panelSpotify.style.display = 'flex';
       this.container.querySelector('#audio-type-label').textContent = 'Spotify';
-      this.store.refreshSpotifyStatus();
+      this.initSpotifyEmbed();
     });
 
-    // Spotify Media Controls
-    this.container.querySelector('#btn-spotify-prev').addEventListener('click', () => {
-      this.store.sendSpotifyMedia('prev');
-    });
+    // Preset selector buttons
+    const presetsBar = this.container.querySelector('#spotify-presets-bar');
+    presetsBar.addEventListener('click', (e) => {
+      const btn = e.target.closest('.spotify-preset-btn');
+      if (!btn) return;
+      const uri = btn.getAttribute('data-uri');
+      if (!uri) return;
 
-    this.container.querySelector('#btn-spotify-playpause').addEventListener('click', () => {
-      this.store.sendSpotifyMedia('playpause');
-    });
-
-    this.container.querySelector('#btn-spotify-next').addEventListener('click', () => {
-      this.store.sendSpotifyMedia('next');
-    });
-
-    // Spotify Playlists click delegation
-    panelSpotify.addEventListener('click', (e) => {
-      const chip = e.target.closest('.spotify-playlist-chip');
-      if (!chip) return;
-      const uri = chip.getAttribute('data-uri');
-      if (uri) {
-        this.store.openSpotify(uri);
-        if (window.toast) window.toast.show(`Launching ${chip.textContent.trim()} in Spotify`, 'info');
-      }
+      presetsBar.querySelectorAll('.spotify-preset-btn').forEach(b => b.classList.toggle('active', b === btn));
+      this.setSpotifyUri(uri);
     });
   }
 
   syncFocusUI(focus) {
     if (!focus) return;
 
-    // Time display
     const mins = String(Math.floor(focus.remaining / 60)).padStart(2, '0');
     const secs = String(focus.remaining % 60).padStart(2, '0');
     this.container.querySelector('#focus-digits').textContent = `${mins}:${secs}`;
 
-    // SVG arc
     const arc = this.container.querySelector('#focus-progress-arc');
     const fraction = focus.duration > 0 ? focus.remaining / focus.duration : 0;
     arc.style.strokeDashoffset = this.CIRCUMFERENCE * (1 - fraction);
 
-    // Play/Pause icon
     const iconPlay = this.container.querySelector('#icon-focus-play');
     const iconPause = this.container.querySelector('#icon-focus-pause');
     if (focus.running) {
@@ -315,7 +374,6 @@ class FocusViewComponent {
       iconPause.style.display = 'none';
     }
 
-    // Linked Task
     const taskCard = this.container.querySelector('#focus-task-card');
     const taskName = this.container.querySelector('#focus-task-name');
     if (focus.linkedTaskId) {
@@ -330,7 +388,6 @@ class FocusViewComponent {
       taskCard.style.display = 'none';
     }
 
-    // Stats
     this.container.querySelector('#focus-stat-sessions').textContent = focus.sessions || 0;
     this.container.querySelector('#focus-stat-minutes').textContent = `${focus.totalMinutes || 0}m`;
   }
@@ -338,34 +395,15 @@ class FocusViewComponent {
   syncSpotifyUI(spotify) {
     if (!spotify) return;
 
-    const titleEl = this.container.querySelector('#spotify-track-title');
-    const artistEl = this.container.querySelector('#spotify-track-artist');
-    const iconPlay = this.container.querySelector('#icon-spotify-play');
-    const iconPause = this.container.querySelector('#icon-spotify-pause');
-    const customChip = this.container.querySelector('#btn-spotify-custom-chip');
-
-    if (spotify.isPlaying && spotify.track) {
-      titleEl.textContent = spotify.track;
-      artistEl.textContent = spotify.artist || 'Playing on Spotify';
-      iconPlay.style.display = 'none';
-      iconPause.style.display = 'block';
-    } else if (spotify.isRunning) {
-      titleEl.textContent = 'Spotify Ready';
-      artistEl.textContent = 'Paused • Tap play or select a playlist';
-      iconPlay.style.display = 'block';
-      iconPause.style.display = 'none';
-    } else {
-      titleEl.textContent = 'Spotify Idle';
-      artistEl.textContent = 'Launch Spotify or choose a focus playlist';
-      iconPlay.style.display = 'block';
-      iconPause.style.display = 'none';
-    }
+    const customBtn = this.container.querySelector('#btn-spotify-custom-preset');
+    if (!customBtn) return;
 
     if (spotify.customPlaylistUrl) {
-      customChip.style.display = 'inline-flex';
-      customChip.setAttribute('data-uri', spotify.customPlaylistUrl);
+      const uri = this.toSpotifyUri(spotify.customPlaylistUrl);
+      customBtn.style.display = 'inline-flex';
+      customBtn.setAttribute('data-uri', uri);
     } else {
-      customChip.style.display = 'none';
+      customBtn.style.display = 'none';
     }
   }
 }

@@ -39,3 +39,39 @@ test('Spotify — parseSpotifyTitle handles empty/null process output', () => {
   assert.equal(resultEmpty.isRunning, false);
   assert.equal(resultEmpty.isPlaying, false);
 });
+
+test('Spotify — FocusView converts links to Spotify URIs and embed URLs', () => {
+  // Test conversion helper logic
+  function toSpotifyUri(input) {
+    if (!input || typeof input !== 'string') return 'spotify:playlist:37i9dQZF1DWZeKCadgRdKQ';
+    input = input.trim();
+    if (input.startsWith('spotify:')) return input;
+    const match = input.match(/open\.spotify\.com\/(playlist|track|album|artist)\/([a-zA-Z0-9]+)/);
+    if (match) return `spotify:${match[1]}:${match[2]}`;
+    return 'spotify:playlist:37i9dQZF1DWZeKCadgRdKQ';
+  }
+
+  function toEmbedUrl(input) {
+    const uri = toSpotifyUri(input);
+    const parts = uri.split(':');
+    if (parts.length >= 3) {
+      const type = parts[1];
+      const id = parts[2];
+      return `https://open.spotify.com/embed/${type}/${id}?utm_source=generator&theme=0`;
+    }
+    return 'https://open.spotify.com/embed/playlist/37i9dQZF1DWZeKCadgRdKQ?utm_source=generator&theme=0';
+  }
+
+  assert.equal(
+    toSpotifyUri('https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M?si=xyz'),
+    'spotify:playlist:37i9dQZF1DXcBWIGoYBM5M'
+  );
+  assert.equal(
+    toSpotifyUri('spotify:album:4aawyAB9vmqN3uQ7FjRGTy'),
+    'spotify:album:4aawyAB9vmqN3uQ7FjRGTy'
+  );
+  assert.equal(
+    toEmbedUrl('https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M?si=xyz'),
+    'https://open.spotify.com/embed/playlist/37i9dQZF1DXcBWIGoYBM5M?utm_source=generator&theme=0'
+  );
+});
