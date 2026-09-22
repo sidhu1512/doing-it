@@ -220,9 +220,17 @@ function initKeyboardShortcuts() {
   });
 }
 
-// ─── TOAST (disabled) ───────────────────────────────────
-function showToast() {}
-function showUndoToast() {}
+// ─── TOAST NOTIFICATIONS ─────────────────────────────────
+function showToast(msg, type = 'info', duration = 3000) {
+  if (typeof window.showToast === 'function') {
+    window.showToast(msg, type, duration);
+  }
+}
+function showUndoToast(msg, onUndo, duration = 4500) {
+  if (typeof window.showUndoToast === 'function') {
+    window.showUndoToast(msg, onUndo, duration);
+  }
+}
 
 // ═══════════════════════════════════════════════════════
 // NOTES
@@ -388,7 +396,8 @@ function renderNotes() {
     const time = formatRelativeTime(note.timestamp);
     const renderedText = renderMarkdown(note.text, 'note', note.id);
     const ctxPill = note.context ? `<span class="context-pill" title="${escapeHtml(note.context)}">${escapeHtml(note.context.length > 28 ? note.context.substring(0, 28) + '...' : note.context)}</span>` : '';
-    const imgHtml = note.image ? `<div class="note-image"><img src="file:///${note.image.replace(/\\/g, '/')}" alt="Pasted image" /></div>` : '';
+    const imgUrl = note.image ? (window.markdownPipeline ? window.markdownPipeline.formatMediaUri(note.image) : `doingit-media://${encodeURIComponent(note.image)}`) : '';
+    const imgHtml = note.image ? `<div class="note-image"><img src="${imgUrl}" alt="Pasted image" /></div>` : '';
     return `
       <div class="note-item ${note.pinned ? 'pinned' : ''}" data-note-id="${note.id}" ondblclick="startEditNote(${note.id})">
         ${imgHtml}
@@ -1007,7 +1016,11 @@ function fireReminder(rem) {
   if (window.api.showNotification) {
     window.api.showNotification('Reminder', rem.text);
   }
-  playBeep();
+  if (window.audioEngine && typeof window.audioEngine.playNotificationChime === 'function') {
+    window.audioEngine.playNotificationChime();
+  } else {
+    playBeep();
+  }
 
   // Handle repeating reminders
   if (rem.repeat !== 'none') {
@@ -1060,60 +1073,14 @@ async function saveReminders() {
 // AMBIENT FOCUS AUDIO (Web Audio API Synthesizer)
 // ═══════════════════════════════════════════════════════
 const focusAudio = {
-  ctx: null, noiseNode: null, amplifier: null, filter: null, activeType: 'none',
-  init() {
-    if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)();
-  },
   start(type) {
-    if (type === 'none') { this.stop(); return; }
-    this.init();
-    if (this.ctx.state === 'suspended') this.ctx.resume();
-    this.stop(true); // fast stop active
-    this.activeType = type;
-    
-    const bufferSize = this.ctx.sampleRate * 2;
-    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
-    const output = buffer.getChannelData(0);
-    
-    // Generate Brown Noise (deep and warm)
-    let lastOut = 0;
-    for (let i = 0; i < bufferSize; i++) {
-      let white = Math.random() * 2 - 1;
-      output[i] = (lastOut + (0.02 * white)) / 1.02;
-      lastOut = output[i];
-      output[i] *= 3.5; 
+    if (window.audioEngine) {
+      window.audioEngine.startAmbient(type);
     }
-    
-    this.noiseNode = this.ctx.createBufferSource();
-    this.noiseNode.buffer = buffer;
-    this.noiseNode.loop = true;
-    
-    this.filter = this.ctx.createBiquadFilter();
-    this.filter.type = 'lowpass';
-    
-    if (type === 'brown') this.filter.frequency.value = 400; // Deep rumble
-    if (type === 'rain') {
-       this.filter.frequency.value = 1000; // Higher frequency
-       // Rain texture
-       for(let i=0; i<bufferSize; i+=Math.floor(Math.random()*2000)) output[i] *= 2; 
-    }
-    
-    this.amplifier = this.ctx.createGain();
-    this.amplifier.gain.value = 0; // start silent for fade in
-    
-    this.noiseNode.connect(this.filter);
-    this.filter.connect(this.amplifier);
-    this.amplifier.connect(this.ctx.destination);
-    
-    this.noiseNode.start(0);
-    this.amplifier.gain.setTargetAtTime(0.6, this.ctx.currentTime, 2); // 2s fade in
   },
   stop(fast = false) {
-    if (this.amplifier) {
-      this.amplifier.gain.setTargetAtTime(0, this.ctx.currentTime, fast ? 0.1 : 1);
-      const node = this.noiseNode;
-      setTimeout(() => { if (node) { node.stop(); node.disconnect(); } }, fast ? 200 : 2000);
-      this.amplifier = null;
+    if (window.audioEngine) {
+      window.audioEngine.stopAmbient(fast);
     }
   }
 };
@@ -1373,34 +1340,11 @@ function completePomodoro() {
   showToast('Focus session complete', 'success');
 }
 
-// Audio beep for pomodoro completion
+// Audio chime for pomodoro completion
 function playBeep() {
-  try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.frequency.value = 800;
-    osc.type = 'sine';
-    gain.gain.setValueAtTime(0.3, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
-    osc.start(ctx.currentTime);
-    osc.stop(ctx.currentTime + 0.5);
-    // Second beep
-    setTimeout(() => {
-      const osc2 = ctx.createOscillator();
-      const gain2 = ctx.createGain();
-      osc2.connect(gain2);
-      gain2.connect(ctx.destination);
-      osc2.frequency.value = 1000;
-      osc2.type = 'sine';
-      gain2.gain.setValueAtTime(0.3, ctx.currentTime);
-      gain2.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
-      osc2.start(ctx.currentTime);
-      osc2.stop(ctx.currentTime + 0.5);
-    }, 300);
-  } catch(e) { /* audio not available */ }
+  if (window.audioEngine && typeof window.audioEngine.playCompletionChime === 'function') {
+    window.audioEngine.playCompletionChime();
+  }
 }
 
 function updatePomoDisplay() {
@@ -2269,46 +2213,10 @@ function toggleMdCheck(itemType, itemId, checkIdx) {
 // MARKDOWN PARSER (Robust with marked.js + DOMPurify)
 // ===============================================================
 function renderMarkdown(text, itemType, itemId) {
-  if (!text) return '';
-
-  // 1. Initial Markdown pass (marked is configured in index.html, but we use it here safely)
-  let rawHtml;
-  try {
-    rawHtml = marked.parse(text, { breaks: true, gfm: true });
-  } catch (e) {
-    console.error("Markdown parsing failed", e);
-    rawHtml = escapeHtml(text);
+  if (window.markdownPipeline) {
+    return window.markdownPipeline.render(text, itemType, itemId);
   }
-
-  // 2. We use DOMPurify to clean it up before doing custom injects
-  // We allow custom attributes for our interactive stuff in the next step
-  const cleanHtml = DOMPurify.sanitize(rawHtml, { 
-    ADD_ATTR: ['onclick', 'onchange', 'data-url', 'target'] 
-  });
-
-  // 3. Post-process to inject our custom Event Handlers
-  let html = cleanHtml;
-
-  // Code inline gets styled automatically by CSS, we just fix Checklists
-  if (itemType && itemId) {
-    let checkIdx = 0;
-    // Marked renders checklists as `<input disabled="" type="checkbox"( checked="")?>`
-    html = html.replace(/<input disabled="" type="checkbox"( checked="")?>/gi, (match, checked) => {
-      const idx = checkIdx++;
-      const isChecked = !!checked;
-      return `<label class="md-check"><input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleMdCheck('${itemType}', ${itemId}, ${idx})" /></label>`;
-    });
-  }
-
-  // Hashtags #tag (Not standard markdown, but we want it)
-  // Only match #tag outside of html attributes. A simple generic replacement is safe since DOMPurify already ran
-  html = html.replace(/(^|\s)#(\w+)/g, '$1<span class="hashtag" onclick="filterByTag(\'$2\')">#$2</span>');
-
-  // Auto-link overrides (Marked renders standard <a> tags)
-  html = html.replace(/<a href="([^"]+)".*?>/g, '<a class="md-link" onclick="openMdLink(this)" data-url="$1">');
-
-  // Because my regex might have replaced some safe dom properties, one last quick purify just in case
-  return DOMPurify.sanitize(html, { ADD_ATTR: ['onclick', 'onchange', 'data-url', 'target'] });
+  return escapeHtml(text);
 }
 
 function openMdLink(el) {
@@ -2317,6 +2225,31 @@ function openMdLink(el) {
     window.api.openExternalUrl(url);
   }
 }
+
+// Global delegated handlers for markdown interactions
+document.addEventListener('click', (e) => {
+  const checkEl = e.target.closest('.md-checklist-input');
+  if (checkEl) {
+    const itemType = checkEl.getAttribute('data-item-type');
+    const itemId = Number(checkEl.getAttribute('data-item-id'));
+    const checkIdx = Number(checkEl.getAttribute('data-check-idx'));
+    toggleMdCheck(itemType, itemId, checkIdx);
+    return;
+  }
+
+  const tagEl = e.target.closest('.hashtag');
+  if (tagEl) {
+    const tag = tagEl.getAttribute('data-tag');
+    if (tag) filterByTag(tag);
+    return;
+  }
+
+  const linkEl = e.target.closest('.md-link');
+  if (linkEl) {
+    openMdLink(linkEl);
+    return;
+  }
+});
 
 // ===============================================================
 // RICH LINK HYDRATION

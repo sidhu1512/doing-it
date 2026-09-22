@@ -2,141 +2,347 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Focus Timer</title>
+  <title>Focus Mini Player</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="src/renderer/theme.css">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    body {
-      font-family: 'Inter', -apple-system, sans-serif;
-      background: transparent;
-      overflow: hidden;
-      cursor: pointer;
-      -webkit-app-region: drag;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      user-select: none;
     }
 
-    .mini-timer {
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: transparent !important;
+      overflow: hidden;
+      font-family: var(--font-main, 'Inter', -apple-system, sans-serif);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .mini-player {
+      width: 100%;
+      height: 100%;
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 10px;
-      background: var(--bg-app, rgba(22, 22, 24, 0.82));
-      border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.08));
-      border-radius: 28px;
-      padding: 10px 20px;
-      height: 48px;
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      transition: border-color 0.3s ease;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 0 10px 0 12px;
+      background: var(--bg-app, rgba(14, 16, 22, 0.94));
+      backdrop-filter: blur(28px) saturate(180%);
+      -webkit-backdrop-filter: blur(28px) saturate(180%);
+      border-radius: 25px;
+      clip-path: inset(0 round 25px);
+      box-shadow: 
+        inset 0 0 0 1px var(--border-medium, rgba(255, 255, 255, 0.14)),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.16);
+      -webkit-app-region: drag;
+      cursor: grab;
     }
 
-    .mini-timer:hover {
-      border-color: var(--border-active, rgba(176, 176, 184, 0.25));
+    .mini-player:active {
+      cursor: grabbing;
     }
 
-    .timer-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #8a8;
+    /* Left Group: Drag grip + Dot + Time */
+    .mini-left {
+      display: flex;
+      align-items: center;
+      gap: 7px;
       flex-shrink: 0;
-      animation: pulseDot 1.5s ease-in-out infinite;
     }
 
-    .timer-dot.paused {
-      background: #a88;
+    .mini-drag-handle {
+      display: flex;
+      flex-direction: column;
+      gap: 2.5px;
+      opacity: 0.45;
+      padding: 2px 0;
+    }
+
+    .mini-drag-dot-row {
+      display: flex;
+      gap: 2.5px;
+    }
+
+    .mini-drag-dot {
+      width: 2.5px;
+      height: 2.5px;
+      border-radius: 50%;
+      background: var(--text-secondary, #9494a0);
+    }
+
+    .session-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--success, #10b981);
+      box-shadow: 0 0 8px var(--success-glow, rgba(16, 185, 129, 0.4));
+      animation: pulseGreen 2s infinite ease-in-out;
+      flex-shrink: 0;
+    }
+
+    .session-dot.paused {
+      background: var(--warning, #f59e0b);
+      box-shadow: 0 0 8px rgba(245, 158, 11, 0.35);
       animation: none;
     }
 
-    @keyframes pulseDot {
-      0%, 100% { opacity: 0.6; transform: scale(1); }
+    @keyframes pulseGreen {
+      0%, 100% { opacity: 0.7; transform: scale(1); }
       50% { opacity: 1; transform: scale(1.2); }
     }
 
-    .timer-time {
-      font-size: 18px;
+    .mini-digits {
+      font-size: 14.5px;
       font-weight: 600;
-      color: var(--text-primary, #e8e8ec);
+      color: var(--text-primary, #f4f4f6);
       font-variant-numeric: tabular-nums;
-      letter-spacing: 0.05em;
+      letter-spacing: -0.01em;
+      min-width: 44px;
     }
 
-    .timer-label {
-      font-size: 10px;
-      color: var(--text-muted, rgba(160, 160, 168, 0.6));
-      font-weight: 400;
-      letter-spacing: 0.03em;
+    /* Center: Task Ticker */
+    .mini-center {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      padding: 0 2px;
+      -webkit-app-region: drag;
     }
 
-    .close-hint {
-      font-size: 8px;
-      color: rgba(140, 140, 148, 0.4);
-      position: absolute;
-      bottom: 2px;
-      right: 12px;
-      opacity: 0;
-      transition: opacity 0.2s;
+    .mini-task-ticker {
+      font-size: 11.5px;
+      font-weight: 500;
+      color: var(--text-secondary, #9494a0);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 90px;
+    }
+
+    /* Right Group: Interactive Controls */
+    .mini-actions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+      -webkit-app-region: no-drag;
+      cursor: default;
+    }
+
+    .mini-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.08));
+      color: var(--text-secondary, #9494a0);
+      cursor: pointer;
+      transition: all var(--transition-fast, 0.15s cubic-bezier(0.16, 1, 0.3, 1));
       -webkit-app-region: no-drag;
     }
 
-    .mini-timer:hover .close-hint {
-      opacity: 1;
+    .mini-btn:hover {
+      background: var(--bg-surface-hover, rgba(32, 35, 44, 0.85));
+      color: var(--text-primary, #f4f4f6);
+      border-color: var(--border-medium, rgba(255, 255, 255, 0.14));
+    }
+
+    .mini-btn:active {
+      transform: scale(0.92);
+      background: rgba(255, 255, 255, 0.14);
+    }
+
+    .mini-btn-play {
+      background: var(--accent-primary, #a2a2b0);
+      color: var(--text-inverse, #0d0e12);
+      border: none;
+      box-shadow: 0 2px 8px var(--accent-glow, rgba(162, 162, 176, 0.25));
+    }
+
+    .mini-btn-play:hover {
+      background: var(--accent-hover, #c4c4d0);
+      color: var(--text-inverse, #0d0e12);
+    }
+
+    .mini-btn-play:active {
+      transform: scale(0.92);
+    }
+
+    .mini-btn-done {
+      display: none;
+      color: var(--success, #10b981);
+      border-color: rgba(16, 185, 129, 0.25);
+      background: rgba(16, 185, 129, 0.08);
+    }
+
+    .mini-btn-done:hover {
+      background: rgba(16, 185, 129, 0.2);
+      color: var(--success, #10b981);
+    }
+
+    .mini-btn-close:hover {
+      background: #e81123;
+      color: #ffffff;
+      border-color: transparent;
+    }
+
+    .mini-btn-close:active {
+      background: #c4101e;
+      color: #ffffff;
     }
   </style>
 </head>
 <body>
-  <div class="mini-timer" id="mini-timer">
-    <div class="timer-dot" id="timer-dot"></div>
-    <span class="timer-time" id="timer-time">25:00</span>
-    <span class="timer-label" id="timer-label">Focus</span>
-    <span class="close-hint">click to return</span>
+  <div class="mini-player" id="mini-player">
+    <!-- Left: Drag handle + Status Dot + Digits -->
+    <div class="mini-left">
+      <div class="mini-drag-handle" title="Drag to reposition">
+        <div class="mini-drag-dot-row"><div class="mini-drag-dot"></div><div class="mini-drag-dot"></div></div>
+        <div class="mini-drag-dot-row"><div class="mini-drag-dot"></div><div class="mini-drag-dot"></div></div>
+        <div class="mini-drag-dot-row"><div class="mini-drag-dot"></div><div class="mini-drag-dot"></div></div>
+      </div>
+      <div class="session-dot" id="session-dot"></div>
+      <span class="mini-digits" id="mini-digits">25:00</span>
+    </div>
+
+    <!-- Center: Linked Task Ticker or Phase -->
+    <div class="mini-center">
+      <span class="mini-task-ticker" id="mini-task-ticker">Focus Session</span>
+    </div>
+
+    <!-- Right: Interactive Controls -->
+    <div class="mini-actions">
+      <!-- Play/Pause Toggle -->
+      <button class="mini-btn mini-btn-play" id="btn-mini-toggle" title="Play / Pause">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" id="icon-play"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" id="icon-pause" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+      </button>
+
+      <!-- Done Check (shown when task is linked) -->
+      <button class="mini-btn mini-btn-done" id="btn-mini-done" title="Complete Linked Task">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+      </button>
+
+      <!-- Expand to Main Window -->
+      <button class="mini-btn" id="btn-mini-expand" title="Expand to Main Window">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+      </button>
+
+      <!-- Close / Dismiss -->
+      <button class="mini-btn mini-btn-close" id="btn-mini-close" title="Close and return to app">
+        <svg width="10" height="10" viewBox="0 0 12 12"><path d="M1 1L11 11M11 1L1 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </div>
   </div>
 
   <script>
-    const timeEl = document.getElementById('timer-time');
-    const dotEl = document.getElementById('timer-dot');
-    const labelEl = document.getElementById('timer-label');
+    const digitsEl = document.getElementById('mini-digits');
+    const dotEl = document.getElementById('session-dot');
+    const tickerEl = document.getElementById('mini-task-ticker');
+    const btnToggle = document.getElementById('btn-mini-toggle');
+    const btnDone = document.getElementById('btn-mini-done');
+    const btnExpand = document.getElementById('btn-mini-expand');
+    const btnClose = document.getElementById('btn-mini-close');
+    const iconPlay = document.getElementById('icon-play');
+    const iconPause = document.getElementById('icon-pause');
 
-    // Listen for timer state updates from main process
-    window.api.onTimerSync((state) => {
-      if (state) {
-        const mins = Math.floor(state.remaining / 60);
-        const secs = state.remaining % 60;
-        timeEl.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    // Synchronize UI with incoming timer state
+    function updateTimerUI(state) {
+      if (!state) return;
 
-        if (state.running) {
-          dotEl.classList.remove('paused');
-          labelEl.textContent = 'Focus';
-        } else {
-          dotEl.classList.add('paused');
-          labelEl.textContent = 'Paused';
-        }
-      }
-    });
+      const remaining = typeof state.remaining === 'number' ? state.remaining : 1500;
+      const mins = Math.floor(remaining / 60);
+      const secs = remaining % 60;
+      digitsEl.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
 
-    // Initial theme load
-    window.api.getSettings().then(settings => {
-      if (settings && settings.theme) {
-        document.documentElement.setAttribute('data-theme', settings.theme);
-      }
-    });
-
-    // Listen for theme changes dynamically
-    window.api.onThemeUpdated((theme) => {
-      if (theme) {
-        document.documentElement.setAttribute('data-theme', theme);
+      if (state.running) {
+        dotEl.classList.remove('paused');
+        iconPlay.style.display = 'none';
+        iconPause.style.display = 'block';
       } else {
-        document.documentElement.removeAttribute('data-theme');
+        dotEl.classList.add('paused');
+        iconPlay.style.display = 'block';
+        iconPause.style.display = 'none';
+      }
+
+      if (state.taskTitle) {
+        tickerEl.textContent = state.taskTitle;
+        tickerEl.title = state.taskTitle;
+        btnDone.style.display = 'flex';
+      } else {
+        tickerEl.textContent = state.running ? 'Focus Session' : 'Paused';
+        tickerEl.title = '';
+        btnDone.style.display = 'none';
+      }
+    }
+
+    // Timer sync listener from main process
+    if (window.api && window.api.onTimerSync) {
+      window.api.onTimerSync(updateTimerUI);
+    }
+
+    // Play / Pause toggle
+    btnToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (window.api && window.api.miniTimerTogglePlay) {
+        window.api.miniTimerTogglePlay();
       }
     });
 
-    // Click to return to main window
-    document.getElementById('mini-timer').addEventListener('click', () => {
-      window.api.miniTimerClose();
+    // Complete linked task
+    btnDone.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (window.api && window.api.miniTimerCompleteTask) {
+        window.api.miniTimerCompleteTask();
+        btnDone.style.display = 'none';
+        tickerEl.textContent = 'Focus Session';
+      }
     });
+
+    // Expand to Main Window
+    btnExpand.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (window.api && window.api.miniTimerClose) {
+        window.api.miniTimerClose();
+      }
+    });
+
+    // Close Button
+    btnClose.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (window.api && window.api.miniTimerClose) {
+        window.api.miniTimerClose();
+      }
+    });
+
+    // Theme integration
+    if (window.api && window.api.getSettings) {
+      window.api.getSettings().then(settings => {
+        if (settings && settings.theme) {
+          document.documentElement.setAttribute('data-theme', settings.theme);
+        }
+      });
+    }
+
+    if (window.api && window.api.onThemeUpdated) {
+      window.api.onThemeUpdated((theme) => {
+        if (theme) {
+          document.documentElement.setAttribute('data-theme', theme);
+        } else {
+          document.documentElement.removeAttribute('data-theme');
+        }
+      });
+    }
   </script>
 </body>
 </html>

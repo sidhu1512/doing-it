@@ -2871,3 +2871,83 @@ body.docked .app-container {
   color: var(--text-muted);
   margin-top: 6px;
 }
+
+/* ═══ TOAST HUD & UNDO NOTIFICATIONS ═══ */
+.toast-container {
+  position: absolute;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: var(--bg-app, rgba(22, 22, 24, 0.94));
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-active, rgba(255, 255, 255, 0.15));
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 1px rgba(255, 255, 255, 0.2);
+  color: var(--text-primary, #e8e8ec);
+  font-size: 11.5px;
+  font-weight: 500;
+  pointer-events: auto;
+  opacity: 0;
+  transform: translateY(12px) scale(0.96);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.toast.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.toast.removing {
+  opacity: 0;
+  transform: translateY(6px) scale(0.96);
+}
+
+.toast-icon {
+  display: flex;
+  align-items: center;
+  color: var(--accent-primary, #a0a0a8);
+}
+
+.toast-success .toast-icon {
+  color: var(--success, #6bcf8e);
+}
+
+.toast-warning .toast-icon {
+  color: var(--warning, #d4a843);
+}
+
+.toast-error .toast-icon {
+  color: var(--danger, #e06060);
+}
+
+.toast-undo-btn {
+  margin-left: 6px;
+  padding: 3px 8px;
+  background: var(--bg-card-hover, rgba(255, 255, 255, 0.15));
+  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.1));
+  border-radius: 12px;
+  color: var(--text-primary, #ffffff);
+  font-size: 10.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.toast-undo-btn:hover {
+  background: var(--text-primary, #ffffff);
+  color: var(--bg-primary, #161618);
+}

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Quick Add - Doing It</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: transparent !important;
+      overflow: hidden;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    .quick-add-container {
+      display: flex;
+      align-items: center;
+      height: 64px;
+      padding: 0 16px;
+      background: var(--bg-app, rgba(22, 22, 24, 0.92));
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1.5px solid var(--border-subtle, rgba(255, 255, 255, 0.12));
+      border-radius: 16px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65), 0 0 1px rgba(255, 255, 255, 0.2);
+      gap: 12px;
+      -webkit-app-region: drag;
+    }
+
+    .mode-indicator {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--bg-secondary, rgba(255, 255, 255, 0.08));
+      color: var(--text-secondary, #a0a0a8);
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+    }
+
+    .mode-indicator.is-task {
+      color: var(--success, #6bcf8e);
+      background: rgba(107, 207, 142, 0.15);
+    }
+
+    .mode-indicator.is-high {
+      color: var(--danger, #e06060);
+      background: rgba(224, 96, 96, 0.15);
+    }
+
+    .quick-input {
+      flex: 1;
+      height: 100%;
+      background: transparent;
+      border: none;
+      outline: none;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text-primary, #e8e8ec);
+      font-family: inherit;
+      -webkit-app-region: no-drag;
+    }
+
+    .quick-input::placeholder {
+      color: var(--text-muted, rgba(232, 232, 236, 0.35));
+    }
+
+    .preview-pill {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: rgba(160, 160, 168, 0.14);
+      border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.1));
+      color: var(--text-primary, #e8e8ec);
+      font-size: 11px;
+      font-weight: 500;
+      white-space: nowrap;
+      flex-shrink: 0;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .preview-pill.visible {
+      display: flex;
+    }
+
+    .hints {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: var(--text-muted, rgba(232, 232, 236, 0.35));
+      flex-shrink: 0;
+      user-select: none;
+    }
+
+    .kbd {
+      padding: 2px 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      font-family: monospace;
+      font-size: 10px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(2px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="quick-add-container">
+    <div class="mode-indicator" id="mode-icon" title="Note or Task mode">
+      <svg id="icon-note" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      <svg id="icon-task" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+    </div>
+
+    <input type="text" id="quick-input" class="quick-input" placeholder="Quick capture note or task... (e.g. Call Alex tomorrow 3pm !high)" autofocus />
+
+    <div class="preview-pill" id="preview-pill">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      <span id="preview-date-text"></span>
+    </div>
+
+    <div class="hints">
+      <span><span class="kbd">↵</span> save</span>
+      <span><span class="kbd">esc</span> close</span>
+    </div>
+  </div>
+
+  <script>
+    const input = document.getElementById('quick-input');
+    const modeIcon = document.getElementById('mode-icon');
+    const iconNote = document.getElementById('icon-note');
+    const iconTask = document.getElementById('icon-task');
+    const previewPill = document.getElementById('preview-pill');
+    const previewDateText = document.getElementById('preview-date-text');
+
+    let parseDebounce = null;
+
+    // Theme sync
+    if (window.api.getSettings) {
+      window.api.getSettings().then(settings => {
+        if (settings && settings.theme) {
+          document.documentElement.setAttribute('data-theme', settings.theme);
+        }
+      });
+    }
+
+    input.addEventListener('input', () => {
+      const val = input.value;
+
+      // Detect /task, !high, !med, !low
+      const isExplicitTask = /^\/task\b/i.test(val) || /[!#](high|medium|low|h|m|l)\b/i.test(val);
+      const isHighPri = /[!#](high|h)\b/i.test(val);
+
+      if (isExplicitTask) {
+        modeIcon.classList.add('is-task');
+        iconNote.style.display = 'none';
+        iconTask.style.display = 'block';
+      } else {
+        modeIcon.classList.remove('is-task');
+        iconNote.style.display = 'block';
+        iconTask.style.display = 'none';
+      }
+
+      modeIcon.classList.toggle('is-high', isHighPri);
+
+      // Debounce natural language date parsing
+      clearTimeout(parseDebounce);
+      parseDebounce = setTimeout(async () => {
+        if (!val.trim() || !window.api.parseNLP) {
+          previewPill.classList.remove('visible');
+          return;
+        }
+
+        try {
+          const res = await window.api.parseNLP(val);
+          if (res && res.date) {
+            previewDateText.textContent = res.date;
+            previewPill.classList.add('visible');
+            modeIcon.classList.add('is-task');
+            iconNote.style.display = 'none';
+            iconTask.style.display = 'block';
+          } else {
+            previewPill.classList.remove('visible');
+          }
+        } catch (e) {
+          previewPill.classList.remove('visible');
+        }
+      }, 150);
+    });
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const text = input.value.trim();
+        if (text) {
+          window.api.quickAddSave(text);
+        } else {
+          window.api.quickAddClose();
+        }
+      } else if (e.key === 'Escape') {
+        window.api.quickAddClose();
+      }
+    });
+
+    // Auto focus
+    window.addEventListener('focus', () => input.focus());
+  </script>
+</body>
+</html>

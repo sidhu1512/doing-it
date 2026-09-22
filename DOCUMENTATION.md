@@ -1,4 +1,6 @@
-# Doing It — Project Documentation (v4.0.1)
+# Doing It — Project Documentation (v4.3.2)
+
+> **Core Maintenance Documentation**: For in-depth architectural breakdown, state machine flow, IPC catalog, theme tokens, and developer guidelines, see [`MAINTENANCE.md`](MAINTENANCE.md).
 
 ## 1. Concept
 
@@ -6,10 +8,13 @@ Doing It is a Windows desktop overlay widget for quick productivity. It stays al
 
 ## 2. Architecture
 
-### 2.1 Two-Window System
+### 2.1 Window System (5 Integrated Windows)
 
 1. **Main Widget** (`index.html`) — 400×650 panel (or full-height when edge-docked)
-2. **Mini Timer** (`mini-timer.html`) — 180×56 PiP countdown
+2. **FAB Window** (`fab.html`) — 48×48 AssistiveTouch floating button with live timer progress ring and ghost mode
+3. **Quick Add Bar** (`quickadd.html`) — 520×68 Spotlight-style capture modal with real-time NLP preview
+4. **Mini Timer** (`mini-timer.html`) — 180×56 PiP countdown pill
+5. **Settings Window** (`settings.html`) — 500×650 preferences panel
 
 ### 2.2 Data Flow
 
@@ -175,27 +180,34 @@ On `mainWindow.on('moved')`:
 }
 ```
 
-## 5. File Manifest
+## 5. File Manifest & Architecture
 
-| File | Lines | Purpose |
-|------|-------|---------|
-| `main.js` | ~1020 | Main process: windows, IPC, data, PowerShell, .ics parser, edge docking, Focus Assist, Image GC |
-| `preload.js` | ~82 | Context bridge with 28+ exposed API methods |
-| `renderer.js` | ~2060 | All UI: 5 tabs, command palette, markdown, hashtags, checklists, My Day, arrow nav, drag-drop |
-| `index.html` | ~355 | Main widget — 5-tab layout + command palette + settings |
-| `mini-timer.html` | ~95 | PiP mini timer — countdown pill |
-| `styles.css` | ~870 | Complete design system: 25+ style sections |
-| `quickadd.html` | ~85 | Quick Add bar UI |
-| `start.js` | ~10 | Electron launcher |
-| `afterPack.js` | ~55 | Build hook: patches brain icon via rcedit with 3s delay + 5 retries |
+| File / Module | Purpose |
+|---------------|---------|
+| `main.js` | App entry point: registers IPC handlers, global shortcuts, and background GC |
+| `src/main/store.js` | Atomic JSON persistence with `.tmp` staging, schema versioning, and auto-repairing rolling backups |
+| `src/main/windows.js` | WindowManager: handles all 5 windows, protocol registration (`doingit-media://`), docking bounds |
+| `src/main/system.js` | Windows 11 integration: PowerShell foreground detection with TTL caching, Focus Assist (DND) |
+| `src/main/calendar.js` | RFC 5545 iCalendar fetcher & parser: line unfolding, Zoom/Teams/Meet link detection |
+| `src/renderer/toast.js` | Floating Toast HUD with status icons and functional Undo action bar |
+| `src/renderer/audio.js` | Web Audio singleton engine: acoustic harmonic chimes & ambient synthesized focus sounds |
+| `src/renderer/markdown.js` | Hardened markdown pipeline with checklist toggle, hashtags, and media protocol resolution |
+| `preload.js` | Context bridge with safe, validated API methods |
+| `renderer.js` | Primary UI controller: tabs, Pomodoro, calendar drag-drop, command palette, insights |
+| `index.html` | Main widget UI layout |
+| `fab.html` | AssistiveTouch floating button with live timer progress ring and ghost mode |
+| `quickadd.html` | Spotlight-style floating quick capture bar with real-time NLP preview |
+| `mini-timer.html` | PiP detached focus timer pill |
+| `settings.html` / `settings.js` | Storage BYOC, external calendar URL, and app preferences |
+| `test/*.test.js` | Automated test suite for StoreManager, CalendarService, and NLP |
 
-## 6. Security
+## 6. Security Hardening
 
-- `contextIsolation: true` + `nodeIntegration: false`
-- All Node.js access via `contextBridge.exposeInMainWorld()`
-- HTML escaped before markdown parsing (XSS prevention)
-- File paths validated before `shell.openPath()` / `shell.openExternal()`
-- PowerShell exec has 2-second timeout to prevent hangs
+- `contextIsolation: true` + `nodeIntegration: false` across all windows
+- **`webSecurity: true` enabled**: custom `doingit-media://` protocol registered in main process securely serves pasted local images without exposing arbitrary file system access
+- Markdown output sanitized through `DOMPurify` with tag whitelisting
+- Event delegation for checklist toggles and links (no raw inline string code execution)
+- PowerShell executions have strict timeouts and query caching to prevent hanging processes
 
 ## 7. Known Limitations
 

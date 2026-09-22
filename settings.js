@@ -25,8 +25,25 @@ document.addEventListener('DOMContentLoaded', async () => {
       document.documentElement.setAttribute('data-theme', currentSettings.theme);
     }
 
-    if (currentSettings.icsUrl) {
-      icsInput.value = currentSettings.icsUrl;
+    const fabCheckbox = document.getElementById('toggle-fab');
+    if (fabCheckbox) {
+      fabCheckbox.checked = !currentSettings.disableFab;
+      fabCheckbox.addEventListener('change', async () => {
+        currentSettings.disableFab = !fabCheckbox.checked;
+        await window.api.saveSettings(currentSettings);
+        if (window.api.toggleFab) window.api.toggleFab(currentSettings.disableFab);
+        window.api.notifySettingsChanged();
+      });
+    }
+
+    const autostartCheckbox = document.getElementById('toggle-autostart');
+    if (autostartCheckbox) {
+      autostartCheckbox.checked = !!currentSettings.launchAtStartup;
+      autostartCheckbox.addEventListener('change', async () => {
+        currentSettings.launchAtStartup = autostartCheckbox.checked;
+        await window.api.saveSettings(currentSettings);
+        window.api.notifySettingsChanged();
+      });
     }
   } catch (err) {
     console.error('Failed to init settings:', err);

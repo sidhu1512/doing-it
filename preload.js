@@ -30,6 +30,8 @@ contextBridge.exposeInMainWorld('api', {
   closeSettingsWindow: () => ipcRenderer.send('close-settings-window'),
   notifySettingsChanged: () => ipcRenderer.send('notify-settings-changed'),
   onSettingsChanged: (callback) => ipcRenderer.on('settings-changed', () => callback()),
+  onOpenInAppSettings: (callback) => ipcRenderer.on('open-inapp-settings', () => callback()),
+  uninstallApp: () => ipcRenderer.send('uninstall-app'),
 
   // Window controls
   closeWindow: () => ipcRenderer.send('close-window'),
@@ -52,7 +54,11 @@ contextBridge.exposeInMainWorld('api', {
   popOutTimer: (timerState) => ipcRenderer.send('pop-out-timer', timerState),
   miniTimerClose: () => ipcRenderer.send('mini-timer-close'),
   miniTimerUpdate: (timerState) => ipcRenderer.send('mini-timer-update', timerState),
+  miniTimerTogglePlay: () => ipcRenderer.send('mini-timer-toggle-play'),
+  miniTimerCompleteTask: () => ipcRenderer.send('mini-timer-complete-task'),
   onTimerSync: (callback) => ipcRenderer.on('timer-sync', (_, state) => callback(state)),
+  onTimerToggleFromMini: (callback) => ipcRenderer.on('timer-toggle-from-mini', () => callback()),
+  onTimerCompleteTaskFromMini: (callback) => ipcRenderer.on('timer-complete-task-from-mini', () => callback()),
   onFabTimerSync: (callback) => ipcRenderer.on('fab-timer-sync', (_, state) => callback(state)),
   onThemeUpdated: (callback) => ipcRenderer.on('theme-updated', (_, theme) => callback(theme)),
 

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Doing It FAB</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 48px;
+      height: 48px;
+      background: transparent !important;
+      overflow: hidden;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .fab-container {
+      position: relative;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      background: transparent !important;
+      border: none;
+      box-shadow: none;
+      transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  opacity 0.2s ease;
+      opacity: 0.95;
+    }
+
+    .fab-container:hover,
+    .fab-container.dragging {
+      opacity: 1 !important;
+      transform: scale(1.12);
+    }
+
+    .fab-icon {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+      pointer-events: none;
+      filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.45));
+      transition: transform 0.2s ease, filter 0.2s ease;
+    }
+
+    .fab-container:hover .fab-icon {
+      filter: drop-shadow(0 5px 14px rgba(0, 0, 0, 0.6));
+    }
+
+    /* SVG Progress Ring for Active Pomodoro Sessions */
+    .fab-svg-ring {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 48px;
+      height: 48px;
+      transform: rotate(-90deg);
+      pointer-events: none;
+      display: none;
+    }
+
+    .fab-ring-track {
+      stroke: rgba(0, 0, 0, 0.15);
+      stroke-width: 2.5;
+      fill: none;
+    }
+
+    .fab-ring-progress {
+      stroke: var(--accent-primary, #3b82f6);
+      stroke-width: 2.5;
+      fill: none;
+      stroke-linecap: round;
+      stroke-dasharray: 131.95;
+      stroke-dashoffset: 131.95;
+      transition: stroke-dashoffset 0.4s ease, stroke 0.3s ease;
+    }
+
+    .timer-active .fab-svg-ring {
+      display: block;
+    }
+
+    .timer-active {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="fab-container" id="fab" title="Doing It — Click to open, drag to move">
+    <svg class="fab-svg-ring" viewBox="0 0 48 48">
+      <circle class="fab-ring-track" cx="24" cy="24" r="21" />
+      <circle class="fab-ring-progress" id="fab-progress" cx="24" cy="24" r="21" />
+    </svg>
+    <img src="assets/icon.png" class="fab-icon" alt="Doing It" />
+  </div>
+
+  <script>
+    const fab = document.getElementById('fab');
+    const progressEl = document.getElementById('fab-progress');
+    const CIRCUMFERENCE = 2 * Math.PI * 21; // ~131.95
+
+    let isDragging = false;
+    let startMouseX = 0;
+    let startMouseY = 0;
+    let initialWinX = 0;
+    let initialWinY = 0;
+    let hasMoved = false;
+
+    fab.addEventListener('mousedown', async (e) => {
+      if (e.button !== 0) return;
+      isDragging = true;
+      hasMoved = false;
+      startMouseX = e.screenX;
+      startMouseY = e.screenY;
+
+      const pos = await window.api.getFabPosition();
+      initialWinX = pos.x;
+      initialWinY = pos.y;
+      fab.classList.add('dragging');
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      const dx = e.screenX - startMouseX;
+      const dy = e.screenY - startMouseY;
+
+      if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
+        hasMoved = true;
+        window.api.moveFab(initialWinX + dx, initialWinY + dy);
+      }
+    });
+
+    window.addEventListener('mouseup', () => {
+      if (isDragging) {
+        isDragging = false;
+        fab.classList.remove('dragging');
+        if (!hasMoved) {
+          window.api.fabClicked();
+        }
+      }
+    });
+
+    // Timer progress sync
+    if (window.api.onFabTimerSync) {
+      window.api.onFabTimerSync((state) => {
+        if (!state) return;
+        if (state.running && state.duration > 0) {
+          fab.classList.add('timer-active');
+          const fraction = Math.max(0, Math.min(1, state.remaining / state.duration));
+          progressEl.style.strokeDashoffset = CIRCUMFERENCE * (1 - fraction);
+        } else {
+          fab.classList.remove('timer-active');
+          progressEl.style.strokeDashoffset = CIRCUMFERENCE;
+        }
+      });
+    }
+
+    // Theme sync
+    if (window.api.getSettings) {
+      window.api.getSettings().then(settings => {
+        if (settings && settings.theme) {
+          document.documentElement.setAttribute('data-theme', settings.theme);
+        }
+      });
+    }
+
+    if (window.api.onThemeUpdated) {
+      window.api.onThemeUpdated((theme) => {
+        if (theme) {
+          document.documentElement.setAttribute('data-theme', theme);
+        } else {
+          document.documentElement.removeAttribute('data-theme');
+        }
+      });
+    }
+  </script>
+</body>
+</html>
