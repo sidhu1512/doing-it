@@ -1,5 +1,40 @@
 # Changelog
 
+## [4.4.0] — 2026-09-23
+
+### Added
+- **Day One Daily Journaling Suite**:
+  - Full-featured personal journal with segregated notebooks (Daily, Work, Ideas, Gratitude, Personal).
+  - Daily reflective prompts generator for spontaneous writing inspiration.
+  - 5-point emotional & energy state tracker (Joyful, Calm, Focused, Tired, Stressed) with visual glowing badges.
+  - High-fidelity voice notes and audio memos with integrated dark custom waveform player and progress scrubber.
+  - 7-day retrospective timeline strip with quick date switching and entry indicators.
+  - Starred bookmarks and Flashback "On This Day" surfacing past memories.
+  - Complete diary markdown export (`.md`) via native Windows file dialog.
+- **Productivity & Burnout Analytics Studio**:
+  - Dynamic 0–100 daily productivity scoring algorithm factoring task throughput, focus volume, and energy levels.
+  - 24-hour focus & energy circadian rhythm distribution curve.
+  - Peak focus hours histogram highlighting high-output time intervals.
+  - 12-week GitHub-style activity contribution heatmap.
+  - 30-day pixel mood & productivity consistency matrix.
+  - Burnout Guard: proactive alert system warning users against continuous cognitive overload.
+  - Active Windows application usage telemetry tracking time spent in editors and tools.
+- **Audio Voice Notes for Notes & Diary**:
+  - Web MediaRecorder audio capture with pause, resume, and real-time recording timer.
+  - Atomic local audio persistence (`recordings/*.webm`) streamed via secure custom protocol (`doingit-media://`).
+- **Extended Viewport & Keyboard Navigation**:
+  - Extended in-app view switcher from 4 to 6 tabs (`Tasks`, `Notes`, `Focus`, `Plan`, `Diary`, `Stats`).
+  - Hotkeys `1`–`6` for instantaneous view jumping.
+  - Command palette commands for Diary, Analytics, and Audio notes.
+- **Full-Day User Simulation QA Suite**:
+  - Staff-level end-to-end automated daily workflow simulation (`test/qa-fullday-simulation.test.js`) verifying 36/36 user journey checkpoints across all 6 views and background schedulers.
+
+### Changed
+- **Packaging & Distribution**: Bumped version to `4.4.0`, generated production installer `Doing It Setup 4.4.0.exe`.
+- **Store Schema Migration**: Upgraded database schema to support diary entries, focus session history, active app metrics, and burnout guard thresholds.
+
+---
+
 ## [4.3.5] — 2026-09-23
 
 ### Added

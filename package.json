@@ -1,6 +1,6 @@
 {
   "name": "doing-it",
-  "version": "4.3.5",
+  "version": "4.4.0",
   "description": "SOTA desktop productivity widget — notes, tasks, focus timer, command palette, markdown, calendar sync, edge docking",
   "main": "main.js",
   "scripts": {
@@ -8,6 +8,7 @@
     "dev": "node start.js --dev",
     "test": "node --test test/*.test.js",
     "test:e2e": "electron test/e2e-runner.js",
+    "test:qa": "electron test/qa-staff-simulation.js",
     "lint": "node --check main.js src/**/*.js",
     "build": "electron-builder --win",
     "build:portable": "electron-builder --win portable"

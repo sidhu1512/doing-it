@@ -15,6 +15,8 @@ const DEFAULT_STORE = {
     lastDate: null,
     weeklyHistory: []
   },
+  diary: [],
+  focusHistory: [],
   windowPosition: null,
   windowSize: null,
   fabPosition: null,
@@ -25,6 +27,13 @@ const DEFAULT_STORE = {
     disableFab: false,
     launchAtStartup: false,
     scratchpad: '',
+    burnoutGuard: {
+      enabled: true,
+      thresholdMinutes: 60
+    },
+    appTracking: {
+      enabled: true
+    },
     spotify: {
       autoPlayOnFocus: false,
       autoPauseOnComplete: true,
@@ -104,6 +113,8 @@ class StoreManager {
         lastDate: data.pomodoro?.lastDate || null,
         weeklyHistory: Array.isArray(data.pomodoro?.weeklyHistory) ? data.pomodoro.weeklyHistory : []
       },
+      diary: Array.isArray(data.diary) ? data.diary : [],
+      focusHistory: Array.isArray(data.focusHistory) ? data.focusHistory : [],
       windowPosition: data.windowPosition || null,
       windowSize: (data.windowSize && typeof data.windowSize.width === 'number' && typeof data.windowSize.height === 'number') ? data.windowSize : null,
       fabPosition: data.fabPosition || null,
@@ -114,6 +125,13 @@ class StoreManager {
         disableFab: !!data.settings?.disableFab,
         launchAtStartup: !!data.settings?.launchAtStartup,
         scratchpad: typeof data.settings?.scratchpad === 'string' ? data.settings.scratchpad : '',
+        burnoutGuard: {
+          enabled: data.settings?.burnoutGuard?.enabled !== false,
+          thresholdMinutes: Number(data.settings?.burnoutGuard?.thresholdMinutes) || 60
+        },
+        appTracking: {
+          enabled: data.settings?.appTracking?.enabled !== false
+        },
         spotify: {
           autoPlayOnFocus: !!data.settings?.spotify?.autoPlayOnFocus,
           autoPauseOnComplete: data.settings?.spotify?.autoPauseOnComplete !== false,

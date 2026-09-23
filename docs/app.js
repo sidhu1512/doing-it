@@ -10,6 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const galleryData = {
     tasks: 'imgs/tasks-view.png',
+    diary: 'imgs/diary-view.png',
+    analytics: 'imgs/analytics-view.png',
     focus: 'imgs/focus-view.png',
     notes: 'imgs/notes-view.png',
     planner: 'imgs/planner-view.png',

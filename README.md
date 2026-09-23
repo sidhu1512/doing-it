@@ -1,12 +1,12 @@
 # Doing It
 
-[![Download for Windows](https://img.shields.io/badge/Download-Windows_Setup-blue?style=for-the-badge&logo=windows)](https://github.com/sidhu1512/doing-it/releases/download/v4.3.5/Doing.It.Setup.4.3.5.exe)
-[![Version](https://img.shields.io/badge/version-4.3.5-informational?style=for-the-badge)](https://github.com/sidhu1512/doing-it/releases/tag/v4.3.5)
+[![Download for Windows](https://img.shields.io/badge/Download-Windows_Setup-blue?style=for-the-badge&logo=windows)](https://github.com/sidhu1512/doing-it/releases/download/v4.4.0/Doing.It.Setup.4.4.0.exe)
+[![Version](https://img.shields.io/badge/version-4.4.0-informational?style=for-the-badge)](https://github.com/sidhu1512/doing-it/releases/tag/v4.4.0)
 [![Website](https://img.shields.io/badge/Website-Live_Landing_Page-purple?style=for-the-badge&logo=googlechrome)](https://sidhu1512.github.io/doing-it/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-success?style=for-the-badge)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Windows%2011%20%7C%2010-lightgrey?style=for-the-badge)](https://github.com/sidhu1512/doing-it)
 
-Doing It is a high-performance desktop productivity overlay engineered for Windows 11. Designed around local-first data ownership, zero-friction keyboard capture, and glassmorphic aesthetics, it unifies task tracking, markdown notes, procedural focus audio, and calendar synchronization into an always-accessible, frameless companion widget.
+Doing It is a high-performance desktop productivity overlay engineered for Windows 11. Designed around local-first data ownership, zero-friction keyboard capture, and glassmorphic aesthetics, it unifies task tracking, Day One-style daily journaling, audio voice notes, productivity analytics, markdown scratchpad, procedural focus audio, and calendar synchronization into an always-accessible, frameless companion widget.
 
 > [!NOTE]
 > **Windows SmartScreen Alert during Installation**
@@ -19,11 +19,15 @@ Doing It is a high-performance desktop productivity overlay engineered for Windo
 
 <p align="center">
   <img src="imgs/tasks-view.png" width="31%" alt="Tasks View">
-  <img src="imgs/focus-view.png" width="31%" alt="Focus Studio">
-  <img src="imgs/notes-view.png" width="31%" alt="Notes View">
+  <img src="imgs/diary-view.png" width="31%" alt="Day One Daily Diary">
+  <img src="imgs/analytics-view.png" width="31%" alt="Productivity Analytics">
 </p>
 <p align="center">
+  <img src="imgs/focus-view.png" width="31%" alt="Focus Studio">
+  <img src="imgs/notes-view.png" width="31%" alt="Notes & Voice Notes">
   <img src="imgs/planner-view.png" width="31%" alt="Day Planner">
+</p>
+<p align="center">
   <img src="imgs/palette-view.png" width="31%" alt="Command Palette">
   <img src="imgs/settings-view.png" width="31%" alt="In-App Settings">
 </p>
@@ -85,8 +89,30 @@ Doing It is a high-performance desktop productivity overlay engineered for Windo
 * **Meeting Link Extraction**: Regular-expression detection for Google Meet, Zoom, Microsoft Teams, and Webex URLs, exposing direct one-click join buttons in the agenda feed.
 
 ### 5. Command Palette (Ctrl+K)
-* **Unified Fuzzy Search**: Rapid item matching across all tasks, notes, calendar events, and system commands.
-* **Direct Navigation**: Instant keyboard jumping between application views and timer actions.
+* **Unified Fuzzy Search**: Rapid item matching across all tasks, notes, diary entries, calendar events, and system commands.
+* **Direct Navigation**: Instant keyboard jumping between application views, timer actions, and diary export.
+
+### 6. Day One Daily Journaling Suite
+* **Notebook Segregation**: Multiple specialized journals (Daily, Work, Ideas, Gratitude, Personal) for organized life logging.
+* **Daily Guided Prompts**: Instant creative and reflective prompts ("What was your biggest breakthrough today?", "What drained your energy?", etc.).
+* **Mood & Energy Tagging**: 5-point emotional state tracker (Joyful, Calm, Focused, Tired, Stressed) with visual glowing indicators.
+* **Voice Memos & Audio Reflections**: High-fidelity microphone capture with real-time timers and integrated dark audio waveform player.
+* **Retrospective Timeline**: Interactive 7-day horizontal strip highlighting days with logged entries.
+* **Flashback "On This Day"**: Automatically surfaces past memories written on the current day in history.
+* **Markdown Export**: Direct file export of complete diary entries to clean GitHub-Flavored Markdown.
+
+### 7. Productivity & Burnout Analytics
+* **Productivity Score (0–100)**: Dynamic real-time calculation weighting task completions, deep focus volume, and energy levels.
+* **24-Hour Energy & Focus Rhythm**: Hourly distribution chart plotting work intensity and circadian peaks.
+* **Peak Focus Hours Histogram**: Identifies user's highest-output operating windows.
+* **12-Week Activity Heatmap**: GitHub-style visual contribution matrix displaying daily focus intensity across quarters.
+* **30-Day Consistency Pixel Matrix**: Daily square grid correlating mood stability with task execution.
+* **Burnout Guard**: Native heuristic monitoring continuous focus time, alerting users when deep work thresholds risk cognitive fatigue.
+* **Windows Application Usage Tracking**: Foreground window telemetry capturing time spent in IDEs, browsers, and terminal tools.
+
+### 8. Native Audio Voice Notes
+* **Web MediaRecorder Audio Engine**: Zero-dependency audio recording saved to local atomic `.webm` files (`recordings/`).
+* **In-App Media Streaming**: Direct playback via secure custom protocol (`doingit-media://`) with duration seeking, play/pause toggles, and formatted timestamps.
 
 ---
 
@@ -140,6 +166,10 @@ The application strictly implements context isolation and security hardening:
 |---|---|---|---|
 | `get-todos` / `save-todos` | Two-way | Array of tasks | Read and write task entities |
 | `get-notes` / `save-notes` | Two-way | Array of notes | Read and write note records |
+| `get-diary` / `save-diary` | Two-way | Array of diary entries | Read and write Day One diary entries |
+| `get-focus-history` / `log-focus-session` | Two-way | Session record | Log and analyze focus session records |
+| `save-audio-recording` | Two-way | Base64 audio & filename | Store voice memo file into `recordings/` |
+| `export-diary-markdown` | Two-way | Diary data | Save formatted `.md` file to user chosen path |
 | `get-pomodoro` / `save-pomodoro` | Two-way | Focus state object | Synchronize timer duration and session logs |
 | `get-settings` / `save-settings` | Two-way | Settings schema | Update preferences and trigger live theme broadcast |
 | `choose-directory` | Two-way | None | Invoke native Windows directory selection dialog |
@@ -164,7 +194,7 @@ The application strictly implements context isolation and security hardening:
 | `Ctrl+Shift+C` | Global (OS-wide) | Clip active selection with foreground window context |
 | `Ctrl+K` | In-App | Open Raycast-style Command Palette |
 | `Ctrl+,` | In-App | Toggle In-App Preferences Panel |
-| `1`, `2`, `3`, `4` | In-App | Switch views (Tasks, Notes, Focus, Planner) |
+| `1`, `2`, `3`, `4`, `5`, `6` | In-App | Switch views (Tasks, Notes, Focus, Planner, Diary, Stats) |
 | `↓` / `↑` | In-App | Navigate list items with luminous selection ring |
 | `Space` | In-App | Toggle task completion checkbox |
 | `Enter` | In-App | Edit highlighted task title inline or join meeting |
@@ -208,7 +238,7 @@ npm run build
 npm run build:portable
 ```
 
-The resulting installer is placed in `dist/Doing It Setup 4.3.5.exe`. Post-packaging hooks (`afterPack.js`) automatically patch the executable icon using `rcedit`.
+The resulting installer is placed in `dist/Doing It Setup 4.4.0.exe`. Post-packaging hooks (`afterPack.js`) automatically patch the executable icon using `rcedit`.
 
 ---
 

@@ -103,6 +103,34 @@ class NotesViewComponent {
         return;
       }
 
+      // Voice Note playback
+      const audioPlayBtn = e.target.closest('.btn-play-voice-note');
+      if (audioPlayBtn) {
+        const audioSrc = audioPlayBtn.getAttribute('data-audio-src');
+        if (!audioSrc) return;
+        let audioEl = audioPlayBtn.parentElement.querySelector('audio');
+        if (!audioEl) {
+          audioEl = new Audio(audioSrc);
+          audioPlayBtn.parentElement.appendChild(audioEl);
+          audioEl.onended = () => audioPlayBtn.classList.remove('playing');
+        }
+        if (audioEl.paused) {
+          this.container.querySelectorAll('audio').forEach(a => {
+            if (a !== audioEl && !a.paused) {
+              a.pause();
+              const otherBtn = a.parentElement.querySelector('.btn-play-voice-note');
+              if (otherBtn) otherBtn.classList.remove('playing');
+            }
+          });
+          audioEl.play().catch(console.error);
+          audioPlayBtn.classList.add('playing');
+        } else {
+          audioEl.pause();
+          audioPlayBtn.classList.remove('playing');
+        }
+        return;
+      }
+
       // Checklist Toggle Inside Rendered Markdown
       const checkInput = e.target.closest('.md-checklist-input');
       if (checkInput) {
@@ -311,6 +339,21 @@ class NotesViewComponent {
         ? `<img src="${window.markdownPipeline ? window.markdownPipeline.formatMediaUri(note.image) : note.image}" class="note-image-thumb" />`
         : '';
 
+      const audioHtml = note.audio
+        ? `
+          <div class="voice-note-player-card" style="margin-top:6px;">
+            <button class="btn-play-voice-note" data-audio-src="${note.audio.mediaUrl || ''}">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            </button>
+            <div style="flex:1;">
+              <div style="font-size:11px; font-weight:500;">Voice Note</div>
+              <div style="font-size:10px; color:var(--text-muted);">${Math.floor((note.audio.duration || 0) / 60)}:${String((note.audio.duration || 0) % 60).padStart(2, '0')}</div>
+            </div>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity:0.6;"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
+          </div>
+        `
+        : '';
+
       const dateStr = new Date(note.timestamp).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
 
       return `
@@ -331,6 +374,7 @@ class NotesViewComponent {
           </div>
           <div class="note-body">${parsedContent}</div>
           ${imageHtml}
+          ${audioHtml}
         </div>
       `;
     }).join('');

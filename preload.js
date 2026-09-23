@@ -21,6 +21,19 @@ contextBridge.exposeInMainWorld('api', {
   getMoods: () => ipcRenderer.invoke('get-moods'),
   saveMoods: (moods) => ipcRenderer.invoke('save-moods', moods),
 
+  // Diary (Day One Journaling)
+  getDiary: () => ipcRenderer.invoke('get-diary'),
+  saveDiary: (diary) => ipcRenderer.invoke('save-diary', diary),
+  exportDiaryMarkdown: (entryOrDate) => ipcRenderer.invoke('export-diary-markdown', entryOrDate),
+
+  // Focus History & Analytics
+  getFocusHistory: () => ipcRenderer.invoke('get-focus-history'),
+  saveFocusHistory: (history) => ipcRenderer.invoke('save-focus-history', history),
+  logFocusSession: (session) => ipcRenderer.invoke('log-focus-session', session),
+
+  // Audio Voice Notes
+  saveAudioRecording: (arrayBuffer, durationSeconds) => ipcRenderer.invoke('save-audio-recording', { arrayBuffer, durationSeconds }),
+
   // Settings / BYOC
   getSettings: () => ipcRenderer.invoke('get-settings'),
   saveSettings: (settings) => ipcRenderer.invoke('save-settings', settings),

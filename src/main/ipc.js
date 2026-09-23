@@ -41,6 +41,41 @@ function setupIpcHandlers(storeManager, windowManager, system) {
     return true;
   });
 
+  // Diary (Day One Journaling)
+  ipcMain.handle('get-diary', () => storeManager.storeData.diary || []);
+  ipcMain.handle('save-diary', (_, diary) => {
+    storeManager.storeData.diary = diary;
+    storeManager.saveStore();
+    return true;
+  });
+
+  // Focus History & Analytics
+  ipcMain.handle('get-focus-history', () => storeManager.storeData.focusHistory || []);
+  ipcMain.handle('save-focus-history', (_, history) => {
+    storeManager.storeData.focusHistory = history;
+    storeManager.saveStore();
+    return true;
+  });
+  ipcMain.handle('log-focus-session', (_, session) => {
+    if (!storeManager.storeData.focusHistory) storeManager.storeData.focusHistory = [];
+    storeManager.storeData.focusHistory.unshift({
+      id: Date.now() * 1000 + Math.floor(Math.random() * 1000),
+      date: new Date().toISOString().split('T')[0],
+      startTime: session.startTime || new Date(Date.now() - (session.durationMinutes || 25) * 60000).toISOString(),
+      endTime: session.endTime || new Date().toISOString(),
+      durationMinutes: session.durationMinutes || 25,
+      taskId: session.taskId || null,
+      taskTitle: session.taskTitle || null,
+      activeApps: session.activeApps || []
+    });
+    // Cap at 1000 entries
+    if (storeManager.storeData.focusHistory.length > 1000) {
+      storeManager.storeData.focusHistory = storeManager.storeData.focusHistory.slice(0, 1000);
+    }
+    storeManager.saveStore();
+    return true;
+  });
+
   // Settings & Storage Migration
   ipcMain.handle('get-settings', () => storeManager.storeData.settings || { savePath: null });
   ipcMain.handle('save-settings', (_, settings) => {
@@ -413,6 +448,77 @@ function setupIpcHandlers(storeManager, windowManager, system) {
     } catch (e) {
       console.error('[IPC] Clipboard image save error:', e);
       return null;
+    }
+  });
+
+  // Audio Voice Recording Notes
+  ipcMain.handle('save-audio-recording', async (_, { arrayBuffer, durationSeconds }) => {
+    try {
+      if (!arrayBuffer) return null;
+      const audioBuffer = Buffer.from(arrayBuffer);
+      const storeFilePath = storeManager.getStoreFilePath();
+      const audioDir = path.join(path.dirname(storeFilePath), 'audio');
+      if (!fs.existsSync(audioDir)) fs.mkdirSync(audioDir, { recursive: true });
+
+      const fileName = `audio-${Date.now()}.webm`;
+      const filePath = path.join(audioDir, fileName);
+      fs.writeFileSync(filePath, audioBuffer);
+
+      // Normalizing URI for doingit-media://
+      const mediaUrl = `doingit-media://${filePath.replace(/\\/g, '/')}`;
+      return {
+        filePath,
+        mediaUrl,
+        duration: Math.round(durationSeconds || 0)
+      };
+    } catch (e) {
+      console.error('[IPC] Audio recording save error:', e);
+      return null;
+    }
+  });
+
+  // Export Diary to Markdown / Day One Format
+  ipcMain.handle('export-diary-markdown', async (_, entryOrDate) => {
+    try {
+      const todayStr = new Date().toISOString().split('T')[0];
+      const defaultName = typeof entryOrDate === 'string'
+        ? `journal-${entryOrDate}.md`
+        : `journal-${todayStr}.md`;
+
+      const { filePath } = await dialog.showSaveDialog({
+        title: 'Export Journal Entry as Markdown',
+        defaultPath: defaultName,
+        filters: [{ name: 'Markdown Document', extensions: ['md', 'txt'] }]
+      });
+
+      if (!filePath) return false;
+
+      let content = '';
+      if (typeof entryOrDate === 'object' && entryOrDate !== null) {
+        const e = entryOrDate;
+        content = `# ${e.title || 'Journal Entry'}\n\n` +
+          `**Date:** ${e.date || todayStr} ${e.time || ''}\n` +
+          `**Journal:** ${e.journal || 'Personal'}\n` +
+          (e.mood ? `**Mood:** ${e.mood}\n` : '') +
+          (e.energy ? `**Energy:** ${e.energy}/5\n` : '') +
+          (e.context ? `**Context:** ${e.context}\n` : '') +
+          `\n---\n\n${e.text || ''}\n`;
+      } else {
+        // Export all or filtered
+        const entries = storeManager.storeData.diary || [];
+        content = `# Doing It — Journal Export (${todayStr})\n\n`;
+        entries.forEach(e => {
+          content += `## ${e.title || e.date}\n` +
+            `*${e.date} ${e.time || ''} • ${e.journal || 'Personal'}*\n\n` +
+            `${e.text || ''}\n\n---\n\n`;
+        });
+      }
+
+      fs.writeFileSync(filePath, content, 'utf-8');
+      return true;
+    } catch (err) {
+      console.error('[IPC] Export markdown error:', err);
+      return false;
     }
   });
 }

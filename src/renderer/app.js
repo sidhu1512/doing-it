@@ -14,6 +14,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   new window.NotesViewComponent('view-notes', store);
   new window.FocusViewComponent('view-focus', store);
   new window.PlannerViewComponent('view-planner', store);
+  new window.DiaryViewComponent('view-diary', store);
+  new window.AnalyticsViewComponent('view-analytics', store);
 
   // 3. Initialize Command Palette
   new window.PaletteComponent('palette-root', store);
@@ -22,9 +24,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   new window.SettingsViewComponent('settings-root', store);
 
   // 5. View Switching
+  const ALL_VIEWS = ['tasks', 'notes', 'focus', 'planner', 'diary', 'analytics'];
   store.subscribe('activeView', (activeView) => {
     document.querySelectorAll('.kb-highlight').forEach(el => el.classList.remove('kb-highlight'));
-    ['tasks', 'notes', 'focus', 'planner'].forEach(view => {
+    ALL_VIEWS.forEach(view => {
       const el = document.getElementById(`view-${view}`);
       if (el) {
         el.style.display = view === activeView ? 'flex' : 'none';
@@ -33,7 +36,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   // Set initial view visibility
-  ['tasks', 'notes', 'focus', 'planner'].forEach(view => {
+  ALL_VIEWS.forEach(view => {
     const el = document.getElementById(`view-${view}`);
     if (el) {
       el.style.display = view === 'tasks' ? 'flex' : 'none';
@@ -83,17 +86,21 @@ document.addEventListener('DOMContentLoaded', async () => {
       return;
     }
 
-    // Number keys 1-4 for instant view navigation
+    // Number keys 1-6 for instant view navigation
     if (!isTyping) {
       if (e.key === '1') { e.preventDefault(); store.set('activeView', 'tasks'); }
       else if (e.key === '2') { e.preventDefault(); store.set('activeView', 'notes'); }
       else if (e.key === '3') { e.preventDefault(); store.set('activeView', 'focus'); }
       else if (e.key === '4') { e.preventDefault(); store.set('activeView', 'planner'); }
+      else if (e.key === '5') { e.preventDefault(); store.set('activeView', 'diary'); }
+      else if (e.key === '6') { e.preventDefault(); store.set('activeView', 'analytics'); }
     } else if (e.ctrlKey) {
       if (e.key === '1') { e.preventDefault(); store.set('activeView', 'tasks'); }
       else if (e.key === '2') { e.preventDefault(); store.set('activeView', 'notes'); }
       else if (e.key === '3') { e.preventDefault(); store.set('activeView', 'focus'); }
       else if (e.key === '4') { e.preventDefault(); store.set('activeView', 'planner'); }
+      else if (e.key === '5') { e.preventDefault(); store.set('activeView', 'diary'); }
+      else if (e.key === '6') { e.preventDefault(); store.set('activeView', 'analytics'); }
     }
 
     // List item keyboard navigation (Arrows, Space, Enter, Delete)

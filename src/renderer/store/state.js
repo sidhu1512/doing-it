@@ -10,6 +10,10 @@ class ReactiveStore {
       theme: '',
       tasks: [],
       notes: [],
+      diary: [],
+      focusHistory: [],
+      activeJournal: 'all',
+      diarySearch: '',
       scratchpad: '',
       focus: {
         running: false,
@@ -34,6 +38,11 @@ class ReactiveStore {
         autoPlayOnFocus: false,
         autoPauseOnComplete: true
       },
+      burnout: {
+        continuousMinutes: 0,
+        warned: false
+      },
+      activeAppsSampled: [],
       activeFilter: 'all',
       noteTagFilter: 'all',
       searchQuery: '',
@@ -80,15 +89,19 @@ class ReactiveStore {
     if (!window.api) return;
 
     try {
-      const [notes, todos, pomodoro, settings] = await Promise.all([
+      const [notes, todos, pomodoro, settings, diary, focusHistory] = await Promise.all([
         window.api.getNotes() || [],
         window.api.getTodos() || [],
         window.api.getPomodoro() || null,
-        window.api.getSettings() || {}
+        window.api.getSettings() || {},
+        window.api.getDiary ? window.api.getDiary() : [],
+        window.api.getFocusHistory ? window.api.getFocusHistory() : []
       ]);
 
       this.state.notes = notes;
       this.state.tasks = todos;
+      this.state.diary = Array.isArray(diary) ? diary : [];
+      this.state.focusHistory = Array.isArray(focusHistory) ? focusHistory : [];
       this.state.scratchpad = settings.scratchpad || '';
       this.state.theme = settings.theme || '';
 
@@ -138,6 +151,8 @@ class ReactiveStore {
       this.notify('notes');
       this.notify('scratchpad');
       this.notify('focus');
+      this.notify('diary');
+      this.notify('focusHistory');
       this.notify('spotify');
       this.notify('*');
     } catch (err) {
@@ -443,6 +458,27 @@ class ReactiveStore {
 
       if (this.state.focus.remaining > 0) {
         this.state.focus.remaining--;
+
+        // App tracking sampler every 30 seconds
+        if (this.state.focus.remaining % 30 === 0 && window.api?.getActiveWindow) {
+          window.api.getActiveWindow().then(title => {
+            if (title && !this.state.activeAppsSampled.includes(title)) {
+              this.state.activeAppsSampled.push(title);
+            }
+          }).catch(() => {});
+        }
+
+        // Burnout guard every 60 seconds of continuous focus
+        if (this.state.focus.remaining % 60 === 0) {
+          this.state.burnout.continuousMinutes++;
+          if (this.state.burnout.continuousMinutes >= 60 && !this.state.burnout.warned) {
+            this.state.burnout.warned = true;
+            if (window.api && window.api.showNotification) {
+              window.api.showNotification('Overwork & Burnout Guard', 'You have been focusing for over 60 minutes. Stand up, stretch, and rest your eyes.');
+            }
+          }
+        }
+
         this.notify('focus');
         this.syncTimerWithWindows();
       } else {
@@ -474,6 +510,8 @@ class ReactiveStore {
   resetFocus() {
     this.state.focus.running = false;
     this.state.focus.remaining = this.state.focus.duration;
+    this.state.burnout.continuousMinutes = 0;
+    this.state.burnout.warned = false;
     clearInterval(this.timerInterval);
     this.notify('focus');
     this.syncTimerWithWindows();
@@ -494,9 +532,39 @@ class ReactiveStore {
   completeFocusSession() {
     this.state.focus.running = false;
     this.state.focus.sessions++;
-    this.state.focus.totalMinutes += Math.round(this.state.focus.duration / 60);
+    const durationMins = Math.round(this.state.focus.duration / 60);
+    this.state.focus.totalMinutes += durationMins;
     this.state.focus.remaining = this.state.focus.duration;
     clearInterval(this.timerInterval);
+
+    // Record session history for Day Journey and Analytics
+    let taskTitle = 'Deep Work Session';
+    if (this.state.focus.linkedTaskId) {
+      const task = this.state.tasks.find(t => t.id === this.state.focus.linkedTaskId);
+      if (task) taskTitle = task.text;
+    }
+
+    const sessionRecord = {
+      id: Date.now() * 1000 + Math.floor(Math.random() * 1000),
+      date: new Date().toISOString().split('T')[0],
+      startTime: new Date(Date.now() - this.state.focus.duration * 1000).toISOString(),
+      endTime: new Date().toISOString(),
+      durationMinutes: durationMins,
+      taskId: this.state.focus.linkedTaskId,
+      taskTitle,
+      activeApps: [...new Set(this.state.activeAppsSampled)]
+    };
+
+    if (!Array.isArray(this.state.focusHistory)) {
+      this.state.focusHistory = [];
+    }
+    this.state.focusHistory.unshift(sessionRecord);
+    this.state.activeAppsSampled = [];
+    this.notify('focusHistory');
+
+    if (window.api && window.api.logFocusSession) {
+      window.api.logFocusSession(sessionRecord);
+    }
 
     if (window.audioEngine) {
       window.audioEngine.stopAmbient();
@@ -589,6 +657,76 @@ class ReactiveStore {
         lastDate: new Date().toISOString().split('T')[0]
       });
     }
+  }
+
+  // ─── DIARY ACTIONS (Day One) ───────────────────────────────
+  addDiaryEntry(entry) {
+    const newEntry = {
+      id: Date.now() * 1000 + Math.floor(Math.random() * 1000),
+      date: entry.date || new Date().toISOString().split('T')[0],
+      time: entry.time || new Date().toTimeString().substring(0, 5),
+      journal: entry.journal || 'personal',
+      title: entry.title || '',
+      text: entry.text || '',
+      mood: entry.mood || 'good',
+      energy: Number(entry.energy) || 3,
+      starred: !!entry.starred,
+      tags: Array.isArray(entry.tags) ? entry.tags : [],
+      images: Array.isArray(entry.images) ? entry.images : [],
+      audio: entry.audio || null,
+      context: entry.context || null,
+      promptId: entry.promptId || null,
+      createdAt: new Date().toISOString()
+    };
+
+    if (!Array.isArray(this.state.diary)) {
+      this.state.diary = [];
+    }
+    this.state.diary.unshift(newEntry);
+    this.notify('diary');
+    this.persistDiary();
+    return newEntry;
+  }
+
+  updateDiaryEntry(id, updates) {
+    const idx = this.state.diary.findIndex(e => e.id === id);
+    if (idx !== -1) {
+      this.state.diary[idx] = {
+        ...this.state.diary[idx],
+        ...updates,
+        updatedAt: new Date().toISOString()
+      };
+      this.notify('diary');
+      this.persistDiary();
+    }
+  }
+
+  deleteDiaryEntry(id) {
+    this.state.diary = this.state.diary.filter(e => e.id !== id);
+    this.notify('diary');
+    this.persistDiary();
+  }
+
+  toggleDiaryStar(id) {
+    const entry = this.state.diary.find(e => e.id === id);
+    if (entry) {
+      entry.starred = !entry.starred;
+      this.notify('diary');
+      this.persistDiary();
+    }
+  }
+
+  persistDiary() {
+    if (window.api && window.api.saveDiary) {
+      window.api.saveDiary(this.state.diary);
+    }
+  }
+
+  async exportDiary(entryOrDate) {
+    if (window.api && window.api.exportDiaryMarkdown) {
+      return window.api.exportDiaryMarkdown(entryOrDate);
+    }
+    return false;
   }
 }
 

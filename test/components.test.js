@@ -10,6 +10,8 @@ test('Components — Zero Emojis in source code', () => {
     'src/renderer/components/NotesView.js',
     'src/renderer/components/FocusView.js',
     'src/renderer/components/PlannerView.js',
+    'src/renderer/components/DiaryView.js',
+    'src/renderer/components/AnalyticsView.js',
     'src/renderer/components/Palette.js',
     'src/renderer/components/SettingsView.js',
   ];
@@ -80,4 +82,25 @@ test('App — Keyboard navigation includes arrow keys and kb-highlight ring', ()
   assert.ok(content.includes("e.key === 'ArrowUp'"), 'App must handle ArrowUp key');
   assert.ok(content.includes('kb-highlight'), 'App must manage kb-highlight class');
 });
+
+test('DiaryView — Day One features and audio voice recording component definitions', () => {
+  const diaryPath = path.resolve(__dirname, '../src/renderer/components/DiaryView.js');
+  const content = fs.readFileSync(diaryPath, 'utf8');
+  assert.ok(content.includes('class DiaryViewComponent'), 'DiaryViewComponent must be declared');
+  assert.ok(content.includes('btn-start-audio-record'), 'DiaryView must have audio voice record button');
+  assert.ok(content.includes('prompt-drawer'), 'DiaryView must contain reflection prompts drawer');
+  assert.ok(content.includes('diary-day-strip'), 'DiaryView must contain mini calendar day strip');
+  assert.ok(content.includes('flashback-banner'), 'DiaryView must support On This Day flashback');
+});
+
+test('AnalyticsView — Productivity score, heatmap, and peak hours component definitions', () => {
+  const analyticsPath = path.resolve(__dirname, '../src/renderer/components/AnalyticsView.js');
+  const content = fs.readFileSync(analyticsPath, 'utf8');
+  assert.ok(content.includes('class AnalyticsViewComponent'), 'AnalyticsViewComponent must be declared');
+  assert.ok(content.includes('analytics-pulse-grid'), 'AnalyticsView must have pulse score grid');
+  assert.ok(content.includes('peak-hours-chart'), 'AnalyticsView must have peak focus hours chart');
+  assert.ok(content.includes('heatmap-grid-wrapper'), 'AnalyticsView must have consistency heatmap grid');
+  assert.ok(content.includes('pixels-mood-grid'), 'AnalyticsView must have mood pixels grid');
+});
+
 

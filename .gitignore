@@ -2,6 +2,7 @@ node_modules/
 dist/
 doing-it-data.json
 images/
+recordings/
 backups/
 .DS_Store
 Thumbs.db
