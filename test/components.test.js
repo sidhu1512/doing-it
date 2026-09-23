@@ -45,4 +45,39 @@ test('ReactiveStore — init notifies tasks, notes, scratchpad, focus', () => {
   assert.ok(content.includes("this.notify('notes');"), "init must notify 'notes'");
   assert.ok(content.includes("this.notify('scratchpad');"), "init must notify 'scratchpad'");
   assert.ok(content.includes("this.notify('focus');"), "init must notify 'focus'");
+  assert.ok(content.includes("this.startProactiveAlertChecker();"), "init must call startProactiveAlertChecker()");
 });
+
+test('Header — Pin button exists and binds always-on-top toggle', () => {
+  const headerPath = path.resolve(__dirname, '../src/renderer/components/Header.js');
+  const content = fs.readFileSync(headerPath, 'utf8');
+  assert.ok(content.includes('id="btn-pin-window"'), 'Header must contain btn-pin-window');
+  assert.ok(content.includes('window.api.toggleAlwaysOnTop()'), 'Header must invoke toggleAlwaysOnTop');
+});
+
+test('SettingsView — Always-on-top toggle and Data Export/Restore buttons exist', () => {
+  const settingsPath = path.resolve(__dirname, '../src/renderer/components/SettingsView.js');
+  const content = fs.readFileSync(settingsPath, 'utf8');
+  assert.ok(content.includes('id="inapp-toggle-pin"'), 'SettingsView must contain inapp-toggle-pin');
+  assert.ok(content.includes('id="inapp-btn-export-data"'), 'SettingsView must contain inapp-btn-export-data');
+  assert.ok(content.includes('id="inapp-btn-import-data"'), 'SettingsView must contain inapp-btn-import-data');
+  assert.ok(content.includes('window.api.exportData()'), 'SettingsView must invoke window.api.exportData()');
+  assert.ok(content.includes('window.api.importData()'), 'SettingsView must invoke window.api.importData()');
+});
+
+test('Palette — Window pin and Data backup commands registered', () => {
+  const palettePath = path.resolve(__dirname, '../src/renderer/components/Palette.js');
+  const content = fs.readFileSync(palettePath, 'utf8');
+  assert.ok(content.includes('Window: Toggle Always On Top (Pin Widget)'), 'Palette must include pin command');
+  assert.ok(content.includes('Data: Export Backup JSON'), 'Palette must include export backup command');
+  assert.ok(content.includes('Data: Restore Backup from JSON'), 'Palette must include restore backup command');
+});
+
+test('App — Keyboard navigation includes arrow keys and kb-highlight ring', () => {
+  const appPath = path.resolve(__dirname, '../src/renderer/app.js');
+  const content = fs.readFileSync(appPath, 'utf8');
+  assert.ok(content.includes("e.key === 'ArrowDown'"), 'App must handle ArrowDown key');
+  assert.ok(content.includes("e.key === 'ArrowUp'"), 'App must handle ArrowUp key');
+  assert.ok(content.includes('kb-highlight'), 'App must manage kb-highlight class');
+});
+

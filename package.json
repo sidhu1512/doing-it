@@ -1,6 +1,6 @@
 {
   "name": "doing-it",
-  "version": "4.3.4",
+  "version": "4.3.5",
   "description": "SOTA desktop productivity widget — notes, tasks, focus timer, command palette, markdown, calendar sync, edge docking",
   "main": "main.js",
   "scripts": {
@@ -31,10 +31,8 @@
       "uninstall.html",
       "settings.html",
       "styles.css",
-      "renderer.js",
       "settings.js",
       "src/**/*",
-      "*.ps1",
       "assets/**/*",
       "!assets/icon_256.png",
       "!assets/tray_icon_32.png"

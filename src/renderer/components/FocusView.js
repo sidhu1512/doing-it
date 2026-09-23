@@ -110,8 +110,31 @@ class FocusViewComponent {
               </div>
             </div>
 
-            <!-- Panel 2: Embedded Spotify Mini Player -->
+            <!-- Panel 2: Embedded Spotify Mini Player & Desktop Controller -->
             <div id="panel-spotify-audio" style="display:none; flex-direction:column; gap:8px;">
+              <!-- Native Spotify Live Controller Bar (active when desktop Spotify runs) -->
+              <div id="spotify-native-bar" class="spotify-native-bar" style="display:none;">
+                <div class="spotify-native-info">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="#1ed760"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm4.586 14.424c-.18.295-.563.387-.857.207-2.35-1.435-5.308-1.76-8.792-.963-.335.077-.67-.133-.746-.468-.077-.334.132-.67.467-.746 3.808-.87 7.076-.503 9.72 1.113.295.18.388.563.208.857zm1.225-2.723c-.226.367-.707.482-1.074.256-2.69-1.653-6.79-2.133-9.97-1.168-.413.125-.851-.108-.976-.52-.125-.414.108-.852.52-.977 3.634-1.103 8.147-.568 11.244 1.335.367.226.482.707.256 1.074zm.105-2.835C14.692 8.95 9.375 8.775 6.297 9.71c-.495.15-1.02-.13-1.17-.624-.15-.496.13-1.02.624-1.17 3.534-1.072 9.404-.863 13.115 1.34.445.264.59.838.327 1.283-.264.444-.838.59-1.282.327z"/></svg>
+                  <div class="spotify-native-text">
+                    <span class="spotify-native-track" id="spotify-native-track">Spotify Desktop</span>
+                    <span class="spotify-native-artist" id="spotify-native-artist">Connected</span>
+                  </div>
+                </div>
+                <div class="spotify-native-controls">
+                  <button class="mini-btn" id="btn-spotify-native-prev" title="Previous Track">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="19" x2="5" y2="5" stroke="currentColor" stroke-width="2.5"/></svg>
+                  </button>
+                  <button class="mini-btn" id="btn-spotify-native-play" title="Play / Pause">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" id="icon-spotify-native-play"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" id="icon-spotify-native-pause" style="display:none;"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                  </button>
+                  <button class="mini-btn" id="btn-spotify-native-next" title="Next Track">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19" stroke="currentColor" stroke-width="2.5"/></svg>
+                  </button>
+                </div>
+              </div>
+
               <div class="spotify-presets-bar" id="spotify-presets-bar">
                 <button class="spotify-preset-btn active" data-uri="spotify:playlist:37i9dQZF1DWZeKCadgRdKQ">Deep Focus</button>
                 <button class="spotify-preset-btn" data-uri="spotify:playlist:37i9dQZF1DXdLEN7aqioXM">Lofi Beats</button>
@@ -351,6 +374,32 @@ class FocusViewComponent {
       presetsBar.querySelectorAll('.spotify-preset-btn').forEach(b => b.classList.toggle('active', b === btn));
       this.setSpotifyUri(uri);
     });
+
+    // Native Spotify Controller buttons
+    const btnNatPrev = this.container.querySelector('#btn-spotify-native-prev');
+    const btnNatPlay = this.container.querySelector('#btn-spotify-native-play');
+    const btnNatNext = this.container.querySelector('#btn-spotify-native-next');
+
+    if (btnNatPrev) {
+      btnNatPrev.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.store.sendSpotifyMedia('prev');
+      });
+    }
+
+    if (btnNatPlay) {
+      btnNatPlay.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.store.sendSpotifyMedia('playpause');
+      });
+    }
+
+    if (btnNatNext) {
+      btnNatNext.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.store.sendSpotifyMedia('next');
+      });
+    }
   }
 
   syncFocusUI(focus) {
@@ -395,15 +444,37 @@ class FocusViewComponent {
   syncSpotifyUI(spotify) {
     if (!spotify) return;
 
+    // Custom playlist preset button
     const customBtn = this.container.querySelector('#btn-spotify-custom-preset');
-    if (!customBtn) return;
+    if (customBtn) {
+      if (spotify.customPlaylistUrl) {
+        const uri = this.toSpotifyUri(spotify.customPlaylistUrl);
+        customBtn.style.display = 'inline-flex';
+        customBtn.setAttribute('data-uri', uri);
+      } else {
+        customBtn.style.display = 'none';
+      }
+    }
 
-    if (spotify.customPlaylistUrl) {
-      const uri = this.toSpotifyUri(spotify.customPlaylistUrl);
-      customBtn.style.display = 'inline-flex';
-      customBtn.setAttribute('data-uri', uri);
-    } else {
-      customBtn.style.display = 'none';
+    // Native Spotify bar
+    const nativeBar = this.container.querySelector('#spotify-native-bar');
+    const trackEl = this.container.querySelector('#spotify-native-track');
+    const artistEl = this.container.querySelector('#spotify-native-artist');
+    const iconPlay = this.container.querySelector('#icon-spotify-native-play');
+    const iconPause = this.container.querySelector('#icon-spotify-native-pause');
+
+    if (nativeBar && trackEl && artistEl) {
+      if (spotify.isRunning) {
+        nativeBar.style.display = 'flex';
+        trackEl.textContent = spotify.track || (spotify.isPlaying ? 'Playing track' : 'Spotify Paused');
+        artistEl.textContent = spotify.artist || (spotify.isPlaying ? 'Playing' : 'Ready to resume');
+        if (iconPlay && iconPause) {
+          iconPlay.style.display = spotify.isPlaying ? 'none' : 'block';
+          iconPause.style.display = spotify.isPlaying ? 'block' : 'none';
+        }
+      } else {
+        nativeBar.style.display = 'none';
+      }
     }
   }
 }

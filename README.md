@@ -1,7 +1,7 @@
 # Doing It
 
-[![Download for Windows](https://img.shields.io/badge/Download-Windows_Setup-blue?style=for-the-badge&logo=windows)](https://github.com/sidhu1512/doing-it/releases/download/v4.3.3/Doing.It.Setup.4.3.3.exe)
-[![Version](https://img.shields.io/badge/version-4.3.3-informational?style=for-the-badge)](https://github.com/sidhu1512/doing-it/releases/tag/v4.3.3)
+[![Download for Windows](https://img.shields.io/badge/Download-Windows_Setup-blue?style=for-the-badge&logo=windows)](https://github.com/sidhu1512/doing-it/releases/download/v4.3.5/Doing.It.Setup.4.3.5.exe)
+[![Version](https://img.shields.io/badge/version-4.3.5-informational?style=for-the-badge)](https://github.com/sidhu1512/doing-it/releases/tag/v4.3.5)
 [![License: MIT](https://img.shields.io/badge/License-MIT-success?style=for-the-badge)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Windows%2011%20%7C%2010-lightgrey?style=for-the-badge)](https://github.com/sidhu1512/doing-it)
 
@@ -43,6 +43,9 @@ Doing It is a high-performance desktop productivity overlay engineered for Windo
 * **In-App Preferences Panel**: Integrated modal settings interface (`Ctrl+,`) that never spawns external windows or breaks focus.
 
 ### Native Windows 11 Integration
+* **Always-On-Top Window Pinning**: Quick-toggle pin button in header, settings, or command palette keeps the widget floating above code editors and browsers without losing focus.
+* **Desktop Spotify Integration**: Inspects the local Windows Spotify process to display the live playing track and artist in Focus Studio with native Prev / Play-Pause / Next controls.
+* **Proactive Meeting & Priority Task Alerts**: Background scheduler monitoring RFC 5545 calendar feeds and tasks, alerting 5 minutes before scheduled meetings via Web Audio chimes and Windows notifications.
 * **Screen-Edge Docking**: Dragging the widget within 20px of any display boundary automatically docks it to the full height of the monitor's work area.
 * **Context-Aware Foreground Capture**: Global shortcut (`Ctrl+Shift+C`) triggers an OS copy interrupt, extracts foreground window metadata via PowerShell WinAPI bindings (`user32.dll`), and attaches the active application title directly to the clipped note.
 * **Focus Assist (Do Not Disturb) Automation**: Activating a focus session toggles the Windows Notification Center registry key (`NOC_GLOBAL_SETTING_TOASTS_ENABLED`), suppressing system notification banners during deep work.
@@ -161,7 +164,11 @@ The application strictly implements context isolation and security hardening:
 | `Ctrl+K` | In-App | Open Raycast-style Command Palette |
 | `Ctrl+,` | In-App | Toggle In-App Preferences Panel |
 | `1`, `2`, `3`, `4` | In-App | Switch views (Tasks, Notes, Focus, Planner) |
-| `Esc` | In-App | Dismiss modals, cancel palette, or minimize to FAB |
+| `↓` / `↑` | In-App | Navigate list items with luminous selection ring |
+| `Space` | In-App | Toggle task completion checkbox |
+| `Enter` | In-App | Edit highlighted task title inline or join meeting |
+| `Delete` | In-App | Delete highlighted task or note card |
+| `Esc` | In-App | Clear selection ring, dismiss modals, or minimize to FAB |
 
 ---
 
@@ -200,7 +207,7 @@ npm run build
 npm run build:portable
 ```
 
-The resulting installer is placed in `dist/Doing It Setup 4.3.3.exe`. Post-packaging hooks (`afterPack.js`) automatically patch the executable icon using `rcedit`.
+The resulting installer is placed in `dist/Doing It Setup 4.3.5.exe`. Post-packaging hooks (`afterPack.js`) automatically patch the executable icon using `rcedit`.
 
 ---
 

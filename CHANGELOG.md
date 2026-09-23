@@ -1,5 +1,22 @@
 # Changelog
 
+## [4.3.5] — 2026-09-23
+
+### Added
+- **Always-On-Top Window Pinning**: Quick-toggle pin button in Header bar with luminous active state, Settings panel toggle, and Command Palette command (`Ctrl+K` -> `Window: Toggle Always On Top (Pin Widget)`).
+- **Full Keyboard Navigation**: Arrow Up / Down navigation across task cards, note cards, and agenda items with glowing highlight ring. Supports Space (toggle complete), Enter (in-place inline edit / join meeting), and Delete (remove item).
+- **Proactive Notification Engine**: 30-second recurring alert scheduler warning 5 minutes before scheduled calendar meetings and morning high-priority task reminders via Web Audio acoustic chimes and Windows system notifications.
+- **Data Export & Backup Restore**: One-click database export to JSON and safe backup restore with atomic store re-initialization and dynamic UI refresh.
+- **Native Spotify Desktop Media Bar**: Live track and artist detection from running desktop Spotify client with previous, play/pause, and next playback controls in Focus Studio.
+- **Automated Screenshot Generation**: Dedicated Electron headless capture script generating pixel-perfect, high-DPI screenshots of all views.
+
+### Changed
+- **Packaging & Distribution**: Bumped version to `4.3.5`, generated production installer `Doing It Setup 4.3.5.exe`.
+- **Zero-Emoji Architecture**: Standardized 100% of iconography across all views to clean, crisp vector SVGs verified by automated unit tests.
+- **Cleaned Legacy Artifacts**: Purged legacy monolithic `renderer.js` and obsolete `get-active-window.ps1`, and pruned obsolete historical installer builds in `dist/` reclaiming ~540 MB of disk space.
+
+---
+
 ## [4.0.1] — 2026-03-25
 
 ### Removed

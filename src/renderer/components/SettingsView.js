@@ -88,7 +88,18 @@ class SettingsViewComponent {
               </div>
             </div>
 
-            <!-- 4. Windows Startup -->
+            <!-- 4. Always on Top Pin -->
+            <div class="settings-card">
+              <div class="settings-toggle-row">
+                <div>
+                  <div class="settings-card-title">Keep Window Always on Top</div>
+                  <div class="settings-card-desc">Pin the widget floating above all other application windows</div>
+                </div>
+                <input type="checkbox" id="inapp-toggle-pin" style="width:16px; height:16px; accent-color:var(--accent-primary); cursor:pointer;" />
+              </div>
+            </div>
+
+            <!-- 5. Windows Startup -->
             <div class="settings-card">
               <div class="settings-toggle-row">
                 <div>
@@ -163,6 +174,10 @@ class SettingsViewComponent {
                 <span class="settings-card-title">Data Protection & Integrity</span>
                 <span class="settings-card-desc">Atomic file writes prevent data loss. Rolling backups are created automatically on each startup.</span>
               </div>
+              <div style="display:flex; gap:8px; margin-top:8px;">
+                <button class="settings-action-btn secondary" id="inapp-btn-export-data">Export Backup (JSON)</button>
+                <button class="settings-action-btn secondary" id="inapp-btn-import-data">Restore Backup</button>
+              </div>
             </div>
 
             <!-- 8. App Management & Uninstall -->
@@ -217,6 +232,13 @@ class SettingsViewComponent {
       const fabToggle = this.container.querySelector('#inapp-toggle-fab');
       if (fabToggle) {
         fabToggle.checked = !settings.disableFab;
+      }
+
+      // Pin Toggle
+      const pinToggle = this.container.querySelector('#inapp-toggle-pin');
+      if (pinToggle && window.api && window.api.getAlwaysOnTop) {
+        const isPinned = await window.api.getAlwaysOnTop();
+        pinToggle.checked = !!isPinned;
       }
 
       // Autostart Toggle
@@ -331,6 +353,19 @@ class SettingsViewComponent {
       if (window.toast) window.toast.show(disableFab ? 'Floating bubble disabled' : 'Floating bubble enabled', 'info');
     });
 
+    // Toggle Pin Always-on-top
+    const pinToggle = this.container.querySelector('#inapp-toggle-pin');
+    if (pinToggle) {
+      pinToggle.addEventListener('change', async () => {
+        if (!window.api || !window.api.toggleAlwaysOnTop) return;
+        const isPinned = await window.api.toggleAlwaysOnTop();
+        pinToggle.checked = isPinned;
+        const headerPinBtn = document.getElementById('btn-pin-window');
+        if (headerPinBtn) headerPinBtn.classList.toggle('active', isPinned);
+        if (window.toast) window.toast.show(isPinned ? 'Window pinned on top' : 'Window unpinned', 'info');
+      });
+    }
+
     // Toggle Autostart
     this.container.querySelector('#inapp-toggle-autostart').addEventListener('change', async (e) => {
       if (!window.api) return;
@@ -406,6 +441,34 @@ class SettingsViewComponent {
         this.store.state.spotify.customPlaylistUrl = url;
         this.store.notify('spotify');
         if (window.toast) window.toast.show('Spotify playlist saved', 'success');
+      });
+    }
+
+    // Export Data Backup
+    const btnExport = this.container.querySelector('#inapp-btn-export-data');
+    if (btnExport) {
+      btnExport.addEventListener('click', async () => {
+        if (!window.api || !window.api.exportData) return;
+        const res = await window.api.exportData();
+        if (res && window.toast) {
+          window.toast.show('Data backup exported successfully', 'success');
+        }
+      });
+    }
+
+    // Import Data Backup
+    const btnImport = this.container.querySelector('#inapp-btn-import-data');
+    if (btnImport) {
+      btnImport.addEventListener('click', async () => {
+        if (!window.api || !window.api.importData) return;
+        const res = await window.api.importData();
+        if (res) {
+          await this.store.init();
+          await this.refreshSettingsUI();
+          if (window.toast) {
+            window.toast.show('Data backup restored successfully', 'success');
+          }
+        }
       });
     }
 

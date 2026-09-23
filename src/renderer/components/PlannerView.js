@@ -23,9 +23,14 @@ class PlannerViewComponent {
         <div class="planner-week-strip" id="planner-week-strip"></div>
 
         <!-- Selected Day Info Header -->
-        <div class="section-header" style="margin-top:2px;">
+        <div class="section-header" style="margin-top:2px; display:flex; justify-content:space-between; align-items:center;">
           <span class="section-title" id="agenda-date-title"></span>
-          <span class="section-badge" id="agenda-count-badge">0 items</span>
+          <div style="display:flex; align-items:center; gap:6px;">
+            <span class="section-badge" id="agenda-count-badge">0 items</span>
+            <button class="task-action-btn" id="btn-refresh-calendar" title="Refresh Calendar (.ics)">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+            </button>
+          </div>
         </div>
 
         <!-- Agenda Timeline Feed -->
@@ -48,6 +53,18 @@ class PlannerViewComponent {
       this.renderWeekStrip();
       this.renderAgenda();
     });
+
+    const btnRefresh = this.container.querySelector('#btn-refresh-calendar');
+    if (btnRefresh) {
+      btnRefresh.addEventListener('click', async () => {
+        btnRefresh.style.opacity = '0.5';
+        const events = await this.store.refreshCalendarEvents();
+        btnRefresh.style.opacity = '1';
+        if (window.toast) {
+          window.toast.show(`Calendar refreshed (${events.length} event(s))`, 'info');
+        }
+      });
+    }
 
     // Delegate Meeting Join
     const feed = this.container.querySelector('#agenda-timeline-feed');

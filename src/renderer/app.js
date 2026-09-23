@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // 5. View Switching
   store.subscribe('activeView', (activeView) => {
+    document.querySelectorAll('.kb-highlight').forEach(el => el.classList.remove('kb-highlight'));
     ['tasks', 'notes', 'focus', 'planner'].forEach(view => {
       const el = document.getElementById(`view-${view}`);
       if (el) {
@@ -69,6 +70,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         store.set('paletteOpen', false);
         return;
       }
+      const highlighted = document.querySelector('.kb-highlight');
+      if (highlighted) {
+        highlighted.classList.remove('kb-highlight');
+        return;
+      }
       if (!isTyping) {
         if (window.api && window.api.minimizeWindow) {
           window.api.minimizeWindow();
@@ -88,6 +94,66 @@ document.addEventListener('DOMContentLoaded', async () => {
       else if (e.key === '2') { e.preventDefault(); store.set('activeView', 'notes'); }
       else if (e.key === '3') { e.preventDefault(); store.set('activeView', 'focus'); }
       else if (e.key === '4') { e.preventDefault(); store.set('activeView', 'planner'); }
+    }
+
+    // List item keyboard navigation (Arrows, Space, Enter, Delete)
+    if (!isTyping && !store.get('paletteOpen') && !store.get('settingsOpen')) {
+      const currentView = store.get('activeView') || 'tasks';
+      let selector = '';
+      if (currentView === 'tasks') selector = '#view-tasks .task-card';
+      else if (currentView === 'notes') selector = '#view-notes .note-card';
+      else if (currentView === 'planner') selector = '#view-planner .agenda-item';
+
+      if (selector && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) {
+        const items = Array.from(document.querySelectorAll(selector)).filter(el => el.offsetParent !== null);
+        if (items.length > 0) {
+          e.preventDefault();
+          const currentIndex = items.findIndex(el => el.classList.contains('kb-highlight'));
+          let nextIndex = 0;
+          if (e.key === 'ArrowDown') {
+            nextIndex = currentIndex === -1 ? 0 : Math.min(currentIndex + 1, items.length - 1);
+          } else {
+            nextIndex = currentIndex === -1 ? 0 : Math.max(0, currentIndex - 1);
+          }
+          if (currentIndex !== -1 && items[currentIndex]) {
+            items[currentIndex].classList.remove('kb-highlight');
+          }
+          items[nextIndex].classList.add('kb-highlight');
+          items[nextIndex].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+          return;
+        }
+      }
+
+      const highlighted = document.querySelector('.kb-highlight');
+      if (highlighted) {
+        if (e.key === ' ') {
+          e.preventDefault();
+          const cb = highlighted.querySelector('.custom-checkbox');
+          if (cb) cb.click();
+          return;
+        }
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          const titleEl = highlighted.querySelector('.task-title');
+          if (titleEl) {
+            titleEl.dispatchEvent(new MouseEvent('dblclick', { bubbles: true, cancelable: true }));
+            return;
+          }
+          const joinBtn = highlighted.querySelector('.btn-join-meeting');
+          if (joinBtn) {
+            joinBtn.click();
+            return;
+          }
+        }
+        if (e.key === 'Delete') {
+          e.preventDefault();
+          const delBtn = highlighted.querySelector('.btn-task-delete, .btn-note-delete');
+          if (delBtn) {
+            delBtn.click();
+            return;
+          }
+        }
+      }
     }
   });
 

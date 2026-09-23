@@ -22,7 +22,14 @@ const DEFAULT_STORE = {
     savePath: null,
     theme: '',
     icsUrl: '',
-    disableFab: false
+    disableFab: false,
+    launchAtStartup: false,
+    scratchpad: '',
+    spotify: {
+      autoPlayOnFocus: false,
+      autoPauseOnComplete: true,
+      customPlaylistUrl: ''
+    }
   }
 };
 
@@ -104,7 +111,14 @@ class StoreManager {
         savePath: data.settings?.savePath || null,
         theme: data.settings?.theme || '',
         icsUrl: data.settings?.icsUrl || '',
-        disableFab: !!data.settings?.disableFab
+        disableFab: !!data.settings?.disableFab,
+        launchAtStartup: !!data.settings?.launchAtStartup,
+        scratchpad: typeof data.settings?.scratchpad === 'string' ? data.settings.scratchpad : '',
+        spotify: {
+          autoPlayOnFocus: !!data.settings?.spotify?.autoPlayOnFocus,
+          autoPauseOnComplete: data.settings?.spotify?.autoPauseOnComplete !== false,
+          customPlaylistUrl: data.settings?.spotify?.customPlaylistUrl || ''
+        }
       }
     };
 

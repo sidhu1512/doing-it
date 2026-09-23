@@ -36,6 +36,10 @@ contextBridge.exposeInMainWorld('api', {
   // Window controls
   closeWindow: () => ipcRenderer.send('close-window'),
   minimizeWindow: () => ipcRenderer.send('minimize-window'),
+  toggleAlwaysOnTop: () => ipcRenderer.invoke('toggle-always-on-top'),
+  getAlwaysOnTop: () => ipcRenderer.invoke('get-always-on-top'),
+  exportData: () => ipcRenderer.invoke('export-data'),
+  importData: () => ipcRenderer.invoke('import-data'),
 
   // FAB
   fabClicked: () => ipcRenderer.send('fab-clicked'),

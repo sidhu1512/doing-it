@@ -120,6 +120,113 @@ class NotesViewComponent {
           this.activeTag = tag.toLowerCase();
           this.renderNotesFeed();
         }
+        return;
+      }
+
+      // External link click in markdown
+      const mdLink = e.target.closest('.md-link');
+      if (mdLink) {
+        e.preventDefault();
+        e.stopPropagation();
+        const url = mdLink.getAttribute('data-url');
+        if (url && window.api && window.api.openExternalUrl) {
+          window.api.openExternalUrl(url);
+        }
+        return;
+      }
+
+      // Rich link card click
+      const richLinkCard = e.target.closest('.rich-link-card');
+      if (richLinkCard) {
+        e.preventDefault();
+        e.stopPropagation();
+        const url = richLinkCard.getAttribute('data-url');
+        if (url && window.api && window.api.openExternalUrl) {
+          window.api.openExternalUrl(url);
+        }
+        return;
+      }
+    });
+
+    // Image paste listener
+    this.container.addEventListener('paste', async (e) => {
+      const activeEl = document.activeElement;
+      const isInput = activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA');
+
+      let savedImagePath = null;
+      if (e.clipboardData && e.clipboardData.items) {
+        for (const item of e.clipboardData.items) {
+          if (item.type.indexOf('image/') === 0) {
+            const file = item.getAsFile();
+            if (file && window.api && window.api.saveBufferImage) {
+              try {
+                const arrayBuffer = await file.arrayBuffer();
+                savedImagePath = await window.api.saveBufferImage(arrayBuffer);
+                break;
+              } catch (err) {
+                console.error('[NotesView] Image paste error:', err);
+              }
+            }
+          }
+        }
+      }
+
+      if (!savedImagePath && window.api && window.api.saveClipboardImage) {
+        if (!isInput || !e.clipboardData.getData('text/plain')) {
+          try {
+            savedImagePath = await window.api.saveClipboardImage();
+          } catch (err) {}
+        }
+      }
+
+      if (savedImagePath) {
+        e.preventDefault();
+        const caption = isInput && activeEl.value ? activeEl.value.trim() : 'Pasted image';
+        if (isInput && activeEl.id === 'note-quick-input') activeEl.value = '';
+        this.store.addNote({
+          text: caption,
+          image: savedImagePath,
+          category: this.activeTag !== 'all' ? this.activeTag : 'personal'
+        });
+        if (window.toast) window.toast.show('Image attached to note', 'success');
+      }
+    });
+
+    // Drag & drop image files onto feed
+    const dropZone = this.container.querySelector('#notes-feed');
+    this.container.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      if (dropZone) dropZone.classList.add('drag-over');
+    });
+    this.container.addEventListener('dragleave', (e) => {
+      if (!this.container.contains(e.relatedTarget) && dropZone) {
+        dropZone.classList.remove('drag-over');
+      }
+    });
+    this.container.addEventListener('drop', async (e) => {
+      e.preventDefault();
+      if (dropZone) dropZone.classList.remove('drag-over');
+      if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        for (const file of e.dataTransfer.files) {
+          if (file.type.startsWith('image/')) {
+            try {
+              const arrayBuffer = await file.arrayBuffer();
+              if (window.api && window.api.saveBufferImage) {
+                const savedPath = await window.api.saveBufferImage(arrayBuffer);
+                if (savedPath) {
+                  this.store.addNote({
+                    text: file.name.replace(/\.[^/.]+$/, '') || 'Attached image',
+                    image: savedPath,
+                    category: this.activeTag !== 'all' ? this.activeTag : 'personal'
+                  });
+                  if (window.toast) window.toast.show('Image note created', 'success');
+                }
+              }
+            } catch (err) {
+              console.error('[NotesView] Drop file error:', err);
+            }
+          }
+        }
       }
     });
 
@@ -227,6 +334,71 @@ class NotesViewComponent {
         </div>
       `;
     }).join('');
+
+    this.hydrateRichLinks();
+  }
+
+  hydrateRichLinks() {
+    if (!window.api || !window.api.fetchLinkPreview) return;
+    const feed = this.container.querySelector('#notes-feed');
+    if (!feed) return;
+
+    if (!this.linkPreviewCache) this.linkPreviewCache = new Map();
+
+    const links = feed.querySelectorAll('.md-link');
+    links.forEach(async (link) => {
+      const url = link.getAttribute('data-url');
+      if (!url || !/^https?:\/\//i.test(url)) return;
+
+      const text = link.textContent.trim();
+      if (text !== url && !url.includes(text)) return;
+      if (link.getAttribute('data-hydrated')) return;
+      link.setAttribute('data-hydrated', 'true');
+
+      try {
+        let preview = this.linkPreviewCache.get(url);
+        if (!preview) {
+          preview = await window.api.fetchLinkPreview(url);
+          if (preview) {
+            this.linkPreviewCache.set(url, preview);
+          }
+        }
+
+        if (preview && preview.title) {
+          let host = '';
+          try { host = new URL(url).hostname; } catch (e) {}
+
+          const card = document.createElement('div');
+          card.className = 'rich-link-card';
+          card.setAttribute('data-url', url);
+          card.title = url;
+
+          const imgHtml = preview.image
+            ? `<div class="rich-link-img" style="background-image: url('${this.escapeHtml(preview.image)}');"></div>`
+            : '';
+
+          const desc = preview.description
+            ? `<div class="rich-link-desc">${this.escapeHtml(preview.description.length > 90 ? preview.description.substring(0, 90) + '...' : preview.description)}</div>`
+            : '';
+
+          card.innerHTML = `
+            ${imgHtml}
+            <div class="rich-link-content">
+              <div class="rich-link-title">${this.escapeHtml(preview.title)}</div>
+              ${desc}
+              <div class="rich-link-host">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                <span>${this.escapeHtml(host || url)}</span>
+              </div>
+            </div>
+          `;
+
+          if (link.parentNode) {
+            link.parentNode.replaceChild(card, link);
+          }
+        }
+      } catch (err) {}
+    });
   }
 
   escapeHtml(text) {

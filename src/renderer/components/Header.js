@@ -53,6 +53,9 @@ class HeaderComponent {
             <button class="action-btn" id="btn-open-settings" title="Settings (Ctrl+,)">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
             </button>
+            <button class="action-btn" id="btn-pin-window" title="Toggle Always on Top (Pin)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" id="icon-pin"><line x1="12" y1="17" x2="12" y2="22"/><path d="M5 17h14v-2l-2-2V5a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v8l-2 2v2z"/></svg>
+            </button>
             <button class="action-btn" id="btn-minimize" title="Minimize to AssistiveTouch (Esc)">
               <svg width="10" height="10" viewBox="0 0 12 12"><rect y="5" width="12" height="2" rx="1" fill="currentColor"/></svg>
             </button>
@@ -135,6 +138,24 @@ class HeaderComponent {
       const isOpen = this.store.get('settingsOpen');
       this.store.set('settingsOpen', !isOpen);
     });
+
+    // Pin Window Always-on-top
+    const pinBtn = this.container.querySelector('#btn-pin-window');
+    if (pinBtn && window.api && window.api.getAlwaysOnTop) {
+      window.api.getAlwaysOnTop().then(pinned => {
+        pinBtn.classList.toggle('active', !!pinned);
+      }).catch(() => {});
+
+      pinBtn.addEventListener('click', async () => {
+        if (window.api.toggleAlwaysOnTop) {
+          const isPinned = await window.api.toggleAlwaysOnTop();
+          pinBtn.classList.toggle('active', !!isPinned);
+          if (window.toast) {
+            window.toast.show(isPinned ? 'Window pinned on top' : 'Window unpinned', 'info');
+          }
+        }
+      });
+    }
 
     // Minimize to FAB
     this.container.querySelector('#btn-minimize').addEventListener('click', () => {

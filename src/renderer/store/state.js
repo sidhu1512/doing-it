@@ -121,13 +121,18 @@ class ReactiveStore {
 
       // Fetch initial calendar events if URL set
       if (settings.icsUrl && window.api.fetchIcsCalendar) {
-        window.api.fetchIcsCalendar(settings.icsUrl).then(events => {
-          if (events && Array.isArray(events)) {
-            this.state.calendarEvents = events;
-            this.notify('calendarEvents');
-          }
-        }).catch(() => {});
+        this.refreshCalendarEvents();
       }
+
+      // Auto-refresh calendar every 15 minutes
+      if (!this._calendarPollInterval) {
+        this._calendarPollInterval = setInterval(() => {
+          this.refreshCalendarEvents();
+        }, 15 * 60 * 1000);
+      }
+
+      // Proactive alerts (meetings & due tasks)
+      this.startProactiveAlertChecker();
 
       this.notify('tasks');
       this.notify('notes');
@@ -138,6 +143,62 @@ class ReactiveStore {
     } catch (err) {
       console.error('[Store] Initialization failed:', err);
     }
+  }
+
+  startProactiveAlertChecker() {
+    if (this._proactiveAlertInterval) return;
+    this._notifiedAlerts = new Set();
+
+    const checkAlerts = () => {
+      const now = Date.now();
+
+      // 1. Pre-meeting alerts (0 to 5 minutes before meeting)
+      const events = this.state.calendarEvents || [];
+      events.forEach(ev => {
+        if (!ev.startTime) return;
+        const startMs = new Date(ev.startTime).getTime();
+        const diffMs = startMs - now;
+        const diffMin = Math.ceil(diffMs / 60000);
+        const alertKey = `event-${ev.id || ev.title}-${ev.startTime}`;
+
+        if (diffMs > 0 && diffMs <= 5 * 60 * 1000 && !this._notifiedAlerts.has(alertKey)) {
+          this._notifiedAlerts.add(alertKey);
+          if (window.audioEngine && typeof window.audioEngine.playNotificationChime === 'function') {
+            window.audioEngine.playNotificationChime();
+          }
+          if (window.toast) {
+            window.toast.show(`Upcoming meeting in ${diffMin}m: ${ev.title}`, 'info');
+          }
+          if (window.api && window.api.showNotification) {
+            window.api.showNotification('Upcoming Meeting', `${ev.title} starts in ${diffMin} minute${diffMin === 1 ? '' : 's'}`);
+          }
+        }
+      });
+
+      // 2. High priority task due today reminder
+      const todayStr = new Date().toISOString().split('T')[0];
+      const tasks = this.state.tasks || [];
+      tasks.forEach(task => {
+        if (!task.completed && task.dueDate === todayStr && task.priority === 'high') {
+          const taskAlertKey = `task-${task.id}-${todayStr}`;
+          if (!this._notifiedAlerts.has(taskAlertKey)) {
+            this._notifiedAlerts.add(taskAlertKey);
+            if (window.audioEngine && typeof window.audioEngine.playNotificationChime === 'function') {
+              window.audioEngine.playNotificationChime();
+            }
+            if (window.toast) {
+              window.toast.show(`High priority task due today: ${task.text}`, 'warning');
+            }
+            if (window.api && window.api.showNotification) {
+              window.api.showNotification('Priority Task Due Today', task.text);
+            }
+          }
+        }
+      });
+    };
+
+    setTimeout(checkAlerts, 2500);
+    this._proactiveAlertInterval = setInterval(checkAlerts, 30 * 1000);
   }
 
   _checkDailyHabits() {
@@ -217,6 +278,39 @@ class ReactiveStore {
     }
   }
 
+  updateTaskText(id, newText) {
+    const task = this.state.tasks.find(t => t.id === id);
+    if (!task || !newText || !newText.trim()) return;
+    task.text = newText.trim();
+    this.notify('tasks');
+    this.persistTasks();
+  }
+
+  clearCompletedTasks() {
+    const toRemove = [];
+    this.state.tasks.forEach((t, idx) => {
+      if (t.completed) toRemove.push({ item: t, index: idx });
+    });
+
+    if (toRemove.length === 0) {
+      if (window.toast) window.toast.show('No completed tasks to clear', 'info');
+      return;
+    }
+
+    this.state.tasks = this.state.tasks.filter(t => !t.completed);
+    this.undoStack.push({ type: 'tasks-bulk', items: toRemove });
+
+    this.notify('tasks');
+    this.persistTasks();
+
+    if (window.toast) {
+      window.toast.show(`Cleared ${toRemove.length} completed task(s)`, 'info', {
+        label: 'Undo',
+        onClick: () => this.undo()
+      });
+    }
+  }
+
   // ─── NOTE ACTIONS ──────────────────────────────────────────
   addNote(noteData) {
     const newNote = {
@@ -285,12 +379,37 @@ class ReactiveStore {
       this.notify('tasks');
       this.persistTasks();
       if (window.toast) window.toast.show('Task restored', 'success');
+    } else if (action.type === 'tasks-bulk') {
+      action.items.forEach(({ item, index }) => {
+        this.state.tasks.splice(index, 0, item);
+      });
+      this.notify('tasks');
+      this.persistTasks();
+      if (window.toast) window.toast.show('Completed tasks restored', 'success');
     } else if (action.type === 'note') {
       this.state.notes.splice(action.index, 0, action.item);
       this.notify('notes');
       this.persistNotes();
       if (window.toast) window.toast.show('Note restored', 'success');
     }
+  }
+
+  // ─── CALENDAR ACTIONS ──────────────────────────────────────
+  async refreshCalendarEvents() {
+    if (!window.api?.fetchIcsCalendar) return [];
+    try {
+      const settings = (await window.api.getSettings()) || {};
+      if (!settings.icsUrl) return [];
+      const events = await window.api.fetchIcsCalendar(settings.icsUrl);
+      if (events && Array.isArray(events)) {
+        this.state.calendarEvents = events;
+        this.notify('calendarEvents');
+        return events;
+      }
+    } catch (e) {
+      console.warn('[Store] Calendar refresh failed:', e);
+    }
+    return [];
   }
 
   // ─── FOCUS ACTIONS ─────────────────────────────────────────

@@ -23,9 +23,19 @@ class WindowManager {
     // Registers a secure custom protocol to safely load local user images without disabling webSecurity
     protocol.registerFileProtocol('doingit-media', (request, callback) => {
       const url = request.url.replace(/^doingit-media:\/\//, '');
-      const decodedPath = decodeURIComponent(url);
+      let decodedPath = decodeURIComponent(url);
+
+      // On Windows, Chromium URL parsing may prefix with a slash: /C:/... -> C:/...
+      if (/^\/[a-zA-Z]:/.test(decodedPath)) {
+        decodedPath = decodedPath.slice(1);
+      }
+
+      const normalized = path.normalize(decodedPath);
 
       try {
+        if (fs.existsSync(normalized)) {
+          return callback(normalized);
+        }
         if (fs.existsSync(decodedPath)) {
           return callback(decodedPath);
         }
@@ -44,19 +54,32 @@ class WindowManager {
       return this.mainWindow;
     }
 
-    const activeDisplay = this.system.getActiveDisplay();
-    const { width: screenWidth, height: screenHeight } = activeDisplay.workAreaSize;
-    const { x: dispX, y: dispY } = activeDisplay.workArea;
+    const allDisplays = screen.getAllDisplays();
+    let targetDisplay = this.system.getActiveDisplay();
+    const savedPos = this.storeManager.storeData.windowPosition;
+
+    if (savedPos) {
+      const match = allDisplays.find(d => {
+        const b = d.bounds;
+        return savedPos.x >= b.x - 40 && savedPos.x < b.x + b.width + 40 &&
+               savedPos.y >= b.y - 40 && savedPos.y < b.y + b.height + 40;
+      });
+      if (match) targetDisplay = match;
+    }
+
+    const { width: screenWidth, height: screenHeight } = targetDisplay.workAreaSize;
+    const { x: dispX, y: dispY } = targetDisplay.workArea;
     const savedSize = this.storeManager.storeData.windowSize;
     const winWidth = savedSize?.width ? Math.min(Math.max(savedSize.width, 360), 680) : 400;
     const winHeight = savedSize?.height ? Math.min(Math.max(savedSize.height, 520), screenHeight) : 650;
 
-    const savedPos = this.storeManager.storeData.windowPosition;
     let x = savedPos ? savedPos.x : dispX + screenWidth - winWidth - 20;
     let y = savedPos ? savedPos.y : dispY + Math.round((screenHeight - winHeight) / 2);
 
-    if (x < dispX || x > dispX + screenWidth - 100) x = dispX + screenWidth - winWidth - 20;
-    if (y < dispY || y > dispY + screenHeight - 100) y = dispY + Math.round((screenHeight - winHeight) / 2);
+    if (x < dispX - 40 || x > dispX + screenWidth - 60) x = dispX + screenWidth - winWidth - 20;
+    if (y < dispY - 40 || y > dispY + screenHeight - 60) y = dispY + Math.round((screenHeight - winHeight) / 2);
+
+    const isAlwaysOnTop = !!this.storeManager.storeData.settings?.alwaysOnTop;
 
     // *** PROTECTED INVARIANTS: frame: false, transparent: true, backgroundColor: '#00000000', icon ***
     this.mainWindow = new BrowserWindow({
@@ -72,7 +95,7 @@ class WindowManager {
       frame: false,
       transparent: true,
       backgroundColor: '#00000000',
-      alwaysOnTop: false,
+      alwaysOnTop: isAlwaysOnTop,
       resizable: true,
       skipTaskbar: false,
       hasShadow: true,
@@ -446,6 +469,24 @@ class WindowManager {
       }, true);
       this.mainWindow.webContents.send('dock-state-changed', false);
     }
+  }
+
+  toggleAlwaysOnTop() {
+    if (!this.mainWindow || this.mainWindow.isDestroyed()) return false;
+    const current = this.mainWindow.isAlwaysOnTop();
+    const next = !current;
+    this.mainWindow.setAlwaysOnTop(next);
+    if (!this.storeManager.storeData.settings) this.storeManager.storeData.settings = {};
+    this.storeManager.storeData.settings.alwaysOnTop = next;
+    this.storeManager.saveStore();
+    return next;
+  }
+
+  isAlwaysOnTop() {
+    if (!this.mainWindow || this.mainWindow.isDestroyed()) {
+      return !!this.storeManager.storeData.settings?.alwaysOnTop;
+    }
+    return this.mainWindow.isAlwaysOnTop();
   }
 }
 

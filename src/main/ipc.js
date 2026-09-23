@@ -91,6 +91,46 @@ function setupIpcHandlers(storeManager, windowManager, system) {
     app.quit();
   });
   ipcMain.on('minimize-window', () => windowManager.minimizeToFab());
+  ipcMain.handle('toggle-always-on-top', () => windowManager.toggleAlwaysOnTop());
+  ipcMain.handle('get-always-on-top', () => windowManager.isAlwaysOnTop());
+
+  // Data Export & Backup Import
+  ipcMain.handle('export-data', async () => {
+    const { filePath } = await dialog.showSaveDialog({
+      title: 'Export Doing It Data',
+      defaultPath: `doing-it-export-${new Date().toISOString().split('T')[0]}.json`,
+      filters: [{ name: 'JSON Data', extensions: ['json'] }]
+    });
+    if (!filePath) return false;
+    try {
+      fs.writeFileSync(filePath, JSON.stringify(storeManager.storeData, null, 2), 'utf-8');
+      return true;
+    } catch (e) {
+      console.error('[IPC] Export failed:', e);
+      return false;
+    }
+  });
+
+  ipcMain.handle('import-data', async () => {
+    const { filePaths } = await dialog.showOpenDialog({
+      title: 'Import Doing It Data Backup',
+      filters: [{ name: 'JSON Data', extensions: ['json'] }],
+      properties: ['openFile']
+    });
+    if (!filePaths || filePaths.length === 0) return false;
+    try {
+      const raw = fs.readFileSync(filePaths[0], 'utf-8');
+      const parsed = JSON.parse(raw);
+      if (parsed && (Array.isArray(parsed.notes) || Array.isArray(parsed.todos))) {
+        storeManager.saveStore(parsed);
+        windowManager.broadcastDataChanged('import');
+        return true;
+      }
+    } catch (e) {
+      console.error('[IPC] Import failed:', e);
+    }
+    return false;
+  });
 
   // Settings In-App Panel
   ipcMain.on('open-settings-window', () => {

@@ -154,6 +154,59 @@ class TasksViewComponent {
         this.store.deleteTask(id);
         return;
       }
+
+      const clearBtn = e.target.closest('.btn-clear-completed');
+      if (clearBtn) {
+        e.preventDefault();
+        e.stopPropagation();
+        this.store.clearCompletedTasks();
+        return;
+      }
+    });
+
+    // Double-click inline task title editing
+    wrapper.addEventListener('dblclick', (e) => {
+      const titleEl = e.target.closest('.task-title');
+      if (!titleEl) return;
+      const taskId = Number(titleEl.getAttribute('data-id'));
+      const task = this.store.get('tasks').find(t => t.id === taskId);
+      if (!task) return;
+
+      const currentText = task.text;
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.className = 'task-inline-edit-input';
+      input.value = currentText;
+
+      let isSaved = false;
+      const save = () => {
+        if (isSaved) return;
+        isSaved = true;
+        const val = input.value.trim();
+        if (val && val !== currentText) {
+          this.store.updateTaskText(taskId, val);
+        } else {
+          titleEl.textContent = currentText;
+        }
+      };
+
+      input.addEventListener('keydown', (ev) => {
+        if (ev.key === 'Enter') {
+          ev.preventDefault();
+          save();
+        } else if (ev.key === 'Escape') {
+          ev.preventDefault();
+          isSaved = true;
+          titleEl.textContent = currentText;
+        }
+      });
+
+      input.addEventListener('blur', () => save());
+
+      titleEl.innerHTML = '';
+      titleEl.appendChild(input);
+      input.focus();
+      input.select();
     });
 
     // Delegate Habits Click
@@ -298,9 +351,12 @@ class TasksViewComponent {
     if (completedTasks.length > 0) {
       html += `
         <details class="task-section" style="cursor:pointer;" open>
-          <summary class="section-header" style="outline:none; user-select:none;">
-            <span class="section-title">Completed</span>
-            <span class="section-badge">${completedTasks.length}</span>
+          <summary class="section-header" style="outline:none; user-select:none; display:flex; justify-content:space-between; align-items:center;">
+            <div style="display:flex; align-items:center; gap:6px;">
+              <span class="section-title">Completed</span>
+              <span class="section-badge">${completedTasks.length}</span>
+            </div>
+            <button class="task-action-btn btn-clear-completed" title="Clear all completed tasks">Clear</button>
           </summary>
           <div class="tasks-group" style="display:flex; flex-direction:column; gap:6px; margin-top:8px;">
             ${completedTasks.map(t => this.renderTaskCard(t)).join('')}
@@ -325,7 +381,7 @@ class TasksViewComponent {
           <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
         </div>
         <div class="task-content">
-          <div class="task-title">${this.escapeHtml(task.text)}</div>
+          <div class="task-title" data-id="${task.id}" title="Double-click to edit">${this.escapeHtml(task.text)}</div>
           <div class="task-meta-row">
             ${priBadge}
             ${dateBadge}

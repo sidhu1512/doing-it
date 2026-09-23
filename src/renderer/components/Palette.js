@@ -99,8 +99,13 @@ class PaletteComponent {
       { type: 'cmd', label: 'View: Notes & Scratchpad', action: () => this.store.set('activeView', 'notes') },
       { type: 'cmd', label: 'View: Focus Studio', action: () => this.store.set('activeView', 'focus') },
       { type: 'cmd', label: 'View: Day Planner Agenda', action: () => this.store.set('activeView', 'planner') },
+      { type: 'cmd', label: 'Tasks: Clear Completed Tasks', action: () => this.store.clearCompletedTasks() },
       { type: 'cmd', label: 'Timer: Start Deep Focus', action: () => { this.store.set('activeView', 'focus'); this.store.startFocus(); } },
       { type: 'cmd', label: 'Timer: Reset Timer', action: () => this.store.resetFocus() },
+      { type: 'cmd', label: 'Timer: Pop-out Picture-in-Picture Mini Timer', action: () => {
+        const btnPip = document.getElementById('btn-focus-pip');
+        if (btnPip) btnPip.click();
+      } },
       { type: 'cmd', label: 'Spotify: Toggle Play / Pause', action: () => {
         if (window.spotifyEmbedController) {
           try { window.spotifyEmbedController.togglePlay(); } catch (e) {}
@@ -108,10 +113,41 @@ class PaletteComponent {
           this.store.sendSpotifyMedia('playpause');
         }
       } },
+      { type: 'cmd', label: 'Spotify: Next Track', action: () => this.store.sendSpotifyMedia('next') },
+      { type: 'cmd', label: 'Spotify: Previous Track', action: () => this.store.sendSpotifyMedia('prev') },
       { type: 'cmd', label: 'Spotify: Open Player in Focus View', action: () => {
         this.store.set('activeView', 'focus');
         const tab = document.getElementById('tab-btn-spotify');
         if (tab) tab.click();
+      } },
+      { type: 'cmd', label: 'Calendar: Refresh Events', action: () => this.store.refreshCalendarEvents() },
+      { type: 'cmd', label: 'Window: Undock / Restore Size', action: () => {
+        if (window.api && window.api.undockWindow) window.api.undockWindow();
+      } },
+      { type: 'cmd', label: 'Window: Toggle Always On Top (Pin Widget)', action: async () => {
+        if (window.api && window.api.toggleAlwaysOnTop) {
+          const isPinned = await window.api.toggleAlwaysOnTop();
+          const pinBtn = document.getElementById('btn-pin-window');
+          if (pinBtn) pinBtn.classList.toggle('active', !!isPinned);
+          if (window.toast) window.toast.show(isPinned ? 'Window pinned on top' : 'Window unpinned', 'info');
+        }
+      } },
+      { type: 'cmd', label: 'Data: Export Backup JSON', action: async () => {
+        if (window.api && window.api.exportData) {
+          const res = await window.api.exportData();
+          if (res && window.toast) {
+            window.toast.show('Data backup exported successfully', 'success');
+          }
+        }
+      } },
+      { type: 'cmd', label: 'Data: Restore Backup from JSON', action: async () => {
+        if (window.api && window.api.importData) {
+          const res = await window.api.importData();
+          if (res) {
+            await this.store.init();
+            if (window.toast) window.toast.show('Data restored successfully', 'success');
+          }
+        }
       } },
       { type: 'cmd', label: 'Settings: Open Preferences', action: () => this.store.set('settingsOpen', true) }
     ];
