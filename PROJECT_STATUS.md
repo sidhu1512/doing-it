@@ -72,6 +72,12 @@ Doing It is a high-performance Windows desktop overlay productivity widget desig
   - `Ctrl+Shift+A`: Open Quick Add bar anywhere in Windows.
   - `Ctrl+Shift+C`: Context-aware clipboard capture (fetches active window title via user32.dll).
   - Single-instance lock ensuring only one instance runs.
+- **Official Landing Page & Product Showcase** (`docs/`):
+  - GitHub Pages ready (`https://sidhu1512.github.io/doing-it/`).
+  - High-converting dark-mode glassmorphic design matching Doing It design system.
+  - Interactive tabbed screenshot showcase with high-res zoom lightbox.
+  - Step-by-step workflow guide, keyboard shortcuts reference, SmartScreen walkthrough, and interactive FAQ.
+  - Comprehensive SEO metadata: OpenGraph cards, Twitter preview cards, and Schema.org `SoftwareApplication` JSON-LD.
 
 ## 3. Test Coverage & Verification
 

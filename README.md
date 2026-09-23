@@ -2,6 +2,7 @@
 
 [![Download for Windows](https://img.shields.io/badge/Download-Windows_Setup-blue?style=for-the-badge&logo=windows)](https://github.com/sidhu1512/doing-it/releases/download/v4.3.5/Doing.It.Setup.4.3.5.exe)
 [![Version](https://img.shields.io/badge/version-4.3.5-informational?style=for-the-badge)](https://github.com/sidhu1512/doing-it/releases/tag/v4.3.5)
+[![Website](https://img.shields.io/badge/Website-Live_Landing_Page-purple?style=for-the-badge&logo=googlechrome)](https://sidhu1512.github.io/doing-it/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-success?style=for-the-badge)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Windows%2011%20%7C%2010-lightgrey?style=for-the-badge)](https://github.com/sidhu1512/doing-it)
 

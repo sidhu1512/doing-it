@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Primary Meta Tags & SEO -->
+  <title>Doing It — The Glassmorphic Productivity Companion for Windows 11</title>
+  <meta name="title" content="Doing It — The Glassmorphic Productivity Companion for Windows 11">
+  <meta name="description" content="A high-performance, frameless desktop productivity overlay for Windows 11. Smart tasks, markdown notes, procedural focus audio, Spotify control, and calendar synchronization. 100% local-first and open source.">
+  <meta name="keywords" content="Doing It, Windows 11 productivity, desktop widget, task manager, pomodoro timer, ambient audio, markdown notes, calendar sync, raycast for windows, local-first productivity, open source">
+  <meta name="author" content="Doing It">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://sidhu1512.github.io/doing-it/">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://sidhu1512.github.io/doing-it/">
+  <meta property="og:title" content="Doing It — The Glassmorphic Productivity Companion for Windows 11">
+  <meta property="og:description" content="Capture tasks in seconds, write markdown notes with rich link previews, synthesize ambient soundscapes, and sync day calendar meetings — right from a frameless Windows desktop overlay.">
+  <meta property="og:image" content="https://sidhu1512.github.io/doing-it/imgs/tasks-view.png">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://sidhu1512.github.io/doing-it/">
+  <meta property="twitter:title" content="Doing It — The Glassmorphic Productivity Companion for Windows 11">
+  <meta property="twitter:description" content="A high-performance, frameless desktop productivity overlay for Windows 11. Smart tasks, markdown notes, procedural focus audio, Spotify control, and calendar synchronization.">
+  <meta property="twitter:image" content="https://sidhu1512.github.io/doing-it/imgs/tasks-view.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="assets/icon.png">
+
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- Schema.org Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Doing It",
+    "operatingSystem": "Windows 10, Windows 11",
+    "applicationCategory": "ProductivityApplication",
+    "downloadUrl": "https://github.com/sidhu1512/doing-it/releases/download/v4.3.5/Doing.It.Setup.4.3.5.exe",
+    "softwareVersion": "4.3.5",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "description": "High-performance Windows desktop productivity overlay with tasks, markdown scratchpad, procedural focus audio, Spotify desktop playback, and calendar sync.",
+    "author": {
+      "@type": "Person",
+      "name": "sidhu1512"
+    }
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Ambient Light Blurs -->
+  <div class="bg-glow-top"></div>
+  <div class="bg-glow-mid"></div>
+
+  <!-- Site Navigation Bar -->
+  <header class="site-header">
+    <div class="container nav-wrap">
+      <a href="#" class="nav-brand">
+        <img src="assets/icon.png" alt="Doing It Logo" class="nav-logo-img">
+        <span>Doing It</span>
+        <span class="version-pill">v4.3.5</span>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="#showcase" class="nav-link">Showcase</a></li>
+          <li><a href="#features" class="nav-link">Features</a></li>
+          <li><a href="#tutorial" class="nav-link">How to Use</a></li>
+          <li><a href="#shortcuts" class="nav-link">Shortcuts</a></li>
+          <li><a href="#faq" class="nav-link">FAQ</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="https://github.com/sidhu1512/doing-it" target="_blank" rel="noopener noreferrer" class="btn-github">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          <span>Star on GitHub</span>
+        </a>
+        <a href="https://github.com/sidhu1512/doing-it/releases/download/v4.3.5/Doing.It.Setup.4.3.5.exe" class="btn-primary-nav">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span>Download</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <main>
+    <section class="hero-section">
+      <div class="container">
+        <div class="hero-pill">
+          <span class="hero-pill-badge">New in v4.3.5</span>
+          <span>Always-On-Top Pinning, Spotify Live Bar & Keyboard Ergonomics</span>
+        </div>
+
+        <h1 class="hero-title">
+          Capture in seconds.<br>
+          <span class="hero-gradient-text">Focus without friction.</span>
+        </h1>
+
+        <p class="hero-desc">
+          A high-performance, frameless desktop productivity overlay for Windows 11. Smart task prioritization, markdown notes, zero-asset procedural soundscapes, and calendar synchronization — pinned above your work or docked seamlessly to your screen.
+        </p>
+
+        <div class="hero-cta-group">
+          <a href="https://github.com/sidhu1512/doing-it/releases/download/v4.3.5/Doing.It.Setup.4.3.5.exe" class="btn-hero-download">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span>Download for Windows 10 / 11 (64-bit)</span>
+          </a>
+          <a href="https://github.com/sidhu1512/doing-it" target="_blank" rel="noopener noreferrer" class="btn-hero-secondary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+            <span>View Source Code</span>
+          </a>
+        </div>
+
+        <div class="hero-subtext">
+          Free &amp; Open Source under MIT License • <span>100% Local-First Data</span> • No Account Required
+        </div>
+
+        <!-- SmartScreen Notice Banner -->
+        <div class="smartscreen-banner">
+          <svg class="smartscreen-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <div style="text-align: left;">
+            <div class="smartscreen-title">Windows Defender SmartScreen Alert during Installation</div>
+            <div class="smartscreen-desc">
+              Because Doing It is an open-source tool distributed directly without an enterprise code-signing certificate, Windows SmartScreen may show an "Unknown Publisher" prompt upon first launch.<br>
+              <strong>To proceed:</strong> Click <strong>"More info"</strong> and select <strong>"Run anyway"</strong>. Your data remains 100% local on your machine.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Showcase & Tabbed Viewer -->
+    <section class="showcase-section" id="showcase">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Interactive Preview</span>
+          <h2 class="section-title">Designed for flow state.</h2>
+          <p class="section-desc">Explore the integrated 5-window system built from the ground up for Windows desktop ergonomics.</p>
+        </div>
+
+        <div class="showcase-window">
+          <div class="window-titlebar">
+            <div class="window-dots">
+              <span class="window-dot dot-red"></span>
+              <span class="window-dot dot-yellow"></span>
+              <span class="window-dot dot-green"></span>
+            </div>
+            <span class="window-title-text">Doing It Desktop Widget (400 × 650)</span>
+            <div style="width: 40px;"></div>
+          </div>
+
+          <div class="showcase-tabs">
+            <button class="tab-btn active" data-tab="tasks">Tasks &amp; Habits</button>
+            <button class="tab-btn" data-tab="focus">Focus Studio</button>
+            <button class="tab-btn" data-tab="notes">Notes &amp; Scratchpad</button>
+            <button class="tab-btn" data-tab="planner">Day Planner</button>
+            <button class="tab-btn" data-tab="palette">Command Palette</button>
+            <button class="tab-btn" data-tab="minitimer">Mini Timer (PiP)</button>
+            <button class="tab-btn" data-tab="settings">Settings</button>
+          </div>
+
+          <div class="showcase-display">
+            <div class="showcase-img-wrap" title="Click to view full resolution">
+              <img src="imgs/tasks-view.png" alt="Tasks View" class="showcase-img" id="showcase-image">
+              <div class="showcase-caption" id="showcase-caption">
+                <strong>Tasks &amp; Habit Engine:</strong> Smart categorization across Today, Upcoming, and Completed with natural language date parsing, priority tags, and midnight habit auto-reset.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Bento Box Features Grid -->
+    <section class="features-section" id="features">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Architecture &amp; Features</span>
+          <h2 class="section-title">Built for speed, privacy, and precision.</h2>
+          <p class="section-desc">Every pixel and interaction is calibrated to keep you immersed in your work without context switching.</p>
+        </div>
+
+        <div class="bento-grid">
+          <!-- Card 1: Always on Top & Docking -->
+          <div class="bento-card span-2">
+            <div class="bento-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="17" x2="12" y2="22"/><path d="M5 17h14v-2l-2-2V5a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v8l-2 2v2z"/></svg>
+            </div>
+            <h3 class="bento-title">Always-On-Top Window Pinning &amp; Edge Docking</h3>
+            <p class="bento-desc">
+              Pin the widget floating above full-screen code editors, terminals, and web browsers with 1 click. Drag within 20px of any monitor boundary to snap into a full-height docked sidebar with multi-monitor memory.
+            </p>
+            <span class="bento-badge">Windows DWM Acrylic &amp; Mica</span>
+          </div>
+
+          <!-- Card 2: Zero-Friction Capture -->
+          <div class="bento-card">
+            <div class="bento-icon purple">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>
+            </div>
+            <h3 class="bento-title">Zero-Friction Global Capture</h3>
+            <p class="bento-desc">
+              Press <code>Ctrl+Shift+A</code> to summon Spotlight Quick Add anywhere in Windows. Press <code>Ctrl+Shift+C</code> to capture clipboard text tagged with the active window title.
+            </p>
+            <span class="bento-badge">Chrono NLP Engine</span>
+          </div>
+
+          <!-- Card 3: Procedural Audio -->
+          <div class="bento-card">
+            <div class="bento-icon green">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+            </div>
+            <h3 class="bento-title">Procedural Ambient Synthesizer</h3>
+            <p class="bento-desc">
+              Mathematically generated Brown Noise, Rainfall, Forest Breeze, and Lo-Fi binaural theta beats rendered directly through the Web Audio API. Zero bundled audio files, zero bloat.
+            </p>
+            <span class="bento-badge">Web Audio API</span>
+          </div>
+
+          <!-- Card 4: Spotify Desktop Integration -->
+          <div class="bento-card">
+            <div class="bento-icon green" style="background:rgba(30,215,96,0.12); color:#1ed760; border-color:rgba(30,215,96,0.25);">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7 10c3-1 7-1 10 1M8 13c2.5-.8 6-.8 8.5.8M9 16c2-.5 4.5-.5 6.5.6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </div>
+            <h3 class="bento-title">Live Spotify Desktop Control</h3>
+            <p class="bento-desc">
+              Detects your local Windows Spotify client in real time, displaying the live playing track and artist with seamless Previous, Play/Pause, and Next media controls.
+            </p>
+            <span class="bento-badge">Native Windows Process Link</span>
+          </div>
+
+          <!-- Card 5: Local-First Privacy -->
+          <div class="bento-card">
+            <div class="bento-icon amber">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+            <h3 class="bento-title">100% Local-First &amp; Atomic Backups</h3>
+            <p class="bento-desc">
+              No cloud accounts, telemetry, or server dependencies. All data is saved atomically to local JSON with rolling 5-day backup recovery and custom folder redirect for OneDrive or Dropbox.
+            </p>
+            <span class="bento-badge">Atomic Staging Writes</span>
+          </div>
+
+          <!-- Card 6: Day Planner & Meetings -->
+          <div class="bento-card span-2">
+            <div class="bento-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            </div>
+            <h3 class="bento-title">Day Planner Agenda &amp; 1-Click Meeting Launcher</h3>
+            <p class="bento-desc">
+              Synchronize private RFC 5545 <code>.ics</code> calendar URLs from Google Calendar, Microsoft Outlook, or Apple Calendar. Automatically extracts video meeting links (Google Meet, Zoom, Microsoft Teams) with 1-click launch buttons and 5-minute proactive chimes.
+            </p>
+            <span class="bento-badge">RFC 5545 iCal Unfolding</span>
+          </div>
+
+          <!-- Card 7: Raycast Command Palette -->
+          <div class="bento-card">
+            <div class="bento-icon purple">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </div>
+            <h3 class="bento-title">Raycast-Style Command Palette</h3>
+            <p class="bento-desc">
+              Press <code>Ctrl+K</code> to instantly search through tasks, markdown notes, calendar events, and execute desktop window actions with fuzzy matching.
+            </p>
+            <span class="bento-badge">Ctrl + K</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How to Use / Tutorials Section -->
+    <section class="workflow-section" id="tutorial">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Quickstart Guide</span>
+          <h2 class="section-title">How to use Doing It.</h2>
+          <p class="section-desc">Get up and running in less than 30 seconds with zero configuration required.</p>
+        </div>
+
+        <div class="workflow-steps-grid">
+          <!-- Step 1 -->
+          <div class="step-card">
+            <div class="step-number">1</div>
+            <h3 class="step-title">Download &amp; Launch</h3>
+            <p class="step-desc">
+              Download the Windows installer and launch Doing It. It starts quietly in your system tray without bloated startup overhead.
+            </p>
+            <span class="step-code-pill">Doing.It.Setup.4.3.5.exe</span>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="step-card">
+            <div class="step-number">2</div>
+            <h3 class="step-title">Instant Capture</h3>
+            <p class="step-desc">
+              Whenever inspiration hits, press <code>Ctrl+Shift+A</code> to type a task or note with dates like "Ship project next Tuesday !high".
+            </p>
+            <span class="step-code-pill">Ctrl + Shift + A</span>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="step-card">
+            <div class="step-number">3</div>
+            <h3 class="step-title">Deep Focus Session</h3>
+            <p class="step-desc">
+              Switch to Focus Studio (key <code>3</code>), start a timer, pick an ambient soundscape or Spotify, and let Windows Focus Assist silence distractions.
+            </p>
+            <span class="step-code-pill">Auto Do Not Disturb</span>
+          </div>
+
+          <!-- Step 4 -->
+          <div class="step-card">
+            <div class="step-number">4</div>
+            <h3 class="step-title">Keyboard Mastery</h3>
+            <p class="step-desc">
+              Use arrow keys <code>↓/↑</code> to navigate tasks, <code>Space</code> to check off, <code>Enter</code> to edit inline, and <code>Ctrl+K</code> to jump between views.
+            </p>
+            <span class="step-code-pill">Full Keyboard Ergonomics</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Keyboard Shortcuts Reference Table -->
+    <section class="shortcuts-section" id="shortcuts">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Productivity Reference</span>
+          <h2 class="section-title">Keyboard Shortcuts Cheat Sheet</h2>
+          <p class="section-desc">Keep your hands on the keyboard and fly through your day.</p>
+        </div>
+
+        <div class="shortcuts-table-wrap">
+          <div class="shortcut-row">
+            <div>
+              <span class="shortcut-action">Toggle Main Widget</span>
+              <span class="shortcut-context">Global (OS-Wide)</span>
+            </div>
+            <div class="kbd-group"><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>N</kbd></div>
+          </div>
+          <div class="shortcut-row">
+            <div>
+              <span class="shortcut-action">Open Spotlight Quick Add</span>
+              <span class="shortcut-context">Global (OS-Wide)</span>
+            </div>
+            <div class="kbd-group"><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>A</kbd></div>
+          </div>
+          <div class="shortcut-row">
+            <div>
+              <span class="shortcut-action">Clip Selection with Active Window Title</span>
+              <span class="shortcut-context">Global (OS-Wide)</span>
+            </div>
+            <div class="kbd-group"><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>C</kbd></div>
+          </div>
+          <div class="shortcut-row">
+            <div>
+              <span class="shortcut-action">Open Raycast Command Palette</span>
+              <span class="shortcut-context">In-App</span>
+            </div>
+            <div class="kbd-group"><kbd>Ctrl</kbd> + <kbd>K</kbd></div>
+          </div>
+          <div class="shortcut-row">
+            <div>
+              <span class="shortcut-action">Toggle In-App Settings</span>
+              <span class="shortcut-context">In-App</span>
+            </div>
+            <div class="kbd-group"><kbd>Ctrl</kbd> + <kbd>,</kbd></div>
+          </div>
+          <div class="shortcut-row">
+            <div>
+              <span class="shortcut-action">Switch Views (Tasks, Notes, Focus, Planner)</span>
+              <span class="shortcut-context">In-App</span>
+            </div>
+            <div class="kbd-group"><kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> <kbd>4</kbd></div>
+          </div>
+          <div class="shortcut-row">
+            <div>
+              <span class="shortcut-action">Navigate Tasks, Notes &amp; Agenda</span>
+              <span class="shortcut-context">In-App</span>
+            </div>
+            <div class="kbd-group"><kbd>↓</kbd> / <kbd>↑</kbd></div>
+          </div>
+          <div class="shortcut-row">
+            <div>
+              <span class="shortcut-action">Toggle Task Completion Checkbox</span>
+              <span class="shortcut-context">In-App</span>
+            </div>
+            <div class="kbd-group"><kbd>Space</kbd></div>
+          </div>
+          <div class="shortcut-row">
+            <div>
+              <span class="shortcut-action">Edit Task Inline / Join Agenda Meeting</span>
+              <span class="shortcut-context">In-App</span>
+            </div>
+            <div class="kbd-group"><kbd>Enter</kbd></div>
+          </div>
+          <div class="shortcut-row">
+            <div>
+              <span class="shortcut-action">Delete Highlighted Item</span>
+              <span class="shortcut-context">In-App</span>
+            </div>
+            <div class="kbd-group"><kbd>Delete</kbd></div>
+          </div>
+          <div class="shortcut-row">
+            <div>
+              <span class="shortcut-action">Dismiss Modals / Clear Ring / Minimize to FAB</span>
+              <span class="shortcut-context">In-App</span>
+            </div>
+            <div class="kbd-group"><kbd>Esc</kbd></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section" id="faq">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Frequently Asked Questions</span>
+          <h2 class="section-title">Everything you need to know.</h2>
+        </div>
+
+        <div class="faq-list">
+          <div class="faq-item">
+            <div class="faq-question">
+              <span>Is Doing It free and open source?</span>
+              <svg class="faq-toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div class="faq-answer">
+              Yes, 100%. Doing It is licensed under the permissive MIT License. You can audit every line of code, run it completely offline, or contribute on GitHub.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question">
+              <span>Why does Windows Defender SmartScreen show an alert?</span>
+              <svg class="faq-toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div class="faq-answer">
+              Commercial Windows code-signing certificates cost hundreds of dollars per year. As an independent open-source project, Doing It is distributed directly without a corporate certificate. When installing, simply click <strong>"More info"</strong> and select <strong>"Run anyway"</strong>. Doing It never sends data to any server.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question">
+              <span>Where is my data stored? Can I sync across devices?</span>
+              <svg class="faq-toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div class="faq-answer">
+              Your data is stored strictly locally in standard JSON files inside your <code>%APPDATA%</code> directory. You can also use the <strong>Bring Your Own Cloud (BYOC)</strong> feature in Settings to redirect your storage path to OneDrive, Google Drive, or Dropbox for instant, private cross-device sync.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question">
+              <span>Does Doing It require an internet connection?</span>
+              <svg class="faq-toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div class="faq-answer">
+              No. Doing It is architected local-first. All task management, markdown parsing, ambient sound synthesis, and keyboard capture work completely offline without an active network connection. An internet connection is only used if you configure remote <code>.ics</code> calendar sync or embed Spotify playlists.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question">
+              <span>How do backups and data export work?</span>
+              <svg class="faq-toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div class="faq-answer">
+              Doing It automatically creates rolling daily snapshots in a local <code>backups/</code> folder on startup. In addition, you can export your entire database to a clean JSON file at any time from Settings or via the Command Palette (<code>Ctrl+K</code> &rarr; <code>Data: Export Backup JSON</code>).
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Bottom CTA Section -->
+    <section class="bottom-cta-section">
+      <div class="container">
+        <div class="cta-box">
+          <h2 class="section-title" style="margin-bottom: 16px;">Supercharge your desktop workflow today.</h2>
+          <p class="section-desc" style="margin-bottom: 32px;">
+            Free, local-first, zero telemetry, and built specifically for Windows 11.
+          </p>
+          <div class="hero-cta-group">
+            <a href="https://github.com/sidhu1512/doing-it/releases/download/v4.3.5/Doing.It.Setup.4.3.5.exe" class="btn-hero-download">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              <span>Download Doing It v4.3.5 for Windows</span>
+            </a>
+          </div>
+          <div class="hero-subtext" style="margin-top: 14px;">
+            Compatible with Windows 10 and Windows 11 (64-bit)
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="container footer-wrap">
+      <div class="footer-copy">
+        &copy; 2026 Doing It. Released under the <a href="https://github.com/sidhu1512/doing-it/blob/main/LICENSE" target="_blank" rel="noopener noreferrer" style="color:var(--text-secondary); text-decoration:none;">MIT License</a>.
+      </div>
+      <div class="footer-links">
+        <a href="#showcase" class="footer-link">Showcase</a>
+        <a href="#features" class="footer-link">Features</a>
+        <a href="#tutorial" class="footer-link">How to Use</a>
+        <a href="#shortcuts" class="footer-link">Shortcuts</a>
+        <a href="https://github.com/sidhu1512/doing-it/releases" target="_blank" rel="noopener noreferrer" class="footer-link">Releases</a>
+        <a href="https://github.com/sidhu1512/doing-it" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Lightbox Zoom Modal -->
+  <div class="lightbox-modal" id="lightbox-modal">
+    <img src="" alt="Enlarged preview" class="lightbox-content" id="lightbox-img">
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
