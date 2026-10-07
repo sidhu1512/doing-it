@@ -36,8 +36,7 @@
   <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png?v=4.4.1">
   <link rel="icon" type="image/png" sizes="48x48" href="assets/favicon-48x48.png?v=4.4.1">
   <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png?v=4.4.1">
-  <meta name="theme-color" content="#030712" media="(prefers-color-scheme: dark)">
-  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#ffffff">
 
   <!-- Inter & JetBrains Mono Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -71,15 +70,12 @@
 </head>
 <body>
 
-  <!-- Ambient Grid Patterns & Chromatic Aurora Beam -->
-  <div class="bg-grid-pattern" aria-hidden="true"></div>
-  <div class="bg-aurora-glow" aria-hidden="true"></div>
-
-  <!-- Background Laser Beams Canvas with Collision Effect -->
-  <canvas id="beams-canvas" class="beams-canvas" aria-hidden="true"></canvas>
+  <!-- Aceternity Light Mode Atmospheric Surfaces -->
+  <div class="bg-light-grid" aria-hidden="true"></div>
+  <div class="bg-ambient-daylight" aria-hidden="true"></div>
 
   <!-- =======================================================================
-       FLOATING GLASS PILL NAVBAR (ACETERNITY UI)
+       FLOATING GLASS PILL NAVBAR (ACETERNITY UI LIGHT)
        ======================================================================= -->
   <header class="navbar-wrapper">
     <nav class="floating-pill-nav" aria-label="Main Navigation">
@@ -122,20 +118,14 @@
 
   <main>
     <!-- =====================================================================
-         HERO SECTION WITH ACETERNITY LAMP, SPARKLES & FLIP WORDS
+         HERO SECTION WITH ACETERNITY DAYLIGHT AMBIENCE & FLIP WORDS
          ===================================================================== -->
     <section class="hero">
       <!-- 60FPS Interactive Canvas Sparkles -->
       <canvas id="sparkles-canvas" class="sparkles-canvas" aria-hidden="true"></canvas>
 
-      <!-- Aceternity Lamp Light Cone Architecture -->
-      <div class="lamp-wrapper" aria-hidden="true">
-        <div class="lamp-cone lamp-cone-left"></div>
-        <div class="lamp-cone lamp-cone-right"></div>
-        <div class="lamp-blur-pill"></div>
-        <div class="lamp-beam-line"></div>
-        <div class="lamp-glow-bloom"></div>
-      </div>
+      <!-- Aceternity Ambient Daylight Spotlight -->
+      <div class="daylight-spotlight" aria-hidden="true"></div>
 
       <div class="container hero-container">
         <!-- Radar Dot Status Pill -->
@@ -268,7 +258,9 @@
                   <span class="satellite-title">Spotlight Quick Add</span>
                   <span class="satellite-badge">Ctrl + Shift + A</span>
                 </div>
-                <img src="imgs/quick-add.png" alt="Spotlight Quick Add Bar" class="satellite-img zoomable-img">
+                <div class="satellite-img-container">
+                  <img src="imgs/quick-add.png" alt="Spotlight Quick Add Bar" class="satellite-img zoomable-img">
+                </div>
               </div>
 
               <!-- Satellite 2: Detached Mini-Timer PiP -->
@@ -277,7 +269,9 @@
                   <span class="satellite-title">Picture-in-Picture Mini Timer</span>
                   <span class="satellite-badge">Always on Top</span>
                 </div>
-                <img src="imgs/mini-timer.png" alt="Mini Timer Pill" class="satellite-img zoomable-img">
+                <div class="satellite-img-container">
+                  <img src="imgs/mini-timer.png" alt="Mini Timer Pill" class="satellite-img zoomable-img">
+                </div>
               </div>
 
               <!-- Satellite 3: Raycast Command Palette Teaser -->
@@ -286,7 +280,9 @@
                   <span class="satellite-title">Raycast Command Palette</span>
                   <span class="satellite-badge">Ctrl + K</span>
                 </div>
-                <img src="imgs/palette-view.png" alt="Command Palette" class="satellite-img zoomable-img">
+                <div class="satellite-img-container" style="padding: 0; overflow: hidden; height: 160px;">
+                  <img src="imgs/palette-view.png" alt="Command Palette" class="satellite-img zoomable-img" style="object-fit: cover; object-position: top; width: 100%; height: 100%;">
+                </div>
               </div>
 
               <!-- Satellite 4: AssistiveTouch Bubble -->
@@ -295,7 +291,9 @@
                   <span class="satellite-title">AssistiveTouch Companion</span>
                   <span class="satellite-badge">Floating</span>
                 </div>
-                <img src="imgs/fab-overlay.png" alt="AssistiveTouch Bubble" class="satellite-img zoomable-img">
+                <div class="satellite-img-container" style="padding: 8px;">
+                  <img src="imgs/fab-overlay.png" alt="AssistiveTouch Bubble" class="satellite-img zoomable-img" style="width: 48px; height: 48px; object-fit: contain;">
+                </div>
               </div>
             </div>
           </div>
@@ -474,26 +472,6 @@
             <div class="parallax-card">
               <div class="p-card-header"><span>Windows 11 Acrylic Settings</span><span class="p-card-tag">Preferences</span></div>
               <img src="imgs/settings-view.png" alt="Settings View" class="parallax-card-img zoomable-img">
-            </div>
-          </div>
-
-          <!-- Row 3 (Moves Right) -->
-          <div class="parallax-row row-3">
-            <div class="parallax-card">
-              <div class="p-card-header"><span>Detached Mini-Timer PiP</span><span class="p-card-tag">Always-on-Top</span></div>
-              <img src="imgs/mini-timer.png" alt="Mini Timer View" class="parallax-card-img zoomable-img">
-            </div>
-            <div class="parallax-card">
-              <div class="p-card-header"><span>Spotlight Quick Add</span><span class="p-card-tag">Ctrl + Shift + A</span></div>
-              <img src="imgs/quick-add.png" alt="Quick Add View" class="parallax-card-img zoomable-img">
-            </div>
-            <div class="parallax-card">
-              <div class="p-card-header"><span>AssistiveTouch Companion</span><span class="p-card-tag">Floating Pill</span></div>
-              <img src="imgs/fab-overlay.png" alt="FAB Overlay View" class="parallax-card-img zoomable-img">
-            </div>
-            <div class="parallax-card">
-              <div class="p-card-header"><span>Tasks &amp; Habit Streaks</span><span class="p-card-tag">Chrono NLP</span></div>
-              <img src="imgs/tasks-view.png" alt="Tasks View Duplicate" class="parallax-card-img zoomable-img">
             </div>
           </div>
         </div>

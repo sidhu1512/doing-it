@@ -3,17 +3,20 @@ const path = require('path');
 const fs = require('fs');
 const os = require('os');
 
+// Force 2x device scale factor for razor-sharp Retina/4K screenshots
+app.commandLine.appendSwitch('force-device-scale-factor', '2');
+app.setAppUserModelId('com.doingit.desktop.capture');
+
 const StoreManager = require('../src/main/store');
 const WindowManager = require('../src/main/windows');
 const SystemIntegration = require('../src/main/system');
 const { setupIpcHandlers } = require('../src/main/ipc');
 
-app.setAppUserModelId('com.doingit.desktop.capture');
-
 const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'doingit-all-views-'));
 const storeManager = new StoreManager(tmpDir);
 storeManager.initStore();
 
+storeManager.storeData.windowSize = { width: 440, height: 720 };
 const todayStr = new Date().toISOString().split('T')[0];
 
 // 1. Rich Todos & Habits
@@ -131,7 +134,7 @@ storeManager.storeData.calendar = {
 
 // 6. Settings
 storeManager.storeData.settings = {
-  theme: '',
+  theme: 'light',
   alwaysOnTop: true,
   edgeDocking: true,
   spotify: {
@@ -172,11 +175,26 @@ app.whenReady().then(async () => {
     console.log(`✔ Captured ${filename} (${img.getSize().width}x${img.getSize().height})`);
   }
 
+  // Suppress all toast notifications across all views for clean artifact capture
+  await mainWin.webContents.executeJavaScript(`
+    document.documentElement.setAttribute('data-theme', 'light');
+    if (window.toast) {
+      window.toast.show = () => {};
+    }
+    const tc = document.getElementById('toast-container');
+    if (tc) {
+      tc.innerHTML = '';
+      tc.style.display = 'none';
+    }
+  `);
+
   // 1. Tasks View
   await mainWin.webContents.executeJavaScript(`
-    window.appStore.set('activeView', 'tasks');
-    window.appStore.set('settingsOpen', false);
-    window.appStore.set('paletteOpen', false);
+    document.documentElement.setAttribute('data-theme', 'light');
+    if (window.appStore) window.appStore.set('theme', 'light');
+    if (window.appStore) window.appStore.set('activeView', 'tasks');
+    if (window.appStore) window.appStore.set('settingsOpen', false);
+    if (window.appStore) window.appStore.set('paletteOpen', false);
   `);
   await sleep(600);
   await saveScreenshot('tasks-view.png');
@@ -234,6 +252,7 @@ app.whenReady().then(async () => {
   // 9. Mini Timer
   const miniWin = windowManager.createMiniTimerWindow({ remaining: 1122, duration: 1500, running: true, task: 'Ship Doing It v4.4 Aceternity UI' });
   await new Promise(r => miniWin.webContents.once('did-finish-load', r));
+  await miniWin.webContents.executeJavaScript(`document.documentElement.setAttribute('data-theme', 'light');`);
   await sleep(600);
   const miniImg = await miniWin.webContents.capturePage();
   targetDirs.forEach(dir => {
@@ -245,6 +264,7 @@ app.whenReady().then(async () => {
   // 10. Quick Add
   const quickWin = windowManager.createQuickAddWindow();
   await new Promise(r => quickWin.webContents.once('did-finish-load', r));
+  await quickWin.webContents.executeJavaScript(`document.documentElement.setAttribute('data-theme', 'light');`);
   await sleep(600);
   const quickImg = await quickWin.webContents.capturePage();
   targetDirs.forEach(dir => {
@@ -256,6 +276,7 @@ app.whenReady().then(async () => {
   // 11. FAB Overlay Bubble
   const fabWin = windowManager.createFabWindow();
   await new Promise(r => fabWin.webContents.once('did-finish-load', r));
+  await fabWin.webContents.executeJavaScript(`document.documentElement.setAttribute('data-theme', 'light');`);
   await sleep(600);
   const fabImg = await fabWin.webContents.capturePage();
   targetDirs.forEach(dir => {

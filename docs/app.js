@@ -70,13 +70,13 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         if (p.isCyan) {
-          ctx.fillStyle = `rgba(56, 189, 248, ${currentOpacity})`;
-          ctx.shadowColor = 'rgba(56, 189, 248, 0.8)';
-          ctx.shadowBlur = p.size * 3;
-        } else {
-          ctx.fillStyle = `rgba(255, 255, 255, ${currentOpacity * 0.9})`;
-          ctx.shadowColor = 'rgba(255, 255, 255, 0.6)';
+          ctx.fillStyle = `rgba(37, 99, 235, ${currentOpacity * 0.35})`;
+          ctx.shadowColor = 'rgba(37, 99, 235, 0.2)';
           ctx.shadowBlur = p.size * 2;
+        } else {
+          ctx.fillStyle = `rgba(148, 163, 184, ${currentOpacity * 0.3})`;
+          ctx.shadowColor = 'rgba(148, 163, 184, 0.15)';
+          ctx.shadowBlur = p.size;
         }
         ctx.fill();
 
@@ -114,102 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // =========================================================================
-  // 2. BACKGROUND LASER BEAMS WITH COLLISION SHOCKWAVES
-  // =========================================================================
-  const beamsCanvas = document.getElementById('beams-canvas');
-  if (beamsCanvas) {
-    const ctx = beamsCanvas.getContext('2d');
-    let width = beamsCanvas.width = window.innerWidth;
-    let height = beamsCanvas.height = window.innerHeight;
-    let beams = [];
-    let shockwaves = [];
-
-    window.addEventListener('resize', () => {
-      width = beamsCanvas.width = window.innerWidth;
-      height = beamsCanvas.height = window.innerHeight;
-    });
-
-    function spawnBeam() {
-      if (beams.length < 5 && Math.random() < 0.03) {
-        const x = Math.random() * width;
-        beams.push({
-          x: x,
-          y: -100,
-          length: Math.random() * 120 + 80,
-          speed: Math.random() * 6 + 4,
-          targetY: Math.random() * (height * 0.7) + height * 0.2,
-          color: Math.random() > 0.5 ? '#38bdf8' : '#a855f7'
-        });
-      }
-    }
-
-    function updateAndDrawBeams() {
-      ctx.clearRect(0, 0, width, height);
-      spawnBeam();
-
-      // Draw Beams
-      for (let i = beams.length - 1; i >= 0; i--) {
-        const b = beams[i];
-        b.y += b.speed;
-
-        const grad = ctx.createLinearGradient(b.x, b.y - b.length, b.x, b.y);
-        grad.addColorStop(0, 'transparent');
-        grad.addColorStop(1, b.color);
-
-        ctx.strokeStyle = grad;
-        ctx.lineWidth = 1.8;
-        ctx.shadowColor = b.color;
-        ctx.shadowBlur = 10;
-        ctx.beginPath();
-        ctx.moveTo(b.x, b.y - b.length);
-        ctx.lineTo(b.x, b.y);
-        ctx.stroke();
-
-        // Collision Check
-        if (b.y >= b.targetY) {
-          // Trigger collision shockwave
-          shockwaves.push({
-            x: b.x,
-            y: b.targetY,
-            radius: 2,
-            maxRadius: Math.random() * 30 + 20,
-            opacity: 0.8,
-            color: b.color
-          });
-          beams.splice(i, 1);
-        }
-      }
-
-      // Draw Collision Shockwaves
-      for (let j = shockwaves.length - 1; j >= 0; j--) {
-        const s = shockwaves[j];
-        s.radius += 1.2;
-        s.opacity -= 0.025;
-
-        if (s.opacity <= 0 || s.radius >= s.maxRadius) {
-          shockwaves.splice(j, 1);
-          continue;
-        }
-
-        ctx.beginPath();
-        ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
-        ctx.strokeStyle = s.color;
-        ctx.globalAlpha = Math.max(0, s.opacity);
-        ctx.lineWidth = 1.5;
-        ctx.shadowColor = s.color;
-        ctx.shadowBlur = 8;
-        ctx.stroke();
-        ctx.globalAlpha = 1.0;
-      }
-
-      requestAnimationFrame(updateAndDrawBeams);
-    }
-
-    updateAndDrawBeams();
-  }
-
-  // =========================================================================
-  // 3. DYNAMIC FLIP WORDS TYPOGRAPHY ENGINE
+  // 2. DYNAMIC FLIP WORDS TYPOGRAPHY ENGINE
   // =========================================================================
   const flipWordEl = document.getElementById('flip-word');
   if (flipWordEl) {
@@ -909,8 +814,8 @@ document.addEventListener('DOMContentLoaded', () => {
       for (let i = 0; i < bufferLength; i++) {
         const barHeight = (dataArray[i] / 255) * visualizerCanvas.height;
         const grad = ctx.createLinearGradient(0, visualizerCanvas.height, 0, 0);
-        grad.addColorStop(0, '#38bdf8');
-        grad.addColorStop(1, '#ec4899');
+        grad.addColorStop(0, '#2563eb');
+        grad.addColorStop(1, '#4f46e5');
 
         ctx.fillStyle = grad;
         ctx.fillRect(x, visualizerCanvas.height - barHeight, barWidth - 2, barHeight);
