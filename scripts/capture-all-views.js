@@ -64,28 +64,32 @@ storeManager.storeData.diary = [
 ];
 
 // 3. Analytics & Focus History
-storeManager.storeData.focusHistory = [
-  { id: 201, date: todayStr, startTime: `${todayStr}T09:00:00Z`, durationMinutes: 50, taskTitle: 'Ship v4.4 Showcase', activeApps: ['VS Code', 'Chrome'] },
-  { id: 202, date: todayStr, startTime: `${todayStr}T10:15:00Z`, durationMinutes: 45, taskTitle: 'Circadian Heuristics Engine', activeApps: ['VS Code'] },
-  { id: 203, date: todayStr, startTime: `${todayStr}T11:30:00Z`, durationMinutes: 30, taskTitle: 'Day Planner Calendar Sync', activeApps: ['Outlook', 'VS Code'] },
-  { id: 204, date: todayStr, startTime: `${todayStr}T14:00:00Z`, durationMinutes: 40, taskTitle: 'Spotify Native Integration', activeApps: ['Spotify', 'VS Code'] },
-  { id: 205, date: todayStr, startTime: `${todayStr}T15:00:00Z`, durationMinutes: 35, taskTitle: 'Procedural Audio Synthesizer', activeApps: ['VS Code'] }
-];
+// 3. Analytics & Focus History (84 days = 12 weeks of rich distributed sessions)
+storeManager.storeData.focusHistory = [];
+const sessionHours = [9, 10, 11, 14, 15, 16];
+const sessionDurations = [25, 30, 45, 50, 40, 35];
 
-// Generate 40 days of focus history for dense GitHub-style heatmap
-for (let d = 1; d <= 45; d++) {
+for (let d = 0; d < 84; d++) {
   const dt = new Date();
   dt.setDate(dt.getDate() - d);
   const dStr = dt.toISOString().split('T')[0];
-  const count = (d % 6 === 0) ? 1 : (d % 3 === 0) ? 4 : 3;
+  const dayOfWeek = dt.getDay();
+  const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
+  const count = isWeekend ? (d % 2 === 0 ? 1 : 2) : (3 + (d % 3));
+
   for (let c = 0; c < count; c++) {
+    const hour = sessionHours[(c + d) % sessionHours.length];
+    const minute = (c * 15) % 60;
+    const dur = sessionDurations[(c * 2 + d) % sessionDurations.length];
+    const dtObj = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate(), hour, minute, 0);
+
     storeManager.storeData.focusHistory.push({
-      id: 300 + d * 10 + c,
+      id: 2000 + d * 10 + c,
       date: dStr,
-      startTime: `${dStr}T10:00:00Z`,
-      durationMinutes: 25 + (c * 10),
-      taskTitle: 'Focused Engineering Sprint',
-      activeApps: ['VS Code']
+      startTime: dtObj.toISOString(),
+      durationMinutes: dur,
+      taskTitle: c % 2 === 0 ? 'Deep Work Flow Sprint' : 'Architecture & Code Review',
+      activeApps: ['VS Code', 'Chrome']
     });
   }
 }
@@ -100,7 +104,7 @@ storeManager.storeData.notes = [
   },
   {
     id: 402,
-    text: '### Daily Scratchpad\n\n- [x] Polish dark obsidian theme (#030712)\n- [x] Verify razor-sharp multi-resolution favicons\n- [ ] Deploy live GitHub Pages release\n\n> "Productivity is deliberate focus sustained without friction."',
+    text: '### Daily Scratchpad\n\n- [x] Refine Aceternity UI Light Design System (#fafafa)\n- [x] Verify razor-sharp multi-resolution favicons\n- [ ] Deploy live GitHub Pages release\n\n> "Productivity is deliberate focus sustained without friction."',
     pinned: false,
     timestamp: new Date().toISOString()
   }
@@ -224,21 +228,55 @@ app.whenReady().then(async () => {
   await mainWin.webContents.executeJavaScript(`
     window.appStore.set('activeView', 'notes');
   `);
-  await sleep(600);
+  await sleep(300);
+  await mainWin.webContents.executeJavaScript(`
+    const scratch = document.getElementById('scratchpad-area');
+    if (scratch) scratch.style.height = '44px';
+    const container = document.querySelector('#view-notes .view-container') || document.querySelector('.notes-container');
+    if (container) container.scrollTop = 0;
+  `);
+  await sleep(300);
   await saveScreenshot('notes-view.png');
 
-  // 6. Planner View
+  // 6. Planner View (with real 1-click meeting join buttons)
   await mainWin.webContents.executeJavaScript(`
+    const todayStr = new Date().toISOString().split('T')[0];
+    window.appStore.set('calendarEvents', [
+      {
+        id: 'cal-1',
+        title: 'Doing It v4.4 Sprint Architecture Sync',
+        startDate: todayStr + 'T11:00:00',
+        endDate: todayStr + 'T11:45:00',
+        location: 'Google Meet',
+        meetingUrl: 'https://meet.google.com/abc-defg-hij',
+        meetingPlatform: 'Google Meet'
+      },
+      {
+        id: 'cal-2',
+        title: 'Design Review & Aceternity UI Showcase',
+        startDate: todayStr + 'T14:30:00',
+        endDate: todayStr + 'T15:15:00',
+        location: 'Zoom Meeting',
+        meetingUrl: 'https://zoom.us/j/1234567890',
+        meetingPlatform: 'Zoom'
+      }
+    ]);
     window.appStore.set('activeView', 'planner');
   `);
   await sleep(600);
   await saveScreenshot('planner-view.png');
 
-  // 7. Settings Modal
+  // 7. Settings Modal (with clean, realistic storage path)
   await mainWin.webContents.executeJavaScript(`
+    if (window.api) window.api.getCurrentStorePath = async () => 'C:\\\\Users\\\\Alex\\\\AppData\\\\Roaming\\\\doing-it';
     window.appStore.set('settingsOpen', true);
   `);
   await sleep(600);
+  await mainWin.webContents.executeJavaScript(`
+    const p = document.getElementById('inapp-settings-path');
+    if (p) p.textContent = 'C:\\\\Users\\\\Alex\\\\AppData\\\\Roaming\\\\doing-it';
+  `);
+  await sleep(200);
   await saveScreenshot('settings-view.png');
 
   // 8. Command Palette

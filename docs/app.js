@@ -330,11 +330,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // 6. 3D HERO PARALLAX CONTROLLER
   // =========================================================================
   const parallaxGrid = document.getElementById('parallax-grid');
+  const parallaxSection = document.getElementById('parallax');
   const row1 = document.querySelector('.parallax-row.row-1');
   const row2 = document.querySelector('.parallax-row.row-2');
   const row3 = document.querySelector('.parallax-row.row-3');
 
-  if (parallaxGrid && row1 && row2 && row3) {
+  if (parallaxGrid && row1 && row2) {
     let ticking = false;
 
     function onParallaxScroll() {
@@ -344,13 +345,15 @@ document.addEventListener('DOMContentLoaded', () => {
       // Only calculate if visible
       if (rect.top < windowHeight && rect.bottom > 0) {
         const progress = (windowHeight - rect.top) / (windowHeight + rect.height);
-        const shift1 = (progress - 0.5) * 200;
-        const shift2 = (progress - 0.5) * -220;
-        const shift3 = (progress - 0.5) * 180;
+        const shift1 = (progress - 0.5) * 160;
+        const shift2 = (progress - 0.5) * -180;
 
         row1.style.transform = `translateX(${shift1}px)`;
         row2.style.transform = `translateX(${shift2}px)`;
-        row3.style.transform = `translateX(${shift3}px)`;
+        if (row3) {
+          const shift3 = (progress - 0.5) * 140;
+          row3.style.transform = `translateX(${shift3}px)`;
+        }
       }
       ticking = false;
     }
@@ -363,6 +366,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { passive: true });
 
     onParallaxScroll();
+
+    // 3D Perspective Mouse Tracking across Hero Parallax
+    if (parallaxSection && window.matchMedia('(hover: hover)').matches) {
+      parallaxSection.addEventListener('mousemove', (e) => {
+        const rect = parallaxSection.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+
+        const tiltX = 10 + ((y - centerY) / centerY) * -5;
+        const tiltZ = -3 + ((x - centerX) / centerX) * 4;
+
+        parallaxGrid.style.transform = `rotateX(${tiltX}deg) rotateZ(${tiltZ}deg) skewX(3deg)`;
+      });
+
+      parallaxSection.addEventListener('mouseleave', () => {
+        parallaxGrid.style.transform = 'rotateX(10deg) rotateZ(-3deg) skewX(3deg)';
+      });
+    }
   }
 
   // =========================================================================

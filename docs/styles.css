@@ -664,34 +664,37 @@ img, video {
   opacity: 0.7;
 }
 
-/* Windows 11 Light Titlebar */
-.win11-titlebar {
+/* Aceternity Showcase Stage Header Toolbar */
+.hero-stage-toolbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 14px;
+  padding: 8px 14px;
   background: #ffffff;
   border-bottom: 1px solid var(--border-light);
   user-select: none;
 }
 
-.win11-title-left {
+.stage-toolbar-left {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.win11-icon {
-  width: 16px;
-  height: 16px;
-  border-radius: 4px;
+.stage-toolbar-right {
+  display: flex;
+  align-items: center;
 }
 
-.win11-app-title {
-  font-size: 0.78rem;
+.stage-res-tag {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
   font-weight: 600;
-  color: var(--text-primary);
-  letter-spacing: -0.01em;
+  color: var(--text-muted);
+  background: var(--bg-muted);
+  border: 1px solid var(--border-subtle);
+  padding: 2px 7px;
+  border-radius: 9999px;
 }
 
 .win11-badge {
@@ -729,44 +732,6 @@ img, video {
 @keyframes pulseRec {
   0%, 100% { opacity: 1; transform: scale(1); }
   50% { opacity: 0.4; transform: scale(0.85); }
-}
-
-.win11-controls {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-}
-
-.win11-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 22px;
-  font-size: 0.78rem;
-  color: var(--text-muted);
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.win11-btn:hover {
-  background: var(--bg-muted);
-  color: var(--text-primary);
-}
-
-.win11-close:hover {
-  background: #e81123;
-  color: #ffffff;
-}
-
-/* Mode Switcher */
-.hero-stage-mode-bar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 6px 10px;
-  background: #f8fafc;
-  border-bottom: 1px solid var(--border-light);
 }
 
 .mode-toggles {
@@ -1127,21 +1092,16 @@ img, video {
   gap: 8px;
 }
 
-.theater-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
+.theater-app-icon {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
 }
-
-.theater-dot.red { background: #ef4444; }
-.theater-dot.yellow { background: #f59e0b; }
-.theater-dot.green { background: #10b981; }
 
 .theater-title {
   font-size: 0.84rem;
   font-weight: 600;
   color: var(--text-primary);
-  margin-left: 6px;
 }
 
 .theater-meta {
@@ -1159,6 +1119,15 @@ img, video {
   background: var(--bg-muted);
   color: var(--text-secondary);
   border: 1px solid var(--border-light);
+}
+
+.theater-badge.live {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #dc2626;
+  background: rgba(220, 38, 38, 0.08);
+  border-color: rgba(220, 38, 38, 0.2);
 }
 
 .theater-screen-wrapper {
@@ -1309,6 +1278,9 @@ img, video {
   gap: 24px;
   width: 130vw;
   margin-left: -15vw;
+  transform: rotateX(10deg) rotateZ(-3deg) skewX(3deg);
+  transform-style: preserve-3d;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .parallax-row {
@@ -2163,10 +2135,10 @@ img, video {
   position: absolute;
   top: var(--mouse-y, -100px);
   left: var(--mouse-x, -100px);
-  width: 300px;
-  height: 300px;
+  width: 380px;
+  height: 380px;
   transform: translate(-50%, -50%);
-  background: radial-gradient(circle, rgba(37, 99, 235, 0.05) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.12) 0%, rgba(99, 102, 241, 0.06) 40%, transparent 70%);
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.3s;
