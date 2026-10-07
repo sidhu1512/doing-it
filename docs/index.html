@@ -8,7 +8,7 @@
   <title>Doing It — The Desktop Productivity Overlay for Windows 11</title>
   <meta name="title" content="Doing It — The Desktop Productivity Overlay for Windows 11">
   <meta name="description" content="A frameless, local-first desktop productivity companion for Windows 11. Natural language tasks, Day One daily journaling with audio voice memos, 0–100 rhythm analytics, procedural ambient audio, Spotify desktop link, and calendar sync. 100% offline & MIT open source.">
-  <meta name="keywords" content="Doing It, Windows 11 productivity, desktop widget, task manager, pomodoro timer, ambient audio, markdown notes, calendar sync, local-first, raycast windows, day one journal">
+  <meta name="keywords" content="Doing It, Windows 11 productivity, desktop widget, task manager, pomodoro timer, ambient audio, markdown notes, calendar sync, local-first, raycast windows, day one journal, screen recording">
   <meta name="author" content="Doing It">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sidhu1512.github.io/doing-it/">
@@ -27,14 +27,15 @@
   <meta property="twitter:description" content="Frameless, local-first desktop productivity companion for Windows 11. Tasks, Day One journaling, procedural focus audio, and calendar sync.">
   <meta property="twitter:image" content="https://sidhu1512.github.io/doing-it/imgs/tasks-view.png">
 
-  <!-- Comprehensive Multi-Format Favicon Suite (100% visible on dark & light browser tabs) -->
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
-  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
-  <link rel="icon" type="image/png" sizes="48x48" href="assets/favicon-48x48.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+  <!-- High-Visibility Razor-Sharp Favicon Suite (100% visible on dark & light browser tabs) -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20512%20512%22%20width%3D%22512%22%20height%3D%22512%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22favBg%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%22100%25%22%3E%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%230284c7%22%2F%3E%3Cstop%20offset%3D%2250%25%22%20stop-color%3D%22%230369a1%22%2F%3E%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%231e1b4b%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22boltGrad%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%22100%25%22%3E%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23ffffff%22%2F%3E%3Cstop%20offset%3D%2250%25%22%20stop-color%3D%22%23e0f2fe%22%2F%3E%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%2338bdf8%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22neonCyan%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%22100%25%22%3E%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%2338bdf8%22%2F%3E%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%2300f0ff%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20x%3D%2224%22%20y%3D%2224%22%20width%3D%22464%22%20height%3D%22464%22%20rx%3D%22124%22%20fill%3D%22url(%23favBg)%22%2F%3E%3Crect%20x%3D%2224%22%20y%3D%2224%22%20width%3D%22464%22%20height%3D%22464%22%20rx%3D%22124%22%20fill%3D%22none%22%20stroke%3D%22%2338bdf8%22%20stroke-width%3D%2228%22%2F%3E%3Crect%20x%3D%2242%22%20y%3D%2242%22%20width%3D%22428%22%20height%3D%22428%22%20rx%3D%22106%22%20fill%3D%22none%22%20stroke%3D%22rgba(255%2C255%2C255%2C0.3)%22%20stroke-width%3D%228%22%2F%3E%3Cpath%20d%3D%22M%20230%20115%20C%20145%20115%2088%20170%2088%20256%20C%2088%20305%20120%20340%20148%20355%20C%20120%20380%20118%20415%20145%20435%20C%20180%20455%20220%20425%20230%20405%22%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-width%3D%2252%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3Cpath%20d%3D%22M%20225%20200%20C%20165%20200%20145%20230%20152%20265%20C%20160%20295%20195%20305%20225%20305%22%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-width%3D%2248%22%20stroke-linecap%3D%22round%22%2F%3E%3Cpath%20d%3D%22M%20282%20115%20C%20367%20115%20424%20170%20424%20256%20C%20424%20305%20392%20340%20364%20355%20C%20392%20380%20394%20415%20367%20435%20C%20332%20455%20292%20425%20282%20405%22%20fill%3D%22none%22%20stroke%3D%22url(%23neonCyan)%22%20stroke-width%3D%2252%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3Cline%20x1%3D%22282%22%20y1%3D%22200%22%20x2%3D%22355%22%20y2%3D%22235%22%20stroke%3D%22url(%23neonCyan)%22%20stroke-width%3D%2248%22%20stroke-linecap%3D%22round%22%2F%3E%3Cline%20x1%3D%22355%22%20y1%3D%22235%22%20x2%3D%22330%22%20y2%3D%22315%22%20stroke%3D%22url(%23neonCyan)%22%20stroke-width%3D%2248%22%20stroke-linecap%3D%22round%22%2F%3E%3Cline%20x1%3D%22330%22%20y1%3D%22315%22%20x2%3D%22282%22%20y2%3D%22315%22%20stroke%3D%22url(%23neonCyan)%22%20stroke-width%3D%2248%22%20stroke-linecap%3D%22round%22%2F%3E%3Cpolygon%20points%3D%22256%2C90%20310%2C230%20250%2C230%20274%2C380%20190%2C260%20240%2C260%22%20fill%3D%22url(%23boltGrad)%22%20stroke%3D%22%230369a1%22%20stroke-width%3D%2212%22%20stroke-linejoin%3D%22round%22%2F%3E%3Ccircle%20cx%3D%22282%22%20cy%3D%22115%22%20r%3D%2226%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%230284c7%22%20stroke-width%3D%228%22%2F%3E%3Ccircle%20cx%3D%22424%22%20cy%3D%22256%22%20r%3D%2226%22%20fill%3D%22%2300f0ff%22%20stroke%3D%22%23ffffff%22%20stroke-width%3D%228%22%2F%3E%3Ccircle%20cx%3D%22355%22%20cy%3D%22235%22%20r%3D%2228%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%2300f0ff%22%20stroke-width%3D%228%22%2F%3E%3Ccircle%20cx%3D%22367%22%20cy%3D%22435%22%20r%3D%2226%22%20fill%3D%22%2300f0ff%22%20stroke%3D%22%23ffffff%22%20stroke-width%3D%228%22%2F%3E%3C%2Fsvg%3E">
+  <link rel="icon" type="image/x-icon" href="favicon.ico?v=4.4.1">
+  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico?v=4.4.1">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg?v=4.4.1">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png?v=4.4.1">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png?v=4.4.1">
+  <link rel="icon" type="image/png" sizes="48x48" href="assets/favicon-48x48.png?v=4.4.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png?v=4.4.1">
   <meta name="theme-color" content="#030712" media="(prefers-color-scheme: dark)">
   <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 
@@ -43,7 +44,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=4.4.1">
 
   <!-- Schema.org JSON-LD Structured Data -->
   <script type="application/ld+json">
@@ -74,7 +75,12 @@
   <div class="bg-grid-pattern" aria-hidden="true"></div>
   <div class="bg-aurora-glow" aria-hidden="true"></div>
 
-  <!-- Floating Glass Pill Navbar (Aceternity UI Standard) -->
+  <!-- Background Laser Beams Canvas with Collision Effect -->
+  <canvas id="beams-canvas" class="beams-canvas" aria-hidden="true"></canvas>
+
+  <!-- =======================================================================
+       FLOATING GLASS PILL NAVBAR (ACETERNITY UI)
+       ======================================================================= -->
   <header class="navbar-wrapper">
     <nav class="floating-pill-nav" aria-label="Main Navigation">
       <a href="#" class="nav-brand-pill">
@@ -87,9 +93,11 @@
       </a>
 
       <ul class="nav-links">
-        <li><a href="#showcase" class="nav-link-pill">Showcase</a></li>
+        <li><a href="#video-tour" class="nav-link-pill"><span class="nav-video-dot"></span>Video Tour</a></li>
+        <li><a href="#parallax" class="nav-link-pill">Parallax</a></li>
         <li><a href="#demos" class="nav-link-pill">Interactive Demos</a></li>
         <li><a href="#audio" class="nav-link-pill">Ambient Audio</a></li>
+        <li><a href="#pins" class="nav-link-pill">Innovations</a></li>
         <li><a href="#features" class="nav-link-pill">Features</a></li>
         <li><a href="#shortcuts" class="nav-link-pill">Shortcuts</a></li>
         <li><a href="#faq" class="nav-link-pill">FAQ</a></li>
@@ -114,7 +122,7 @@
 
   <main>
     <!-- =====================================================================
-         HERO SECTION WITH ACETERNITY LAMP & CANVAS SPARKLES
+         HERO SECTION WITH ACETERNITY LAMP, SPARKLES & FLIP WORDS
          ===================================================================== -->
     <section class="hero">
       <!-- 60FPS Interactive Canvas Sparkles -->
@@ -141,31 +149,37 @@
           <span class="badge-sub-text">Day One Journaling &amp; Rhythm Analytics</span>
         </div>
 
-        <!-- Radiant Aceternity Headline -->
+        <!-- Radiant Aceternity Headline with Flip Words -->
         <h1 class="hero-headline">
-          Supercharged productivity.
-          <span class="hero-headline-sub">Always within arm’s reach.</span>
+          Supercharged productivity for your<br>
+          <span class="flip-word-wrapper">
+            <span class="flip-word" id="flip-word">deep flow state</span>
+          </span>
         </h1>
 
         <p class="hero-description">
-          A frameless, local-first desktop overlay combining natural language task capture, Day One-style daily journaling, audio voice notes, productivity rhythm analytics, procedural focus soundscapes, and calendar synchronization — pinned above your workspace or docked to your display edge.
+          A frameless, local-first Windows 11 desktop productivity overlay. Natural language task capture, Day One daily journaling with audio voice notes, 0–100 rhythm analytics, procedural ambient focus audio, and RFC 5545 calendar sync — pinned above your workspace or docked to display edges.
         </p>
 
-        <!-- CTA Action Bar -->
+        <!-- CTA Action Bar with Aceternity Moving Border -->
         <div class="hero-cta-bar">
-          <a href="https://github.com/sidhu1512/doing-it/releases/download/v4.4.0/Doing.It.Setup.4.4.0.exe" class="btn-aceternity-primary">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            <span>Download for Windows 10 / 11</span>
-            <span class="btn-shimmer-sweep"></span>
+          <a href="https://github.com/sidhu1512/doing-it/releases/download/v4.4.0/Doing.It.Setup.4.4.0.exe" class="btn-aceternity-moving-border">
+            <span class="moving-border-glow"></span>
+            <span class="moving-border-content">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              <span>Download for Windows 10 / 11</span>
+            </span>
           </a>
+
+          <a href="#video-tour" class="btn-aceternity-video-cta">
+            <span class="video-play-icon">▶</span>
+            <span>Watch Live Screen Tour</span>
+          </a>
+
           <button class="btn-aceternity-secondary open-raycast-btn">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <span>Try Live Raycast (Ctrl + K)</span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <span>Live Raycast (Ctrl + K)</span>
           </button>
-          <a href="https://github.com/sidhu1512/doing-it" target="_blank" rel="noopener noreferrer" class="btn-aceternity-tertiary">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-            <span>GitHub</span>
-          </a>
         </div>
 
         <div class="hero-meta-note">
@@ -173,7 +187,7 @@
         </div>
 
         <!-- ===================================================================
-             AUTHENTIC 3D MULTI-WINDOW STAGE WITH WINDOWS 11 FLUENT FRAME
+             3D MULTI-WINDOW STAGE WITH REAL EMBEDDED VIDEO & WINDOWS 11 FRAME
              =================================================================== -->
         <div class="stage-wrap">
           <div class="stage-inner">
@@ -188,6 +202,7 @@
                   <img src="assets/icon.png" alt="App Icon" class="win11-icon">
                   <span class="win11-app-title">Doing It</span>
                   <span class="win11-badge">Pinned</span>
+                  <span class="live-rec-badge"><span class="rec-dot"></span> LIVE APP</span>
                 </div>
 
                 <!-- Windows 11 Caption Controls -->
@@ -198,26 +213,54 @@
                 </div>
               </div>
 
-              <!-- Interactive Hero Tab Pill Bar -->
-              <div class="hero-tabs-slider">
-                <button class="hero-tab-pill active" data-view="tasks">Tasks &amp; Streaks</button>
-                <button class="hero-tab-pill" data-view="diary">Day One Diary</button>
-                <button class="hero-tab-pill" data-view="analytics">Rhythm Analytics</button>
-                <button class="hero-tab-pill" data-view="focus">Focus Studio</button>
+              <!-- Mode Switcher: Video vs Interactive Views -->
+              <div class="hero-stage-mode-bar">
+                <div class="mode-toggles">
+                  <button class="mode-pill active" id="mode-btn-video" data-mode="video">
+                    <span class="mode-dot dot-live"></span>
+                    <span>Live Screen Recording (WebM)</span>
+                  </button>
+                  <button class="mode-pill" id="mode-btn-screens" data-mode="screens">
+                    <span>Static Workspace Inspector</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Interactive Hero Tab Pill Bar (Active in Screens mode) -->
+              <div class="hero-tabs-slider" id="hero-tabs-slider" style="display: none;">
+                <button class="hero-tab-pill active" data-view="tasks">Tasks</button>
+                <button class="hero-tab-pill" data-view="diary">Diary</button>
+                <button class="hero-tab-pill" data-view="analytics">Rhythm</button>
+                <button class="hero-tab-pill" data-view="focus">Focus</button>
                 <button class="hero-tab-pill" data-view="notes">Notes</button>
                 <button class="hero-tab-pill" data-view="planner">Planner</button>
-                <button class="hero-tab-pill" data-view="palette">Command Palette</button>
+                <button class="hero-tab-pill" data-view="palette">Palette</button>
                 <button class="hero-tab-pill" data-view="settings">Settings</button>
               </div>
 
-              <!-- Real High-DPI Screenshot Canvas Frame -->
-              <div class="widget-mockup-inner">
-                <img src="imgs/tasks-view.png" alt="Doing It Main Tasks View" class="widget-img zoomable-img" id="hero-mockup-img">
-                <div class="widget-zoom-hint">Click image to inspect full-res 1:1</div>
+              <!-- Video / Screenshot Presentation Container -->
+              <div class="widget-mockup-inner" id="hero-media-container">
+                <!-- 1. Real Screen Recording Video -->
+                <video id="hero-video-player" class="widget-video" autoplay loop muted playsinline poster="imgs/tasks-view.png">
+                  <source src="assets/hero-loop.webm" type="video/webm">
+                  <source src="assets/app-tour.webm" type="video/webm">
+                  Your browser does not support the video tag.
+                </video>
+
+                <!-- 2. Interactive Static Screenshot (when user toggles mode) -->
+                <img src="imgs/tasks-view.png" alt="Doing It Workspace" class="widget-img zoomable-img" id="hero-mockup-img" style="display: none;">
+
+                <div class="widget-video-overlay-bar">
+                  <button id="hero-video-play-btn" class="btn-video-control" title="Toggle Play/Pause">
+                    <span id="hero-play-icon">⏸ Pause</span>
+                  </button>
+                  <span class="video-quality-tag">1080p 60fps Native Capture</span>
+                  <a href="#video-tour" class="video-expand-link">Full Tour &rarr;</a>
+                </div>
               </div>
             </div>
 
-            <!-- Side Floating Satellites (3D Depth) -->
+            <!-- Side Floating Satellites (3D Perspective Depth) -->
             <div class="stage-satellites">
               <!-- Satellite 1: Spotlight Quick Add -->
               <div class="satellite-card">
@@ -289,6 +332,281 @@
           <div class="marquee-card"><span class="m-dot dot-amber"></span>Atomic JSON File Staging &amp; 5-Day Backups</div>
           <div class="marquee-card"><span class="m-dot dot-pink"></span>Burnout Guard Circadian Heuristics</div>
           <div class="marquee-card"><span class="m-dot dot-green"></span>Zero Telemetry &amp; MIT Licensed</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         LIVE SCREEN RECORDING & WORKFLOW TOUR (GENUINE VIDEO SHOWCASE)
+         ===================================================================== -->
+    <section class="section-pad" id="video-tour">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-tagline"><span class="tagline-dot"></span> Authenticated Screen Capture</span>
+          <h2 class="section-heading">Watch Doing It running live on Windows 11.</h2>
+          <p class="section-subheading">Uncut 60fps screen recording captured directly from our desktop overlay. Explore natural language tasks, Day One voice reflections, focus audio, rhythm charts, and the Raycast palette.</p>
+        </div>
+
+        <!-- Cinema Video Theater Container -->
+        <div class="video-theater-card">
+          <div class="video-theater-header">
+            <div class="theater-title-group">
+              <span class="theater-dot red"></span>
+              <span class="theater-dot yellow"></span>
+              <span class="theater-dot green"></span>
+              <span class="theater-title">Doing It v4.4.0 &mdash; Official Desktop Screen Tour</span>
+            </div>
+            <div class="theater-meta">
+              <span class="theater-badge">VP9 WebM 1080p</span>
+              <span class="theater-badge">Recorded Live</span>
+            </div>
+          </div>
+
+          <!-- Video Element with Custom Controller -->
+          <div class="theater-screen-wrapper">
+            <video id="main-tour-video" class="theater-video" autoplay loop muted playsinline poster="imgs/tasks-view.png">
+              <source src="assets/app-tour.webm" type="video/webm">
+              Your browser does not support WebM video playback.
+            </video>
+
+            <!-- Video Overlay Control Overlay -->
+            <div class="theater-controls-bar">
+              <button id="tour-play-pause-btn" class="theater-ctrl-btn" title="Play / Pause">
+                <span id="tour-btn-icon">⏸</span>
+                <span id="tour-btn-text">Pause</span>
+              </button>
+
+              <button id="tour-mute-btn" class="theater-ctrl-btn" title="Mute / Unmute">
+                <span id="tour-mute-icon">🔇</span>
+                <span>Muted</span>
+              </button>
+
+              <div class="theater-timeline-bar" id="theater-timeline">
+                <div class="theater-timeline-fill" id="theater-progress-fill"></div>
+              </div>
+
+              <button id="tour-fullscreen-btn" class="theater-ctrl-btn" title="Toggle Fullscreen">
+                <span>⛶ Fullscreen</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Chapter Navigation Pills -->
+          <div class="video-chapters-row">
+            <button class="chapter-pill active" data-time="0">
+              <span class="chapter-idx">01</span>
+              <span>Tasks &amp; Streaks</span>
+            </button>
+            <button class="chapter-pill" data-time="1.8">
+              <span class="chapter-idx">02</span>
+              <span>Day One Diary</span>
+            </button>
+            <button class="chapter-pill" data-time="3.6">
+              <span class="chapter-idx">03</span>
+              <span>Focus Studio</span>
+            </button>
+            <button class="chapter-pill" data-time="5.4">
+              <span class="chapter-idx">04</span>
+              <span>Rhythm Analytics</span>
+            </button>
+            <button class="chapter-pill" data-time="7.2">
+              <span class="chapter-idx">05</span>
+              <span>Day Planner</span>
+            </button>
+            <button class="chapter-pill" data-time="9.0">
+              <span class="chapter-idx">06</span>
+              <span>Raycast Palette</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         ACETERNITY HERO PARALLAX (3D PERSPECTIVE FLOATING SHOWCASE)
+         ===================================================================== -->
+    <section class="parallax-section" id="parallax" aria-label="3D Hero Parallax">
+      <div class="container parallax-head-container">
+        <div class="section-head">
+          <span class="section-tagline">Spatial Depth</span>
+          <h2 class="section-heading">Every screen, engineered with purpose.</h2>
+          <p class="section-subheading">Scroll or move your mouse to explore Doing It’s workspaces floating across 3D perspective layers.</p>
+        </div>
+      </div>
+
+      <!-- 3D Perspective Stage -->
+      <div class="parallax-stage-wrapper">
+        <div class="parallax-grid" id="parallax-grid">
+          <!-- Row 1 (Moves Right) -->
+          <div class="parallax-row row-1">
+            <div class="parallax-card">
+              <div class="p-card-header"><span>Tasks &amp; Streaks</span><span class="p-card-tag">Core</span></div>
+              <img src="imgs/tasks-view.png" alt="Tasks View" class="parallax-card-img zoomable-img">
+            </div>
+            <div class="parallax-card">
+              <div class="p-card-header"><span>Day One Diary</span><span class="p-card-tag">Journal</span></div>
+              <img src="imgs/diary-view.png" alt="Day One Diary View" class="parallax-card-img zoomable-img">
+            </div>
+            <div class="parallax-card">
+              <div class="p-card-header"><span>Productivity Rhythm</span><span class="p-card-tag">0–100 Score</span></div>
+              <img src="imgs/analytics-view.png" alt="Analytics View" class="parallax-card-img zoomable-img">
+            </div>
+            <div class="parallax-card">
+              <div class="p-card-header"><span>Focus Studio</span><span class="p-card-tag">Pomodoro</span></div>
+              <img src="imgs/focus-view.png" alt="Focus View" class="parallax-card-img zoomable-img">
+            </div>
+          </div>
+
+          <!-- Row 2 (Moves Left) -->
+          <div class="parallax-row row-2">
+            <div class="parallax-card">
+              <div class="p-card-header"><span>Day Planner &amp; Agenda</span><span class="p-card-tag">RFC 5545</span></div>
+              <img src="imgs/planner-view.png" alt="Planner View" class="parallax-card-img zoomable-img">
+            </div>
+            <div class="parallax-card">
+              <div class="p-card-header"><span>Raycast Palette</span><span class="p-card-tag">Ctrl + K</span></div>
+              <img src="imgs/palette-view.png" alt="Command Palette View" class="parallax-card-img zoomable-img">
+            </div>
+            <div class="parallax-card">
+              <div class="p-card-header"><span>Markdown Notes</span><span class="p-card-tag">Scratchpad</span></div>
+              <img src="imgs/notes-view.png" alt="Notes View" class="parallax-card-img zoomable-img">
+            </div>
+            <div class="parallax-card">
+              <div class="p-card-header"><span>Windows 11 Acrylic Settings</span><span class="p-card-tag">Preferences</span></div>
+              <img src="imgs/settings-view.png" alt="Settings View" class="parallax-card-img zoomable-img">
+            </div>
+          </div>
+
+          <!-- Row 3 (Moves Right) -->
+          <div class="parallax-row row-3">
+            <div class="parallax-card">
+              <div class="p-card-header"><span>Detached Mini-Timer PiP</span><span class="p-card-tag">Always-on-Top</span></div>
+              <img src="imgs/mini-timer.png" alt="Mini Timer View" class="parallax-card-img zoomable-img">
+            </div>
+            <div class="parallax-card">
+              <div class="p-card-header"><span>Spotlight Quick Add</span><span class="p-card-tag">Ctrl + Shift + A</span></div>
+              <img src="imgs/quick-add.png" alt="Quick Add View" class="parallax-card-img zoomable-img">
+            </div>
+            <div class="parallax-card">
+              <div class="p-card-header"><span>AssistiveTouch Companion</span><span class="p-card-tag">Floating Pill</span></div>
+              <img src="imgs/fab-overlay.png" alt="FAB Overlay View" class="parallax-card-img zoomable-img">
+            </div>
+            <div class="parallax-card">
+              <div class="p-card-header"><span>Tasks &amp; Habit Streaks</span><span class="p-card-tag">Chrono NLP</span></div>
+              <img src="imgs/tasks-view.png" alt="Tasks View Duplicate" class="parallax-card-img zoomable-img">
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         ACETERNITY 3D PIN INNOVATION SHOWCASE
+         ===================================================================== -->
+    <section class="section-pad" id="pins">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-tagline">Signature Inventions</span>
+          <h2 class="section-heading">Productivity tools you actually enjoy using.</h2>
+          <p class="section-subheading">Four purpose-built subsystems that transform how you write, focus, recover, and meet.</p>
+        </div>
+
+        <div class="pins-grid">
+          <!-- Pin 1: Day One Diary & Voice Memos -->
+          <div class="pin-card-wrapper">
+            <div class="pin-card-container">
+              <div class="pin-card">
+                <div class="pin-icon-box" style="color: #ec4899; background: rgba(236, 72, 153, 0.1);">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="13" y2="11"/></svg>
+                </div>
+                <h3 class="pin-card-title">Day One Diary &amp; Voice Notes</h3>
+                <p class="pin-card-p">Segregated work &amp; personal journals, guided daily reflections, 5-point mood &amp; energy tags, and zero-dependency microphone voice notes with custom dark audio player.</p>
+                <div class="pin-tags-row">
+                  <span class="pin-chip">Voice Memos</span>
+                  <span class="pin-chip">Mood Heuristics</span>
+                  <span class="pin-chip">On This Day</span>
+                </div>
+              </div>
+              <!-- Pin Radar Anchor & Glowing Beam -->
+              <div class="pin-anchor-wrap">
+                <span class="pin-beam-line"></span>
+                <span class="pin-pulse-radar"></span>
+                <span class="pin-label-pill">Day One Engine</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pin 2: Circadian Rhythm Analytics -->
+          <div class="pin-card-wrapper">
+            <div class="pin-card-container">
+              <div class="pin-card">
+                <div class="pin-icon-box" style="color: #10b981; background: rgba(16, 185, 129, 0.1);">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+                </div>
+                <h3 class="pin-card-title">0–100 Circadian Rhythm Score</h3>
+                <p class="pin-card-p">Mathematically tracks your daily momentum, peak 24-hour focus hours, and 12-week consistency heatmap with proactive burnout safeguards.</p>
+                <div class="pin-tags-row">
+                  <span class="pin-chip">0–100 Gauge</span>
+                  <span class="pin-chip">24h Energy Curve</span>
+                  <span class="pin-chip">Burnout Guard</span>
+                </div>
+              </div>
+              <!-- Pin Radar Anchor & Glowing Beam -->
+              <div class="pin-anchor-wrap">
+                <span class="pin-beam-line"></span>
+                <span class="pin-pulse-radar"></span>
+                <span class="pin-label-pill">Circadian Analytics</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pin 3: Procedural Web Audio Focus Synthesizer -->
+          <div class="pin-card-wrapper">
+            <div class="pin-card-container">
+              <div class="pin-card">
+                <div class="pin-icon-box" style="color: #38bdf8; background: rgba(56, 189, 248, 0.1);">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2v20M17 5v14M7 9v6M22 8v8M2 11v2"/></svg>
+                </div>
+                <h3 class="pin-card-title">Zero-Asset Sound Synthesizer</h3>
+                <p class="pin-card-p">Synthesizes Brown Noise, Rainfall, Forest Breeze, and Lo-Fi 6Hz theta binaural beats live in Web Audio with 0 bytes of audio asset downloads.</p>
+                <div class="pin-tags-row">
+                  <span class="pin-chip">Brown Noise</span>
+                  <span class="pin-chip">6Hz Binaural</span>
+                  <span class="pin-chip">Zero-Asset</span>
+                </div>
+              </div>
+              <!-- Pin Radar Anchor & Glowing Beam -->
+              <div class="pin-anchor-wrap">
+                <span class="pin-beam-line"></span>
+                <span class="pin-pulse-radar"></span>
+                <span class="pin-label-pill">Web Audio Synth</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pin 4: RFC 5545 iCalendar Sync -->
+          <div class="pin-card-wrapper">
+            <div class="pin-card-container">
+              <div class="pin-card">
+                <div class="pin-icon-box" style="color: #a855f7; background: rgba(168, 85, 247, 0.1);">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                </div>
+                <h3 class="pin-card-title">Day Planner &amp; 1-Click Meetings</h3>
+                <p class="pin-card-p">Syncs private RFC 5545 .ics calendars from Google, Outlook, and Apple Calendar. Detects Meet &amp; Zoom video links with 1-click launchers and audio chimes.</p>
+                <div class="pin-tags-row">
+                  <span class="pin-chip">Google Meet</span>
+                  <span class="pin-chip">Zoom Launch</span>
+                  <span class="pin-chip">Proactive Chime</span>
+                </div>
+              </div>
+              <!-- Pin Radar Anchor & Glowing Beam -->
+              <div class="pin-anchor-wrap">
+                <span class="pin-beam-line"></span>
+                <span class="pin-pulse-radar"></span>
+                <span class="pin-label-pill">RFC 5545 Engine</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -762,115 +1080,6 @@
     </section>
 
     <!-- =====================================================================
-         INTERFACE SHOWCASE & DEEP DIVE GALLERY
-         ===================================================================== -->
-    <section class="section-pad" id="showcase">
-      <div class="container">
-        <div class="section-head">
-          <span class="section-tagline">Interface Architecture</span>
-          <h2 class="section-heading">Engineered for seamless flow.</h2>
-          <p class="section-subheading">Switch through all 8 authentic workspaces built into a single lightweight desktop overlay.</p>
-        </div>
-
-        <div class="gallery-container">
-          <!-- Gallery Nav Tabs -->
-          <div class="gallery-nav">
-            <button class="gallery-tab-item active" data-view="tasks">
-              <div class="tab-icon-box">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-              </div>
-              <div class="tab-info">
-                <h4>Tasks &amp; Habit Streaks</h4>
-                <p>Natural language dates, priority tags, and midnight auto-resets.</p>
-              </div>
-            </button>
-
-            <button class="gallery-tab-item" data-view="diary">
-              <div class="tab-icon-box">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="13" y2="11"/></svg>
-              </div>
-              <div class="tab-info">
-                <h4>Day One Daily Diary</h4>
-                <p>Guided prompts, mood &amp; energy tracker, audio voice memos, and flashbacks.</p>
-              </div>
-            </button>
-
-            <button class="gallery-tab-item" data-view="analytics">
-              <div class="tab-icon-box">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
-              </div>
-              <div class="tab-info">
-                <h4>Productivity &amp; Analytics</h4>
-                <p>0–100 score, 24h energy rhythm, 12-week heatmap, and burnout guard.</p>
-              </div>
-            </button>
-
-            <button class="gallery-tab-item" data-view="focus">
-              <div class="tab-icon-box">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              </div>
-              <div class="tab-info">
-                <h4>Focus Studio &amp; Spotify</h4>
-                <p>Circular countdown arc, procedural sound, and live Spotify sync.</p>
-              </div>
-            </button>
-
-            <button class="gallery-tab-item" data-view="notes">
-              <div class="tab-icon-box">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>
-              </div>
-              <div class="tab-info">
-                <h4>Notes &amp; Instant Scratchpad</h4>
-                <p>Markdown checklists, auto-save scratchpad, and rich link cards.</p>
-              </div>
-            </button>
-
-            <button class="gallery-tab-item" data-view="planner">
-              <div class="tab-icon-box">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-              </div>
-              <div class="tab-info">
-                <h4>Day Planner &amp; Meetings</h4>
-                <p>RFC 5545 iCalendar sync with 1-click video meeting launcher.</p>
-              </div>
-            </button>
-
-            <button class="gallery-tab-item" data-view="palette">
-              <div class="tab-icon-box">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-              </div>
-              <div class="tab-info">
-                <h4>Command Palette</h4>
-                <p>Raycast-style Ctrl+K search across all entities and actions.</p>
-              </div>
-            </button>
-
-            <button class="gallery-tab-item" data-view="settings">
-              <div class="tab-icon-box">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-              </div>
-              <div class="tab-info">
-                <h4>Preferences &amp; Backup</h4>
-                <p>Pin window toggle, theme picker, and 1-click JSON data export.</p>
-              </div>
-            </button>
-          </div>
-
-          <!-- Gallery Preview Display -->
-          <div class="gallery-preview-frame">
-            <div class="gallery-img-container">
-              <img src="imgs/tasks-view.png" alt="Tasks View" id="gallery-target-img" class="zoomable-img">
-              <div class="gallery-zoom-button" title="Inspect Full Screen">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
-                <span>Click to zoom</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- =====================================================================
          KEYBOARD SHORTCUTS MATRIX (3D MECHANICAL KEYS)
          ===================================================================== -->
     <section class="section-pad" id="shortcuts">
@@ -1025,10 +1234,12 @@
             Free, local-first, zero telemetry, and built for speed.
           </p>
           <div class="hero-cta-bar" style="justify-content: center;">
-            <a href="https://github.com/sidhu1512/doing-it/releases/download/v4.4.0/Doing.It.Setup.4.4.0.exe" class="btn-aceternity-primary">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              <span>Download Doing It v4.4.0 for Windows</span>
-              <span class="btn-shimmer-sweep"></span>
+            <a href="https://github.com/sidhu1512/doing-it/releases/download/v4.4.0/Doing.It.Setup.4.4.0.exe" class="btn-aceternity-moving-border">
+              <span class="moving-border-glow"></span>
+              <span class="moving-border-content">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <span>Download Doing It v4.4.0 for Windows</span>
+              </span>
             </a>
           </div>
         </div>
@@ -1049,9 +1260,11 @@
         <p class="footer-sub">&copy; 2026 Doing It. Released under the MIT License. Built for Windows 10 &amp; 11.</p>
       </div>
       <div class="footer-nav">
-        <a href="#showcase" class="footer-link">Showcase</a>
+        <a href="#video-tour" class="footer-link">Video Tour</a>
+        <a href="#parallax" class="footer-link">Parallax</a>
         <a href="#demos" class="footer-link">Demos</a>
         <a href="#audio" class="footer-link">Ambient Audio</a>
+        <a href="#pins" class="footer-link">Innovations</a>
         <a href="#features" class="footer-link">Features</a>
         <a href="#shortcuts" class="footer-link">Shortcuts</a>
         <a href="https://github.com/sidhu1512/doing-it/releases" target="_blank" rel="noopener noreferrer" class="footer-link">Releases</a>
@@ -1107,6 +1320,6 @@
     </div>
   </div>
 
-  <script src="app.js"></script>
+  <script src="app.js?v=4.4.1"></script>
 </body>
 </html>

@@ -49,14 +49,18 @@ requiredImgs.forEach(img => {
   checkFile(path.join('imgs', img), 1000);
 });
 
-console.log('\n--- 4. Checking HTML Links & Integrity ---');
+console.log('\n--- 4. Checking Screen Recording Videos ---');
+checkFile('assets/app-tour.webm', 100000);
+checkFile('assets/hero-loop.webm', 100000);
+
+console.log('\n--- 5. Checking HTML Links & Integrity ---');
 const html = fs.readFileSync(path.join(docsDir, 'index.html'), 'utf8');
 
 // Check that favicon links in HTML point to existing files
 const linkMatches = html.matchAll(/href="([^"#][^"]+)"/g);
 for (const match of linkMatches) {
   const href = match[1];
-  if (!href.startsWith('http')) {
+  if (!href.startsWith('http') && !href.startsWith('data:')) {
     const assetPath = path.join(docsDir, href.split('?')[0]);
     if (!fs.existsSync(assetPath)) {
       throw new Error(`Broken local link in index.html: href="${href}" -> ${assetPath} does not exist`);
