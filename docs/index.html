@@ -7,8 +7,8 @@
   <!-- Primary Meta Tags & SEO -->
   <title>Doing It — The Desktop Productivity Overlay for Windows 11</title>
   <meta name="title" content="Doing It — The Desktop Productivity Overlay for Windows 11">
-  <meta name="description" content="A frameless, local-first desktop productivity companion for Windows 11. Tasks, markdown notes, procedural focus audio, Spotify control, and calendar synchronization. 100% offline-ready & MIT open source.">
-  <meta name="keywords" content="Doing It, Windows 11 productivity, desktop widget, task manager, pomodoro timer, ambient audio, markdown notes, calendar sync, local-first, raycast windows">
+  <meta name="description" content="A frameless, local-first desktop productivity companion for Windows 11. Natural language tasks, Day One daily journaling with audio voice memos, 0–100 rhythm analytics, procedural ambient audio, Spotify desktop link, and calendar sync. 100% offline & MIT open source.">
+  <meta name="keywords" content="Doing It, Windows 11 productivity, desktop widget, task manager, pomodoro timer, ambient audio, markdown notes, calendar sync, local-first, raycast windows, day one journal">
   <meta name="author" content="Doing It">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sidhu1512.github.io/doing-it/">
@@ -17,27 +17,31 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://sidhu1512.github.io/doing-it/">
   <meta property="og:title" content="Doing It — The Desktop Productivity Overlay for Windows 11">
-  <meta property="og:description" content="Capture tasks in seconds, write markdown notes, synthesize ambient soundscapes, and sync day calendar meetings — right from a frameless Windows desktop overlay.">
+  <meta property="og:description" content="Supercharged productivity. Always within arm’s reach. Frameless Windows 11 overlay with natural language tasks, Day One journaling, rhythm analytics, focus soundscapes, and calendar sync.">
   <meta property="og:image" content="https://sidhu1512.github.io/doing-it/imgs/tasks-view.png">
 
   <!-- Twitter Card -->
   <meta property="twitter:card" content="summary_large_image">
   <meta property="twitter:url" content="https://sidhu1512.github.io/doing-it/">
   <meta property="twitter:title" content="Doing It — The Desktop Productivity Overlay for Windows 11">
-  <meta property="twitter:description" content="A frameless, local-first desktop productivity companion for Windows 11. Smart tasks, markdown notes, procedural focus audio, and calendar sync.">
+  <meta property="twitter:description" content="Frameless, local-first desktop productivity companion for Windows 11. Tasks, Day One journaling, procedural focus audio, and calendar sync.">
   <meta property="twitter:image" content="https://sidhu1512.github.io/doing-it/imgs/tasks-view.png">
 
-  <!-- Favicon Suite (Adaptive dark & light contrast for tabs, bookmarks & mobile) -->
+  <!-- Comprehensive Multi-Format Favicon Suite (100% visible on dark & light browser tabs) -->
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="48x48" href="assets/favicon-48x48.png">
   <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
-  <link rel="icon" type="image/png" href="assets/icon.png">
+  <meta name="theme-color" content="#030712" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 
   <!-- Inter & JetBrains Mono Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="styles.css">
 
@@ -66,9 +70,9 @@
 </head>
 <body>
 
-  <!-- Ambient Background Grids & Chromatic Aurora -->
-  <div class="bg-grid-pattern"></div>
-  <div class="bg-aurora-glow"></div>
+  <!-- Ambient Grid Patterns & Chromatic Aurora Beam -->
+  <div class="bg-grid-pattern" aria-hidden="true"></div>
+  <div class="bg-aurora-glow" aria-hidden="true"></div>
 
   <!-- Floating Glass Pill Navbar (Aceternity UI Standard) -->
   <header class="navbar-wrapper">
@@ -84,6 +88,7 @@
 
       <ul class="nav-links">
         <li><a href="#showcase" class="nav-link-pill">Showcase</a></li>
+        <li><a href="#demos" class="nav-link-pill">Interactive Demos</a></li>
         <li><a href="#audio" class="nav-link-pill">Ambient Audio</a></li>
         <li><a href="#features" class="nav-link-pill">Features</a></li>
         <li><a href="#shortcuts" class="nav-link-pill">Shortcuts</a></li>
@@ -91,6 +96,11 @@
       </ul>
 
       <div class="nav-actions">
+        <!-- Raycast Palette Trigger -->
+        <button class="btn-pill-ctrlk open-raycast-btn" title="Open Raycast Palette (Ctrl + K)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <span>Ctrl K</span>
+        </button>
         <a href="https://github.com/sidhu1512/doing-it" target="_blank" rel="noopener noreferrer" class="btn-pill-github" title="Star on GitHub">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
           <span>Star</span>
@@ -103,34 +113,24 @@
   </header>
 
   <main>
-    <!-- Hero Section -->
+    <!-- =====================================================================
+         HERO SECTION WITH ACETERNITY LAMP & CANVAS SPARKLES
+         ===================================================================== -->
     <section class="hero">
-      <!-- Aceternity SVG Conic Spotlight -->
-      <div class="spotlight-wrapper" aria-hidden="true">
-        <svg class="spotlight-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3787 2842" fill="none">
-          <g filter="url(#hero-spotlight-filter)">
-            <ellipse 
-              cx="1924.71" 
-              cy="273.501" 
-              rx="1924.71" 
-              ry="273.501" 
-              transform="matrix(-0.822377 -0.568943 -0.568943 0.822377 3631.88 2291.09)" 
-              fill="white" 
-              fill-opacity="0.16"
-            />
-          </g>
-          <defs>
-            <filter id="hero-spotlight-filter" x="0.860352" y="0.838989" width="3785.16" height="2840.26" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
-              <feFlood flood-opacity="0" result="BackgroundImageFix"/>
-              <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
-              <feGaussianBlur stdDeviation="151" result="effect1_foregroundBlur"/>
-            </filter>
-          </defs>
-        </svg>
+      <!-- 60FPS Interactive Canvas Sparkles -->
+      <canvas id="sparkles-canvas" class="sparkles-canvas" aria-hidden="true"></canvas>
+
+      <!-- Aceternity Lamp Light Cone Architecture -->
+      <div class="lamp-wrapper" aria-hidden="true">
+        <div class="lamp-cone lamp-cone-left"></div>
+        <div class="lamp-cone lamp-cone-right"></div>
+        <div class="lamp-blur-pill"></div>
+        <div class="lamp-beam-line"></div>
+        <div class="lamp-glow-bloom"></div>
       </div>
 
       <div class="container hero-container">
-        <!-- JetBrains Mono Radar Ping Badge -->
+        <!-- Radar Dot Status Pill -->
         <div class="hero-badge-pill">
           <span class="radar-dot-wrapper">
             <span class="radar-ping"></span>
@@ -141,6 +141,7 @@
           <span class="badge-sub-text">Day One Journaling &amp; Rhythm Analytics</span>
         </div>
 
+        <!-- Radiant Aceternity Headline -->
         <h1 class="hero-headline">
           Supercharged productivity.
           <span class="hero-headline-sub">Always within arm’s reach.</span>
@@ -150,33 +151,73 @@
           A frameless, local-first desktop overlay combining natural language task capture, Day One-style daily journaling, audio voice notes, productivity rhythm analytics, procedural focus soundscapes, and calendar synchronization — pinned above your workspace or docked to your display edge.
         </p>
 
+        <!-- CTA Action Bar -->
         <div class="hero-cta-bar">
           <a href="https://github.com/sidhu1512/doing-it/releases/download/v4.4.0/Doing.It.Setup.4.4.0.exe" class="btn-aceternity-primary">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
             <span>Download for Windows 10 / 11</span>
             <span class="btn-shimmer-sweep"></span>
           </a>
-          <a href="https://github.com/sidhu1512/doing-it" target="_blank" rel="noopener noreferrer" class="btn-aceternity-secondary">
+          <button class="btn-aceternity-secondary open-raycast-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <span>Try Live Raycast (Ctrl + K)</span>
+          </button>
+          <a href="https://github.com/sidhu1512/doing-it" target="_blank" rel="noopener noreferrer" class="btn-aceternity-tertiary">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-            <span>GitHub Repository</span>
+            <span>GitHub</span>
           </a>
         </div>
 
         <div class="hero-meta-note">
-          100% Free &amp; Open Source under MIT License &bull; <strong>Zero Accounts or Telemetry</strong> &bull; 64-bit Windows
+          100% Free &amp; Open Source under MIT License &bull; <strong>Zero Accounts or Telemetry</strong> &bull; 64-bit Windows 10 &amp; 11
         </div>
 
-        <!-- Authentic Multi-Window Desktop Stage -->
+        <!-- ===================================================================
+             AUTHENTIC 3D MULTI-WINDOW STAGE WITH WINDOWS 11 FLUENT FRAME
+             =================================================================== -->
         <div class="stage-wrap">
           <div class="stage-inner">
-            <!-- Center: Main 380px Widget with Moving Border Beam -->
+            <!-- Main Windows 11 Overlay Frame -->
             <div class="widget-mockup-frame">
+              <!-- Moving Border Beam -->
+              <div class="border-beam-line"></div>
+
+              <!-- Windows 11 Glass Frame Titlebar -->
+              <div class="win11-titlebar">
+                <div class="win11-title-left">
+                  <img src="assets/icon.png" alt="App Icon" class="win11-icon">
+                  <span class="win11-app-title">Doing It</span>
+                  <span class="win11-badge">Pinned</span>
+                </div>
+
+                <!-- Windows 11 Caption Controls -->
+                <div class="win11-controls">
+                  <span class="win11-btn win11-min" title="Minimize">&minus;</span>
+                  <span class="win11-btn win11-max" title="Maximize">&#9633;</span>
+                  <span class="win11-btn win11-close" title="Close">&times;</span>
+                </div>
+              </div>
+
+              <!-- Interactive Hero Tab Pill Bar -->
+              <div class="hero-tabs-slider">
+                <button class="hero-tab-pill active" data-view="tasks">Tasks &amp; Streaks</button>
+                <button class="hero-tab-pill" data-view="diary">Day One Diary</button>
+                <button class="hero-tab-pill" data-view="analytics">Rhythm Analytics</button>
+                <button class="hero-tab-pill" data-view="focus">Focus Studio</button>
+                <button class="hero-tab-pill" data-view="notes">Notes</button>
+                <button class="hero-tab-pill" data-view="planner">Planner</button>
+                <button class="hero-tab-pill" data-view="palette">Command Palette</button>
+                <button class="hero-tab-pill" data-view="settings">Settings</button>
+              </div>
+
+              <!-- Real High-DPI Screenshot Canvas Frame -->
               <div class="widget-mockup-inner">
-                <img src="imgs/tasks-view.png" alt="Doing It Main Tasks View" class="widget-img">
+                <img src="imgs/tasks-view.png" alt="Doing It Main Tasks View" class="widget-img zoomable-img" id="hero-mockup-img">
+                <div class="widget-zoom-hint">Click image to inspect full-res 1:1</div>
               </div>
             </div>
 
-            <!-- Side Satellite Windows -->
+            <!-- Side Floating Satellites (3D Depth) -->
             <div class="stage-satellites">
               <!-- Satellite 1: Spotlight Quick Add -->
               <div class="satellite-card">
@@ -184,7 +225,7 @@
                   <span class="satellite-title">Spotlight Quick Add</span>
                   <span class="satellite-badge">Ctrl + Shift + A</span>
                 </div>
-                <img src="imgs/quick-add.png" alt="Spotlight Quick Add Bar" class="satellite-img">
+                <img src="imgs/quick-add.png" alt="Spotlight Quick Add Bar" class="satellite-img zoomable-img">
               </div>
 
               <!-- Satellite 2: Detached Mini-Timer PiP -->
@@ -193,16 +234,25 @@
                   <span class="satellite-title">Picture-in-Picture Mini Timer</span>
                   <span class="satellite-badge">Always on Top</span>
                 </div>
-                <img src="imgs/mini-timer.png" alt="Mini Timer Pill" class="satellite-img">
+                <img src="imgs/mini-timer.png" alt="Mini Timer Pill" class="satellite-img zoomable-img">
               </div>
 
-              <!-- Satellite 3: Floating AssistiveTouch Bubble -->
+              <!-- Satellite 3: Raycast Command Palette Teaser -->
+              <div class="satellite-card satellite-palette open-raycast-btn" style="cursor: pointer;">
+                <div class="satellite-header">
+                  <span class="satellite-title">Raycast Command Palette</span>
+                  <span class="satellite-badge">Ctrl + K</span>
+                </div>
+                <img src="imgs/palette-view.png" alt="Command Palette" class="satellite-img zoomable-img">
+              </div>
+
+              <!-- Satellite 4: AssistiveTouch Bubble -->
               <div class="satellite-card">
                 <div class="satellite-header">
                   <span class="satellite-title">AssistiveTouch Companion</span>
-                  <span class="satellite-badge">48 × 48 px</span>
+                  <span class="satellite-badge">Floating</span>
                 </div>
-                <img src="imgs/fab-overlay.png" alt="AssistiveTouch Bubble" class="satellite-img">
+                <img src="imgs/fab-overlay.png" alt="AssistiveTouch Bubble" class="satellite-img zoomable-img">
               </div>
             </div>
           </div>
@@ -210,13 +260,516 @@
       </div>
     </section>
 
-    <!-- Interactive Tabbed Feature Gallery -->
+    <!-- =====================================================================
+         ACETERNITY INFINITE MOVING TECH MARQUEE
+         ===================================================================== -->
+    <section class="marquee-section" aria-label="Technical Highlights">
+      <div class="marquee-track">
+        <div class="marquee-content">
+          <div class="marquee-card"><span class="m-dot dot-cyan"></span>100% Offline Local-First</div>
+          <div class="marquee-card"><span class="m-dot dot-purple"></span>RFC 5545 iCalendar Meeting Sync</div>
+          <div class="marquee-card"><span class="m-dot dot-green"></span>Native Windows Spotify Process Link</div>
+          <div class="marquee-card"><span class="m-dot dot-amber"></span>Day One Guided Daily Diary &amp; Voice Notes</div>
+          <div class="marquee-card"><span class="m-dot dot-cyan"></span>Procedural Web Audio Zero-Asset Synthesizer</div>
+          <div class="marquee-card"><span class="m-dot dot-purple"></span>Raycast-Grade Command Palette (Ctrl+K)</div>
+          <div class="marquee-card"><span class="m-dot dot-blue"></span>Windows 11 Mica &amp; Acrylic Blur</div>
+          <div class="marquee-card"><span class="m-dot dot-amber"></span>Atomic JSON File Staging &amp; 5-Day Backups</div>
+          <div class="marquee-card"><span class="m-dot dot-pink"></span>Burnout Guard Circadian Heuristics</div>
+          <div class="marquee-card"><span class="m-dot dot-green"></span>Zero Telemetry &amp; MIT Licensed</div>
+        </div>
+        <!-- Duplicated for seamless infinite loop -->
+        <div class="marquee-content" aria-hidden="true">
+          <div class="marquee-card"><span class="m-dot dot-cyan"></span>100% Offline Local-First</div>
+          <div class="marquee-card"><span class="m-dot dot-purple"></span>RFC 5545 iCalendar Meeting Sync</div>
+          <div class="marquee-card"><span class="m-dot dot-green"></span>Native Windows Spotify Process Link</div>
+          <div class="marquee-card"><span class="m-dot dot-amber"></span>Day One Guided Daily Diary &amp; Voice Notes</div>
+          <div class="marquee-card"><span class="m-dot dot-cyan"></span>Procedural Web Audio Zero-Asset Synthesizer</div>
+          <div class="marquee-card"><span class="m-dot dot-purple"></span>Raycast-Grade Command Palette (Ctrl+K)</div>
+          <div class="marquee-card"><span class="m-dot dot-blue"></span>Windows 11 Mica &amp; Acrylic Blur</div>
+          <div class="marquee-card"><span class="m-dot dot-amber"></span>Atomic JSON File Staging &amp; 5-Day Backups</div>
+          <div class="marquee-card"><span class="m-dot dot-pink"></span>Burnout Guard Circadian Heuristics</div>
+          <div class="marquee-card"><span class="m-dot dot-green"></span>Zero Telemetry &amp; MIT Licensed</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         INTERACTIVE COMPONENT PLAYGROUND (ACETERNITY LIVE DEMOS)
+         ===================================================================== -->
+    <section class="section-pad" id="demos">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-tagline">Real-Time Interaction</span>
+          <h2 class="section-heading">Experience Doing It live in your browser.</h2>
+          <p class="section-subheading">Test the exact engines running inside our Windows 11 desktop overlay right now without installing.</p>
+        </div>
+
+        <div class="demos-grid">
+          <!-- Live Demo 1: Natural Language Task Engine & Habit Streaks -->
+          <div class="demo-panel-card">
+            <div class="demo-panel-header">
+              <div class="demo-panel-title-group">
+                <div class="demo-icon-badge" style="color: #38bdf8; background: rgba(56, 189, 248, 0.1);">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                </div>
+                <div>
+                  <h3 class="demo-panel-title">Chrono NLP Task Parser</h3>
+                  <p class="demo-panel-desc">Type human phrases with due dates and priority tags</p>
+                </div>
+              </div>
+              <span class="demo-status-pill">Interactive</span>
+            </div>
+
+            <!-- NLP Typing Input Bar -->
+            <div class="nlp-input-wrapper">
+              <input type="text" id="nlp-demo-input" class="nlp-text-input" placeholder="e.g. Deploy Doing It v4.4 tomorrow 5pm !high" value="Deploy Doing It v4.4 to GitHub Pages tomorrow 5pm !high">
+              <button id="nlp-add-btn" class="nlp-add-button" title="Add Task">+ Add</button>
+            </div>
+
+            <!-- Quick Presets -->
+            <div class="nlp-presets-row">
+              <span class="nlp-preset-label">Try:</span>
+              <button class="nlp-preset-pill" data-preset="Review 24h rhythm analytics today 2pm !urgent">"Review 24h rhythm analytics today 2pm !urgent"</button>
+              <button class="nlp-preset-pill" data-preset="Weekly architecture sync Friday 10am !med">"Weekly sync Friday 10am !med"</button>
+              <button class="nlp-preset-pill" data-preset="Daily meditation habit #streak">"Daily meditation #streak"</button>
+            </div>
+
+            <!-- Real-Time Extracted Entity Chips -->
+            <div class="nlp-parse-feedback">
+              <div class="nlp-feedback-item">
+                <span class="nlp-feedback-label">Parsed Title:</span>
+                <span class="nlp-feedback-val" id="nlp-parsed-title">Deploy Doing It v4.4 to GitHub Pages</span>
+              </div>
+              <div class="nlp-feedback-item">
+                <span class="nlp-feedback-label">Due Date:</span>
+                <span class="nlp-badge nlp-badge-date" id="nlp-due-date-badge">Tomorrow, 5:00 PM</span>
+              </div>
+              <div class="nlp-feedback-item">
+                <span class="nlp-feedback-label">Priority:</span>
+                <span class="nlp-badge nlp-badge-high" id="nlp-priority-badge">HIGH</span>
+              </div>
+            </div>
+
+            <!-- Live Interactive Checklist -->
+            <div class="demo-tasks-container" id="nlp-tasks-demo-list">
+              <div class="demo-task-item">
+                <div class="demo-task-left">
+                  <input type="checkbox" class="demo-task-check" checked>
+                  <span class="demo-task-label">Finalize Doing It v4.4 release notes &amp; GitHub Pages</span>
+                </div>
+                <div class="demo-task-tags">
+                  <span class="demo-date-tag">Today, 5:00 PM</span>
+                  <span class="nlp-badge nlp-badge-high">HIGH</span>
+                </div>
+              </div>
+              <div class="demo-task-item">
+                <div class="demo-task-left">
+                  <input type="checkbox" class="demo-task-check">
+                  <span class="demo-task-label">Morning Deep Work Meditation (Habit)</span>
+                </div>
+                <div class="demo-task-tags">
+                  <span class="demo-date-tag">Streak: 8 days 🔥</span>
+                  <span class="nlp-badge nlp-badge-medium">HABIT</span>
+                </div>
+              </div>
+              <div class="demo-task-item">
+                <div class="demo-task-left">
+                  <input type="checkbox" class="demo-task-check">
+                  <span class="demo-task-label">Inspect Spotify Desktop local link &amp; audio visualizer</span>
+                </div>
+                <div class="demo-task-tags">
+                  <span class="demo-date-tag">Tomorrow</span>
+                  <span class="nlp-badge nlp-badge-normal">NORMAL</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Live Demo 2: Detached Mini-Timer PIP Widget -->
+          <div class="demo-panel-card">
+            <div class="demo-panel-header">
+              <div class="demo-panel-title-group">
+                <div class="demo-icon-badge" style="color: #ec4899; background: rgba(236, 72, 153, 0.1);">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                </div>
+                <div>
+                  <h3 class="demo-panel-title">Picture-in-Picture Mini Timer</h3>
+                  <p class="demo-panel-desc">Interactive floating Pomodoro countdown arc</p>
+                </div>
+              </div>
+              <span class="demo-status-pill">Interactive</span>
+            </div>
+
+            <!-- Mode Selector -->
+            <div class="timer-mode-selector">
+              <button class="timer-mode-pill active" data-mins="25">25m Focus</button>
+              <button class="timer-mode-pill" data-mins="5">5m Break</button>
+              <button class="timer-mode-pill" data-mins="50">50m Deep Flow</button>
+            </div>
+
+            <!-- Circular SVG Timer Gauge -->
+            <div class="timer-visual-stage">
+              <div class="timer-svg-box">
+                <svg class="timer-ring-svg" width="130" height="130" viewBox="0 0 100 100">
+                  <circle class="timer-ring-bg" cx="50" cy="50" r="40"/>
+                  <circle class="timer-ring-meter" id="mini-timer-progress-ring" cx="50" cy="50" r="40"/>
+                </svg>
+                <div class="timer-readout">
+                  <span class="timer-digits" id="mini-timer-time">25:00</span>
+                  <span class="timer-label">REMAINING</span>
+                </div>
+              </div>
+
+              <div class="timer-actions-box">
+                <div class="timer-task-chip">
+                  <span class="timer-task-dot"></span>
+                  <span>Ship Doing It v4.4 Aceternity UI</span>
+                </div>
+
+                <div class="timer-btn-row">
+                  <button class="btn-timer-primary" id="mini-timer-toggle-btn" title="Start/Pause Timer">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    <span>Start</span>
+                  </button>
+                  <button class="btn-timer-secondary" id="mini-timer-reset-btn" title="Reset">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                    <span>Reset</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Mini Timer Feature Callout -->
+            <div class="timer-pip-callout">
+              <span class="pip-icon">&#9638;</span>
+              <span>In the app, this window detaches into a 365&times;65px always-on-top pill that snaps above any IDE or full-screen video game without stealing keyboard focus.</span>
+            </div>
+          </div>
+
+          <!-- Live Demo 3: Circadian Productivity Rhythm & 12-Week Heatmap -->
+          <div class="demo-panel-card" style="grid-column: 1 / -1;">
+            <div class="demo-panel-header">
+              <div class="demo-panel-title-group">
+                <div class="demo-icon-badge" style="color: #10b981; background: rgba(16, 185, 129, 0.1);">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+                </div>
+                <div>
+                  <h3 class="demo-panel-title">Productivity Rhythm &amp; 12-Week Heatmap</h3>
+                  <p class="demo-panel-desc">Dynamic 0–100 score heuristics with circadian energy curves and burnout safeguards</p>
+                </div>
+              </div>
+              <span class="demo-status-pill">Interactive</span>
+            </div>
+
+            <div class="analytics-demo-row">
+              <!-- Score Gauge -->
+              <div class="score-card">
+                <div class="score-gauge-box">
+                  <svg class="score-arc-svg" width="130" height="90" viewBox="0 0 120 70">
+                    <path d="M 15 65 A 45 45 0 0 1 105 65" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="10" stroke-linecap="round"/>
+                    <path d="M 15 65 A 45 45 0 0 1 100 65" fill="none" stroke="#10b981" stroke-width="10" stroke-linecap="round" stroke-dasharray="140" stroke-dashoffset="15"/>
+                    <line id="circadian-dial-needle" x1="60" y1="65" x2="60" y2="25" stroke="#ffffff" stroke-width="3" stroke-linecap="round" style="transform-origin: 60px 65px; transform: rotate(78deg); transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);"/>
+                  </svg>
+                  <div class="score-number-readout">
+                    <span class="score-big">94</span>
+                    <span class="score-denom">/ 100</span>
+                  </div>
+                </div>
+                <div class="score-state-tag">
+                  <span class="score-pulse-dot"></span>
+                  <span>Optimal Flow State</span>
+                </div>
+                <p class="score-summary-text">5.4h deep focus &bull; 8 tasks completed &bull; 0 burnout flags</p>
+              </div>
+
+              <!-- Interactive 12-Week Heatmap Grid -->
+              <div class="heatmap-card">
+                <div class="heatmap-header">
+                  <span class="heatmap-title">12-Week Consistency Heatmap (84 Days Tracked)</span>
+                  <div class="heatmap-legend">
+                    <span>Less</span>
+                    <span class="hm-cell hm-0"></span>
+                    <span class="hm-cell hm-1"></span>
+                    <span class="hm-cell hm-2"></span>
+                    <span class="hm-cell hm-3"></span>
+                    <span class="hm-cell hm-4"></span>
+                    <span>More</span>
+                  </div>
+                </div>
+
+                <!-- 12-Week Grid Render -->
+                <div class="heatmap-grid" id="demo-heatmap-grid">
+                  <!-- Generating 84 realistic activity cells -->
+                  <span class="hm-cell hm-4" title="Oct 7: 6.2h Focus (4 sessions)"></span>
+                  <span class="hm-cell hm-3" title="Oct 6: 4.8h Focus (3 sessions)"></span>
+                  <span class="hm-cell hm-4" title="Oct 5: 5.5h Focus (4 sessions)"></span>
+                  <span class="hm-cell hm-2" title="Oct 4: 2.5h Focus (2 sessions)"></span>
+                  <span class="hm-cell hm-4" title="Oct 3: 6.0h Focus (5 sessions)"></span>
+                  <span class="hm-cell hm-3" title="Oct 2: 4.2h Focus (3 sessions)"></span>
+                  <span class="hm-cell hm-3" title="Oct 1: 4.5h Focus (3 sessions)"></span>
+
+                  <span class="hm-cell hm-2" title="Sep 30: 3.1h Focus"></span>
+                  <span class="hm-cell hm-4" title="Sep 29: 5.8h Focus"></span>
+                  <span class="hm-cell hm-4" title="Sep 28: 6.4h Focus"></span>
+                  <span class="hm-cell hm-3" title="Sep 27: 4.0h Focus"></span>
+                  <span class="hm-cell hm-1" title="Sep 26: 1.5h Focus"></span>
+                  <span class="hm-cell hm-3" title="Sep 25: 4.3h Focus"></span>
+                  <span class="hm-cell hm-4" title="Sep 24: 5.9h Focus"></span>
+
+                  <span class="hm-cell hm-3" title="Sep 23: 4.5h Focus"></span>
+                  <span class="hm-cell hm-4" title="Sep 22: 6.0h Focus"></span>
+                  <span class="hm-cell hm-2" title="Sep 21: 2.8h Focus"></span>
+                  <span class="hm-cell hm-3" title="Sep 20: 4.1h Focus"></span>
+                  <span class="hm-cell hm-4" title="Sep 19: 6.5h Focus"></span>
+                  <span class="hm-cell hm-3" title="Sep 18: 4.0h Focus"></span>
+                  <span class="hm-cell hm-4" title="Sep 17: 5.2h Focus"></span>
+
+                  <span class="hm-cell hm-2" title="Sep 16: 3.0h Focus"></span>
+                  <span class="hm-cell hm-4" title="Sep 15: 5.8h Focus"></span>
+                  <span class="hm-cell hm-3" title="Sep 14: 4.2h Focus"></span>
+                  <span class="hm-cell hm-1" title="Sep 13: 1.8h Focus"></span>
+                  <span class="hm-cell hm-4" title="Sep 12: 6.1h Focus"></span>
+                  <span class="hm-cell hm-3" title="Sep 11: 4.4h Focus"></span>
+                  <span class="hm-cell hm-4" title="Sep 10: 5.5h Focus"></span>
+
+                  <span class="hm-cell hm-3" title="Sep 9: 4.2h Focus"></span>
+                  <span class="hm-cell hm-4" title="Sep 8: 6.0h Focus"></span>
+                  <span class="hm-cell hm-2" title="Sep 7: 2.7h Focus"></span>
+                  <span class="hm-cell hm-3" title="Sep 6: 4.0h Focus"></span>
+                  <span class="hm-cell hm-4" title="Sep 5: 6.3h Focus"></span>
+                  <span class="hm-cell hm-3" title="Sep 4: 4.1h Focus"></span>
+                  <span class="hm-cell hm-4" title="Sep 3: 5.4h Focus"></span>
+
+                  <span class="hm-cell hm-2" title="Sep 2: 3.2h Focus"></span>
+                  <span class="hm-cell hm-4" title="Sep 1: 5.7h Focus"></span>
+                  <span class="hm-cell hm-3" title="Aug 31: 4.0h Focus"></span>
+                  <span class="hm-cell hm-1" title="Aug 30: 1.6h Focus"></span>
+                  <span class="hm-cell hm-4" title="Aug 29: 6.2h Focus"></span>
+                  <span class="hm-cell hm-3" title="Aug 28: 4.5h Focus"></span>
+                  <span class="hm-cell hm-4" title="Aug 27: 5.8h Focus"></span>
+
+                  <span class="hm-cell hm-3" title="Aug 26: 4.3h Focus"></span>
+                  <span class="hm-cell hm-4" title="Aug 25: 6.1h Focus"></span>
+                  <span class="hm-cell hm-2" title="Aug 24: 2.9h Focus"></span>
+                  <span class="hm-cell hm-3" title="Aug 23: 4.1h Focus"></span>
+                  <span class="hm-cell hm-4" title="Aug 22: 6.4h Focus"></span>
+                  <span class="hm-cell hm-3" title="Aug 21: 4.0h Focus"></span>
+                  <span class="hm-cell hm-4" title="Aug 20: 5.3h Focus"></span>
+
+                  <span class="hm-cell hm-2" title="Aug 19: 3.1h Focus"></span>
+                  <span class="hm-cell hm-4" title="Aug 18: 5.9h Focus"></span>
+                  <span class="hm-cell hm-3" title="Aug 17: 4.2h Focus"></span>
+                  <span class="hm-cell hm-1" title="Aug 16: 1.7h Focus"></span>
+                  <span class="hm-cell hm-4" title="Aug 15: 6.0h Focus"></span>
+                  <span class="hm-cell hm-3" title="Aug 14: 4.4h Focus"></span>
+                  <span class="hm-cell hm-4" title="Aug 13: 5.6h Focus"></span>
+
+                  <span class="hm-cell hm-3" title="Aug 12: 4.1h Focus"></span>
+                  <span class="hm-cell hm-4" title="Aug 11: 6.2h Focus"></span>
+                  <span class="hm-cell hm-2" title="Aug 10: 2.8h Focus"></span>
+                  <span class="hm-cell hm-3" title="Aug 9: 4.0h Focus"></span>
+                  <span class="hm-cell hm-4" title="Aug 8: 6.5h Focus"></span>
+                  <span class="hm-cell hm-3" title="Aug 7: 4.2h Focus"></span>
+                  <span class="hm-cell hm-4" title="Aug 6: 5.4h Focus"></span>
+
+                  <span class="hm-cell hm-2" title="Aug 5: 3.0h Focus"></span>
+                  <span class="hm-cell hm-4" title="Aug 4: 5.8h Focus"></span>
+                  <span class="hm-cell hm-3" title="Aug 3: 4.1h Focus"></span>
+                  <span class="hm-cell hm-1" title="Aug 2: 1.5h Focus"></span>
+                  <span class="hm-cell hm-4" title="Aug 1: 6.3h Focus"></span>
+                  <span class="hm-cell hm-3" title="Jul 31: 4.4h Focus"></span>
+                  <span class="hm-cell hm-4" title="Jul 30: 5.7h Focus"></span>
+
+                  <span class="hm-cell hm-3" title="Jul 29: 4.3h Focus"></span>
+                  <span class="hm-cell hm-4" title="Jul 28: 6.0h Focus"></span>
+                  <span class="hm-cell hm-2" title="Jul 27: 2.7h Focus"></span>
+                  <span class="hm-cell hm-3" title="Jul 26: 4.0h Focus"></span>
+                  <span class="hm-cell hm-4" title="Jul 25: 6.4h Focus"></span>
+                  <span class="hm-cell hm-3" title="Jul 24: 4.1h Focus"></span>
+                  <span class="hm-cell hm-4" title="Jul 23: 5.5h Focus"></span>
+
+                  <span class="hm-cell hm-2" title="Jul 22: 3.1h Focus"></span>
+                  <span class="hm-cell hm-4" title="Jul 21: 5.9h Focus"></span>
+                  <span class="hm-cell hm-3" title="Jul 20: 4.2h Focus"></span>
+                  <span class="hm-cell hm-1" title="Jul 19: 1.8h Focus"></span>
+                  <span class="hm-cell hm-4" title="Jul 18: 6.1h Focus"></span>
+                  <span class="hm-cell hm-3" title="Jul 17: 4.5h Focus"></span>
+                  <span class="hm-cell hm-4" title="Jul 16: 5.8h Focus"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         PROCEDURAL WEB AUDIO SYNTHESIZER SOUNDBOARD
+         ===================================================================== -->
+    <section class="section-pad" id="audio">
+      <div class="container">
+        <div class="soundboard-card">
+          <div style="text-align: center; max-width: 680px; margin: 0 auto 28px auto;">
+            <span class="section-tagline">Web Audio Procedural Engine</span>
+            <h2 class="section-heading">Zero-Asset Ambient Soundscapes</h2>
+            <p class="section-subheading">
+              Doing It synthesizes focus audio in real time using math and Web Audio API filters. No heavy MP3 audio assets or network downloads. Click below to test live with our frequency visualizer:
+            </p>
+          </div>
+
+          <!-- Live Real-Time Canvas Audio Visualizer -->
+          <div class="visualizer-stage-wrapper">
+            <canvas id="audio-visualizer-canvas" class="visualizer-canvas" width="600" height="75"></canvas>
+            <div class="visualizer-now-playing" id="sound-now-playing">Synthesizer Idle</div>
+          </div>
+
+          <!-- Sound Controls Grid -->
+          <div class="soundboard-grid">
+            <button class="sound-btn" data-sound="brown">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5v14M7 9v6M22 8v8M2 11v2"/></svg>
+              <span class="sound-btn-title">Brown Noise</span>
+              <span class="sound-btn-desc">Deep low-pass filtered rumble (450Hz)</span>
+            </button>
+
+            <button class="sound-btn" data-sound="rain">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"/><line x1="8" y1="19" x2="8" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="16" y1="19" x2="16" y2="21"/></svg>
+              <span class="sound-btn-title">Rainfall</span>
+              <span class="sound-btn-desc">Filtered acoustic precipitation</span>
+            </button>
+
+            <button class="sound-btn" data-sound="forest">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L7 9h3l-4 7h6l-3 5h4v-3h2v3h4l-3-5h6l-4-7h3z"/></svg>
+              <span class="sound-btn-title">Forest Breeze</span>
+              <span class="sound-btn-desc">Modulated organic wind noise</span>
+            </button>
+
+            <button class="sound-btn" data-sound="lofi">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12a4 4 0 0 1 8 0M6 12a6 6 0 0 1 12 0"/></svg>
+              <span class="sound-btn-title">Lo-Fi Calm</span>
+              <span class="sound-btn-desc">6Hz theta-wave binaural oscillators</span>
+            </button>
+          </div>
+
+          <!-- Volume Slider Bar -->
+          <div class="audio-master-volume">
+            <span class="vol-label">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+              Volume:
+            </span>
+            <input type="range" id="audio-volume-slider" min="0.02" max="0.5" step="0.01" value="0.2" class="vol-slider">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         GLOWING 3D BENTO GRID (WINDOWS 11 OS SYNERGY)
+         ===================================================================== -->
+    <section class="section-pad" id="features">
+      <div class="container">
+        <div class="section-head">
+          <span class="section-tagline">Operating System Synergy</span>
+          <h2 class="section-heading">Deep native Windows 11 integration.</h2>
+          <p class="section-subheading">Crafted specifically for the Windows desktop environment with zero latency.</p>
+        </div>
+
+        <div class="bento-row">
+          <!-- Card 1 (Span 2) -->
+          <div class="bento-item span-2">
+            <div class="bento-inner-content">
+              <div class="bento-icon-tag" style="color: #38bdf8;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="17" x2="12" y2="22"/><path d="M5 17h14v-2l-2-2V5a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v8l-2 2v2z"/></svg>
+              </div>
+              <h3 class="bento-h">Always-On-Top Pinning &amp; Edge Docking</h3>
+              <p class="bento-p">
+                Pin the widget floating above code editors and browser viewports with 1 click. Drag within 20px of any display boundary to dock into a full-height sidebar with multi-monitor memory.
+              </p>
+            </div>
+            <span class="bento-tag"><span class="bento-tag-dot" style="background: #38bdf8; box-shadow: 0 0 6px #38bdf8;"></span>DWM Acrylic Blur</span>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="bento-item">
+            <div class="bento-inner-content">
+              <div class="bento-icon-tag" style="color: #10b981;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7 10c3-1 7-1 10 1M8 13c2.5-.8 6-.8 8.5.8M9 16c2-.5 4.5-.5 6.5.6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              </div>
+              <h3 class="bento-h">Live Spotify Desktop Control</h3>
+              <p class="bento-p">
+                Inspects the local Windows Spotify process to display the active track title and artist with Prev / Play-Pause / Next controls.
+              </p>
+            </div>
+            <span class="bento-tag"><span class="bento-tag-dot" style="background: #10b981; box-shadow: 0 0 6px #10b981;"></span>Native Process Link</span>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="bento-item">
+            <div class="bento-inner-content">
+              <div class="bento-icon-tag" style="color: #f59e0b;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              </div>
+              <h3 class="bento-h">100% Local-First &amp; Atomic Staging</h3>
+              <p class="bento-p">
+                All data is written atomically to local JSON staging files before rename, preventing corruption on sudden power loss. Rolling 5-day backups.
+              </p>
+            </div>
+            <span class="bento-tag"><span class="bento-tag-dot" style="background: #f59e0b; box-shadow: 0 0 6px #f59e0b;"></span>Atomic File Writes</span>
+          </div>
+
+          <!-- Card 4 (Span 2) -->
+          <div class="bento-item span-2">
+            <div class="bento-inner-content">
+              <div class="bento-icon-tag" style="color: #a855f7;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              </div>
+              <h3 class="bento-h">Day Planner Agenda &amp; 1-Click Video Meetings</h3>
+              <p class="bento-p">
+                Synchronizes private RFC 5545 <code>.ics</code> calendar URLs from Google Calendar, Microsoft Outlook, or Apple Calendar. Automatically extracts video meeting links (Google Meet, Zoom, Microsoft Teams) with 1-click launch buttons and 5-minute proactive chimes.
+              </p>
+            </div>
+            <span class="bento-tag"><span class="bento-tag-dot" style="background: #a855f7; box-shadow: 0 0 6px #a855f7;"></span>RFC 5545 iCalendar</span>
+          </div>
+
+          <!-- Card 5 -->
+          <div class="bento-item">
+            <div class="bento-inner-content">
+              <div class="bento-icon-tag" style="color: #ec4899;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="13" y2="11"/></svg>
+              </div>
+              <h3 class="bento-h">Day One Diary &amp; Voice Memos</h3>
+              <p class="bento-p">
+                Segregated notebooks, guided daily prompts, 5-point mood &amp; energy tags, and zero-dependency microphone voice notes with custom dark audio player.
+              </p>
+            </div>
+            <span class="bento-tag"><span class="bento-tag-dot" style="background: #ec4899; box-shadow: 0 0 6px #ec4899;"></span>MediaRecorder Audio</span>
+          </div>
+
+          <!-- Card 6 (Span 2) -->
+          <div class="bento-item span-2">
+            <div class="bento-inner-content">
+              <div class="bento-icon-tag" style="color: #6366f1;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              </div>
+              <h3 class="bento-h">Raycast Command Palette (Ctrl+K)</h3>
+              <p class="bento-p">
+                Universal fuzzy search indexing your tasks, notes, diary entries, calendar events, focus timer controls, and system settings. Keyboard-first navigation with arrow keys and direct execution.
+              </p>
+            </div>
+            <span class="bento-tag"><span class="bento-tag-dot" style="background: #6366f1; box-shadow: 0 0 6px #6366f1;"></span>Global Fuzzy Search</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         INTERFACE SHOWCASE & DEEP DIVE GALLERY
+         ===================================================================== -->
     <section class="section-pad" id="showcase">
       <div class="container">
         <div class="section-head">
           <span class="section-tagline">Interface Architecture</span>
           <h2 class="section-heading">Engineered for seamless flow.</h2>
-          <p class="section-subheading">Switch through the unified workspaces built into a single lightweight desktop overlay.</p>
+          <p class="section-subheading">Switch through all 8 authentic workspaces built into a single lightweight desktop overlay.</p>
         </div>
 
         <div class="gallery-container">
@@ -306,152 +859,20 @@
           <!-- Gallery Preview Display -->
           <div class="gallery-preview-frame">
             <div class="gallery-img-container">
-              <img src="imgs/tasks-view.png" alt="Tasks View" id="gallery-target-img">
+              <img src="imgs/tasks-view.png" alt="Tasks View" id="gallery-target-img" class="zoomable-img">
+              <div class="gallery-zoom-button" title="Inspect Full Screen">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+                <span>Click to zoom</span>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Interactive Live Ambient Soundboard -->
-    <section class="section-pad" id="audio">
-      <div class="container">
-        <div class="soundboard-card">
-          <div style="text-align: center; max-width: 680px; margin: 0 auto;">
-            <span class="section-tagline">Web Audio Procedural Engine</span>
-            <h2 class="section-heading">Zero-Asset Ambient Soundscapes</h2>
-            <p class="section-subheading">
-              Doing It synthesizes audio in real time using math and Web Audio API filters. No heavy MP3 files or network downloads. Click below to test live in your browser:
-            </p>
-          </div>
-
-          <div class="soundboard-grid">
-            <button class="sound-btn" data-sound="brown">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5v14M7 9v6M22 8v8M2 11v2"/></svg>
-              <span class="sound-btn-title">Brown Noise</span>
-              <span class="sound-btn-desc">Deep low-pass filtered rumble</span>
-            </button>
-
-            <button class="sound-btn" data-sound="rain">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"/><line x1="8" y1="19" x2="8" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="16" y1="19" x2="16" y2="21"/></svg>
-              <span class="sound-btn-title">Rainfall</span>
-              <span class="sound-btn-desc">Filtered acoustic precipitation</span>
-            </button>
-
-            <button class="sound-btn" data-sound="forest">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L7 9h3l-4 7h6l-3 5h4v-3h2v3h4l-3-5h6l-4-7h3z"/></svg>
-              <span class="sound-btn-title">Forest Breeze</span>
-              <span class="sound-btn-desc">Modulated organic noise</span>
-            </button>
-
-            <button class="sound-btn" data-sound="lofi">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12a4 4 0 0 1 8 0M6 12a6 6 0 0 1 12 0"/></svg>
-              <span class="sound-btn-title">Lo-Fi Calm</span>
-              <span class="sound-btn-desc">6Hz theta-wave binaural beats</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Bento System Architecture -->
-    <section class="section-pad" id="features">
-      <div class="container">
-        <div class="section-head">
-          <span class="section-tagline">Operating System Synergy</span>
-          <h2 class="section-heading">Deep native Windows 11 integration.</h2>
-          <p class="section-subheading">Crafted specifically for the Windows desktop environment with zero latency.</p>
-        </div>
-
-        <div class="bento-row">
-          <!-- Card 1 -->
-          <div class="bento-item span-2">
-            <div>
-              <div class="bento-icon-tag">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="17" x2="12" y2="22"/><path d="M5 17h14v-2l-2-2V5a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v8l-2 2v2z"/></svg>
-              </div>
-              <h3 class="bento-h">Always-On-Top Pinning &amp; Edge Docking</h3>
-              <p class="bento-p">
-                Pin the widget floating above code editors and browser viewports with 1 click. Drag within 20px of any display boundary to dock into a full-height sidebar with multi-monitor memory.
-              </p>
-            </div>
-            <span class="bento-tag"><span class="bento-tag-dot" style="background: #38bdf8; box-shadow: 0 0 6px #38bdf8;"></span>DWM Acrylic Blur</span>
-          </div>
-
-          <!-- Card 2 -->
-          <div class="bento-item">
-            <div>
-              <div class="bento-icon-tag" style="color: #10b981;">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7 10c3-1 7-1 10 1M8 13c2.5-.8 6-.8 8.5.8M9 16c2-.5 4.5-.5 6.5.6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-              </div>
-              <h3 class="bento-h">Live Spotify Desktop Control</h3>
-              <p class="bento-p">
-                Inspects the local Windows Spotify process to display the active track title and artist with Prev / Play-Pause / Next controls.
-              </p>
-            </div>
-            <span class="bento-tag"><span class="bento-tag-dot" style="background: #10b981; box-shadow: 0 0 6px #10b981;"></span>Native Process Link</span>
-          </div>
-
-          <!-- Card 3 -->
-          <div class="bento-item">
-            <div>
-              <div class="bento-icon-tag" style="color: #f59e0b;">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-              </div>
-              <h3 class="bento-h">100% Local-First &amp; Atomic Staging</h3>
-              <p class="bento-p">
-                All data is written atomically to local JSON staging files before rename, preventing corruption on sudden power loss. Rolling 5-day backups.
-              </p>
-            </div>
-            <span class="bento-tag"><span class="bento-tag-dot" style="background: #f59e0b; box-shadow: 0 0 6px #f59e0b;"></span>Atomic File Writes</span>
-          </div>
-
-          <!-- Card 4 -->
-          <div class="bento-item span-2">
-            <div>
-              <div class="bento-icon-tag" style="color: #a855f7;">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-              </div>
-              <h3 class="bento-h">Day Planner Agenda &amp; 1-Click Video Meetings</h3>
-              <p class="bento-p">
-                Synchronizes private RFC 5545 <code>.ics</code> calendar URLs from Google Calendar, Microsoft Outlook, or Apple Calendar. Automatically extracts video meeting links (Google Meet, Zoom, Microsoft Teams) with 1-click launch buttons and 5-minute proactive chimes.
-              </p>
-            </div>
-            <span class="bento-tag"><span class="bento-tag-dot" style="background: #a855f7; box-shadow: 0 0 6px #a855f7;"></span>RFC 5545 iCalendar</span>
-          </div>
-
-          <!-- Card 5 -->
-          <div class="bento-item">
-            <div>
-              <div class="bento-icon-tag" style="color: #ec4899;">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="13" y2="11"/></svg>
-              </div>
-              <h3 class="bento-h">Day One Diary &amp; Voice Memos</h3>
-              <p class="bento-p">
-                Segregated notebooks, guided daily prompts, 5-point mood &amp; energy tags, and zero-dependency microphone voice notes with custom dark audio player.
-              </p>
-            </div>
-            <span class="bento-tag"><span class="bento-tag-dot" style="background: #ec4899; box-shadow: 0 0 6px #ec4899;"></span>MediaRecorder Audio</span>
-          </div>
-
-          <!-- Card 6 -->
-          <div class="bento-item span-2">
-            <div>
-              <div class="bento-icon-tag" style="color: #38bdf8;">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
-              </div>
-              <h3 class="bento-h">Productivity Rhythm &amp; Burnout Guard</h3>
-              <p class="bento-p">
-                Dynamic 0–100 productivity score, 24h circadian energy rhythm, 12-week GitHub-style heatmap, and native heuristics alerting against mental fatigue during long sessions.
-              </p>
-            </div>
-            <span class="bento-tag"><span class="bento-tag-dot" style="background: #38bdf8; box-shadow: 0 0 6px #38bdf8;"></span>Circadian Heuristics</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Keyboard Shortcuts Matrix -->
+    <!-- =====================================================================
+         KEYBOARD SHORTCUTS MATRIX (3D MECHANICAL KEYS)
+         ===================================================================== -->
     <section class="section-pad" id="shortcuts">
       <div class="container">
         <div class="section-head">
@@ -463,7 +884,7 @@
         <div class="kbd-card">
           <div class="kbd-row">
             <div>
-              <span class="kbd-label">Toggle Main Widget</span>
+              <span class="kbd-label">Toggle Main Overlay</span>
               <span class="kbd-context">Global (OS-Wide)</span>
             </div>
             <div class="kbd-badge-group"><kbd>Ctrl</kbd><kbd>Shift</kbd><kbd>N</kbd></div>
@@ -488,14 +909,14 @@
           <div class="kbd-row">
             <div>
               <span class="kbd-label">Raycast-Style Command Palette</span>
-              <span class="kbd-context">In-App</span>
+              <span class="kbd-context">Global &amp; In-App</span>
             </div>
             <div class="kbd-badge-group"><kbd>Ctrl</kbd><kbd>K</kbd></div>
           </div>
 
           <div class="kbd-row">
             <div>
-              <span class="kbd-label">Switch Views (Tasks, Notes, Focus, Plan, Diary, Stats)</span>
+              <span class="kbd-label">Switch Workspaces (Tasks, Notes, Focus, Plan, Diary, Stats)</span>
               <span class="kbd-context">In-App</span>
             </div>
             <div class="kbd-badge-group"><kbd>1</kbd>&ndash;<kbd>6</kbd></div>
@@ -503,7 +924,7 @@
 
           <div class="kbd-row">
             <div>
-              <span class="kbd-label">Navigate Tasks, Notes &amp; Agenda</span>
+              <span class="kbd-label">Navigate Tasks, Notes &amp; Agenda Items</span>
               <span class="kbd-context">In-App</span>
             </div>
             <div class="kbd-badge-group"><kbd>&darr;</kbd><kbd>&uarr;</kbd></div>
@@ -519,16 +940,18 @@
 
           <div class="kbd-row">
             <div>
-              <span class="kbd-label">Delete Highlighted Item / Dismiss Ring</span>
+              <span class="kbd-label">Dismiss Mini-Timer / Close Modal</span>
               <span class="kbd-context">In-App</span>
             </div>
-            <div class="kbd-badge-group"><kbd>Delete</kbd><kbd>Esc</kbd></div>
+            <div class="kbd-badge-group"><kbd>Esc</kbd></div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- FAQ Accordion -->
+    <!-- =====================================================================
+         INTERACTIVE FAQ ACCORDION
+         ===================================================================== -->
     <section class="section-pad" id="faq">
       <div class="container">
         <div class="section-head">
@@ -543,7 +966,7 @@
               <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
             </div>
             <div class="faq-a">
-              Yes, 100%. Doing It is released under the permissive MIT License. You can audit every line of code, run it completely offline, or contribute on GitHub.
+              Yes, 100%. Doing It is released under the permissive MIT License. You can audit every line of code, run it completely offline, or contribute on GitHub. Zero paywalls, zero subscriptions, zero artificial limits.
             </div>
           </div>
 
@@ -553,7 +976,7 @@
               <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
             </div>
             <div class="faq-a">
-              All data is stored locally in standard JSON files inside your <code>%APPDATA%</code> folder. You can also use the <strong>Bring Your Own Cloud (BYOC)</strong> setting to redirect your data directory to OneDrive, Google Drive, or Dropbox for instant, private cross-device sync.
+              All data is stored locally in standard JSON files inside your <code>%APPDATA%/doing-it</code> folder with atomic rename staging. You can also use the <strong>Bring Your Own Cloud (BYOC)</strong> setting to redirect your data directory to OneDrive, Google Drive, or Dropbox for instant, private cross-device sync.
             </div>
           </div>
 
@@ -563,7 +986,7 @@
               <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
             </div>
             <div class="faq-a">
-              No. Doing It is local-first. Task management, markdown parsing, ambient sound synthesis, and keyboard capture work completely offline. Network connectivity is only used if you configure remote <code>.ics</code> calendar sync.
+              No. Doing It is local-first. Task management, Day One journaling, voice recording, markdown parsing, ambient sound synthesis, and keyboard capture work completely offline. Network connectivity is only used if you configure remote <code>.ics</code> calendar sync.
             </div>
           </div>
 
@@ -576,15 +999,28 @@
               Doing It creates rolling daily snapshots in a local <code>backups/</code> folder on startup. In addition, you can export your entire database to a clean JSON file at any time from Settings or via Command Palette (<code>Ctrl+K</code> &rarr; <code>Data: Export Backup JSON</code>).
             </div>
           </div>
+
+          <div class="faq-card">
+            <div class="faq-q">
+              <span>How does Spotify desktop control work?</span>
+              <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div class="faq-a">
+              Doing It inspects the local Windows Spotify desktop client process window title with zero network overhead. It extracts the currently playing artist and song title in real time, and sends native Windows media key commands for instant Prev, Play-Pause, and Next.
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- Bottom CTA Panel -->
+    <!-- =====================================================================
+         BOTTOM CTA PANEL WITH ACETERNITY RADIANT LIGHT CONE
+         ===================================================================== -->
     <section class="section-pad">
       <div class="container">
         <div class="cta-panel">
-          <h2 class="section-heading" style="margin-bottom: 14px;">Reclaim your focus on Windows.</h2>
+          <div class="cta-lamp-bloom" aria-hidden="true"></div>
+          <h2 class="section-heading" style="margin-bottom: 14px;">Reclaim your focus on Windows 11.</h2>
           <p class="section-subheading" style="margin-bottom: 32px;">
             Free, local-first, zero telemetry, and built for speed.
           </p>
@@ -600,13 +1036,22 @@
     </section>
   </main>
 
+  <!-- =======================================================================
+       SITE FOOTER
+       ======================================================================= -->
   <footer class="site-footer">
     <div class="container footer-content">
-      <div>
-        &copy; 2026 Doing It. MIT License. Built for Windows 11.
+      <div class="footer-left">
+        <div class="footer-brand">
+          <img src="assets/icon.png" alt="Doing It Logo" class="footer-logo">
+          <span>Doing It</span>
+        </div>
+        <p class="footer-sub">&copy; 2026 Doing It. Released under the MIT License. Built for Windows 10 &amp; 11.</p>
       </div>
       <div class="footer-nav">
         <a href="#showcase" class="footer-link">Showcase</a>
+        <a href="#demos" class="footer-link">Demos</a>
+        <a href="#audio" class="footer-link">Ambient Audio</a>
         <a href="#features" class="footer-link">Features</a>
         <a href="#shortcuts" class="footer-link">Shortcuts</a>
         <a href="https://github.com/sidhu1512/doing-it/releases" target="_blank" rel="noopener noreferrer" class="footer-link">Releases</a>
@@ -614,6 +1059,53 @@
       </div>
     </div>
   </footer>
+
+  <!-- =======================================================================
+       GLOBAL RAYCAST COMMAND PALETTE MODAL (CTRL + K)
+       ======================================================================= -->
+  <div id="raycast-modal" class="raycast-modal" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="raycast-backdrop"></div>
+    <div class="raycast-dialog">
+      <div class="raycast-header">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" class="raycast-search-icon"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="raycast-search-input" class="raycast-search-input" placeholder="Type a command or search (e.g. 'focus', 'sound', 'diary')..." autocomplete="off" spellcheck="false">
+        <kbd class="raycast-esc-kbd">ESC</kbd>
+      </div>
+
+      <div id="raycast-results-list" class="raycast-results">
+        <!-- Rendered dynamically by app.js -->
+      </div>
+
+      <div class="raycast-footer">
+        <div class="raycast-hint">
+          <kbd>&uarr;</kbd><kbd>&darr;</kbd> Navigate
+        </div>
+        <div class="raycast-hint">
+          <kbd>Enter</kbd> Execute
+        </div>
+        <div class="raycast-hint">
+          <kbd>Esc</kbd> Close
+        </div>
+        <div class="raycast-badge-tag">Raycast Engine v4.4</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =======================================================================
+       SCREENSHOT LIGHTBOX ZOOM INSPECTION MODAL
+       ======================================================================= -->
+  <div id="lightbox-modal" class="lightbox-modal" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="lightbox-backdrop"></div>
+    <div class="lightbox-dialog">
+      <div class="lightbox-topbar">
+        <span id="lightbox-caption" class="lightbox-title">Doing It Interface</span>
+        <button id="lightbox-close-btn" class="lightbox-close-button">&times;</button>
+      </div>
+      <div class="lightbox-content">
+        <img id="lightbox-img" src="" alt="High-Resolution Preview">
+      </div>
+    </div>
+  </div>
 
   <script src="app.js"></script>
 </body>
