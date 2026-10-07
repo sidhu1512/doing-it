@@ -35,6 +35,10 @@ document.addEventListener('DOMContentLoaded', () => {
           galleryImg.style.transform = 'scale(1)';
         }, 140);
       }
+
+      if (window.innerWidth <= 1024) {
+        tab.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      }
     });
   });
 
@@ -188,6 +192,26 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
+    });
+  });
+
+  // 5. Aceternity Reactive Card Spotlight Engine
+  const spotlightElements = document.querySelectorAll(
+    '.bento-item, .soundboard-card, .satellite-card, .kbd-card, .cta-panel'
+  );
+  
+  spotlightElements.forEach(el => {
+    el.addEventListener('mousemove', (e) => {
+      const rect = el.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      el.style.setProperty('--mouse-x', `${x}px`);
+      el.style.setProperty('--mouse-y', `${y}px`);
+    });
+    
+    el.addEventListener('mouseleave', () => {
+      el.style.setProperty('--mouse-x', `-999px`);
+      el.style.setProperty('--mouse-y', `-999px`);
     });
   });
 });
