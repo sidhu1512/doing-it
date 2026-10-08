@@ -659,7 +659,7 @@ class ReactiveStore {
     }
   }
 
-  // ─── DIARY ACTIONS (Day One) ───────────────────────────────
+  // ─── DIARY ACTIONS ─────────────────────────────────────────
   addDiaryEntry(entry) {
     const newEntry = {
       id: Date.now() * 1000 + Math.floor(Math.random() * 1000),

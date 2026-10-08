@@ -41,7 +41,7 @@ function setupIpcHandlers(storeManager, windowManager, system) {
     return true;
   });
 
-  // Diary (Day One Journaling)
+  // Diary (Daily Journaling)
   ipcMain.handle('get-diary', () => storeManager.storeData.diary || []);
   ipcMain.handle('save-diary', (_, diary) => {
     storeManager.storeData.diary = diary;
@@ -477,7 +477,7 @@ function setupIpcHandlers(storeManager, windowManager, system) {
     }
   });
 
-  // Export Diary to Markdown / Day One Format
+  // Export Diary to Markdown Format
   ipcMain.handle('export-diary-markdown', async (_, entryOrDate) => {
     try {
       const todayStr = new Date().toISOString().split('T')[0];

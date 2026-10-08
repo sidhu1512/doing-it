@@ -3,7 +3,7 @@
 ## [4.4.0] — 2026-09-23
 
 ### Added
-- **Day One Daily Journaling Suite**:
+- **Daily Journaling Suite**:
   - Full-featured personal journal with segregated notebooks (Daily, Work, Ideas, Gratitude, Personal).
   - Daily reflective prompts generator for spontaneous writing inspiration.
   - 5-point emotional & energy state tracker (Joyful, Calm, Focused, Tired, Stressed) with visual glowing badges.

@@ -1,6 +1,6 @@
 /* =====================================================================
    Doing It — Modern Desktop Design System & Theme Engine
-   Crafted with Linear, Things 3, and Raycast aesthetic standards
+   Crafted with modern Windows 11 aesthetic standards
    ===================================================================== */
 
 :root {
@@ -456,7 +456,7 @@ html, body {
 }
 
 /* =====================================================================
-   TASK MANAGER (Things 3 & Linear Inspired)
+   TASK MANAGER ENGINE
    ===================================================================== */
 .task-input-card {
   position: relative;
@@ -1269,7 +1269,7 @@ html, body {
 }
 
 /* =====================================================================
-   RAYCAST COMMAND PALETTE (Ctrl+K)
+   COMMAND PALETTE (Ctrl+K)
    ===================================================================== */
 .palette-backdrop {
   position: absolute;
@@ -1849,7 +1849,7 @@ html, body {
 }
 
 /* =====================================================================
-   DAY ONE DIARY COMPONENT STYLES
+   DAILY JOURNAL COMPONENT STYLES
    ===================================================================== */
 .diary-container {
   display: flex;

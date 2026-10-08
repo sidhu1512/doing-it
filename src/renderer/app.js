@@ -131,6 +131,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
       }
 
+      // In Focus view, Space toggles the Pomodoro timer
+      if (currentView === 'focus' && e.key === ' ') {
+        e.preventDefault();
+        const toggleBtn = document.getElementById('btn-focus-toggle');
+        if (toggleBtn) toggleBtn.click();
+        return;
+      }
+
       const highlighted = document.querySelector('.kb-highlight');
       if (highlighted) {
         if (e.key === ' ') {

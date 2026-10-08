@@ -1,5 +1,5 @@
 /**
- * TasksView Component — Things 3 & Linear Inspired Task Engine
+ * TasksView Component — High-Performance Task Engine
  * Smart sections (Today, Upcoming, Backlog, Completed), habit streaks, micro-animations, and Focus linkage.
  */
 

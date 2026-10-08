@@ -83,7 +83,7 @@ test('App — Keyboard navigation includes arrow keys and kb-highlight ring', ()
   assert.ok(content.includes('kb-highlight'), 'App must manage kb-highlight class');
 });
 
-test('DiaryView — Day One features and audio voice recording component definitions', () => {
+test('DiaryView — Daily Journal features and audio voice recording component definitions', () => {
   const diaryPath = path.resolve(__dirname, '../src/renderer/components/DiaryView.js');
   const content = fs.readFileSync(diaryPath, 'utf8');
   assert.ok(content.includes('class DiaryViewComponent'), 'DiaryViewComponent must be declared');

@@ -1,6 +1,6 @@
 /**
  * Doing It — Public Website Showcase Controller
- * Drives Interactive Product Stage, Real-Time Web Audio Synth, Chrono NLP, and Raycast Palette.
+ * Drives Interactive Product Stage, Real-Time Web Audio Synth, Chrono NLP, and Command Palette.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -522,7 +522,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // =========================================================================
-  // 5. RAYCAST COMMAND PALETTE MODAL (Ctrl + K / Global Launcher)
+  // 5. COMMAND PALETTE MODAL (Ctrl + K / Global Launcher)
   // =========================================================================
   const raycastBackdrop = document.getElementById('raycast-backdrop');
   const raycastSearch = document.getElementById('raycast-search');

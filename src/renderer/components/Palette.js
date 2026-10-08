@@ -99,7 +99,7 @@ class PaletteComponent {
       { type: 'cmd', label: 'View: Notes & Scratchpad', action: () => this.store.set('activeView', 'notes') },
       { type: 'cmd', label: 'View: Focus Studio', action: () => this.store.set('activeView', 'focus') },
       { type: 'cmd', label: 'View: Day Planner Agenda', action: () => this.store.set('activeView', 'planner') },
-      { type: 'cmd', label: 'View: Day One Diary & Journal', action: () => this.store.set('activeView', 'diary') },
+      { type: 'cmd', label: 'View: Daily Journal & Reflections', action: () => this.store.set('activeView', 'diary') },
       { type: 'cmd', label: 'View: Productivity & Analytics', action: () => this.store.set('activeView', 'analytics') },
       { type: 'cmd', label: 'Diary: New Reflection or Voice Note', action: () => { this.store.set('activeView', 'diary'); const t = document.getElementById('compose-content'); if (t) t.focus(); } },
       { type: 'cmd', label: 'Diary: Export Journal Markdown', action: () => this.store.exportDiary() },

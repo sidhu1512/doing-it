@@ -21,7 +21,7 @@ contextBridge.exposeInMainWorld('api', {
   getMoods: () => ipcRenderer.invoke('get-moods'),
   saveMoods: (moods) => ipcRenderer.invoke('save-moods', moods),
 
-  // Diary (Day One Journaling)
+  // Diary (Daily Journaling)
   getDiary: () => ipcRenderer.invoke('get-diary'),
   saveDiary: (diary) => ipcRenderer.invoke('save-diary', diary),
   exportDiaryMarkdown: (entryOrDate) => ipcRenderer.invoke('export-diary-markdown', entryOrDate),

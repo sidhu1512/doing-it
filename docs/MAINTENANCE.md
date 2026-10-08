@@ -30,7 +30,7 @@
 
 ## 1. System Overview & Architecture
 
-**Doing It** is a desktop productivity widget engineered for Windows 11. It blends the quick-capture mechanics of Things 3, the typography and themes of Linear, and the speed of Raycast into a lightweight, local-first frameless companion.
+**Doing It** is a desktop productivity widget engineered for Windows 11. It blends ergonomic quick-capture mechanics, clean modern typography, and instantaneous command execution into a lightweight, local-first frameless companion.
 
 ### High-Level Architecture
 ```mermaid

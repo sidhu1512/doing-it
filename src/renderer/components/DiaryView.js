@@ -1,5 +1,5 @@
 /**
- * DiaryView Component — Day One Inspired Personal Journal & Reflection Suite
+ * DiaryView Component — Personal Journal & Reflection Suite
  * Multiple journals, On This Day flashback, daily prompt templates, audio voice recording,
  * micro-mood & energy tracking, calendar day strip with entry indicators, and markdown export.
  *
