@@ -3,328 +3,323 @@ const path = require('path');
 const fs = require('fs');
 const os = require('os');
 
-// Force 2x device scale factor for razor-sharp Retina/4K screenshots
-app.commandLine.appendSwitch('force-device-scale-factor', '2');
-app.setAppUserModelId('com.doingit.desktop.capture');
-
 const StoreManager = require('../src/main/store');
 const WindowManager = require('../src/main/windows');
 const SystemIntegration = require('../src/main/system');
 const { setupIpcHandlers } = require('../src/main/ipc');
 
-const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'doingit-all-views-'));
+app.setAppUserModelId('com.doingit.desktop.capturer');
+
+const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'doingit-captures-'));
 const storeManager = new StoreManager(tmpDir);
 storeManager.initStore();
-
-storeManager.storeData.windowSize = { width: 440, height: 720 };
-const todayStr = new Date().toISOString().split('T')[0];
-
-// 1. Rich Todos & Habits
-storeManager.storeData.todos = [
-  { id: 1, text: 'Ship Doing It v4.4 Aceternity UI Showcase', completed: false, priority: 'high', dueDate: todayStr },
-  { id: 2, text: 'Review 24h Circadian Energy & Rhythm Score', completed: false, priority: 'medium', dueDate: todayStr },
-  { id: 3, text: 'Sync RFC 5545 iCalendar Video Meeting Links', completed: false, priority: 'high', dueDate: todayStr },
-  { id: 4, text: 'Daily Morning Deep Work Session', isHabit: true, streak: 8, completed: true },
-  { id: 5, text: 'Synthesize Lo-Fi Ambient Soundscape & Binaural Beats', completed: true, priority: 'none', dueDate: null },
-  { id: 6, text: 'Inspect Native Spotify Desktop Process Playback', completed: true, priority: 'medium', dueDate: null }
-];
-
-// 2. Day One Diary
-storeManager.storeData.diary = [
-  {
-    id: 101,
-    date: todayStr,
-    time: '09:15',
-    journal: 'work',
-    title: 'Morning Flow State & High Intentions',
-    text: 'Zero friction morning. Pinned Doing It next to VS Code. Captured 6 agenda items via Raycast Ctrl+K. Voice memo attached below summarizing architecture decisions.',
-    mood: 'great',
-    energy: 5,
-    starred: true,
-    tags: ['milestone', 'launch', 'deep-work'],
-    context: 'Visual Studio Code',
-    audio: {
-      filePath: 'memo-launch.webm',
-      mediaUrl: '',
-      duration: 46
-    }
-  },
-  {
-    id: 102,
-    date: todayStr,
-    time: '14:30',
-    journal: 'personal',
-    title: 'Midday Architecture & Energy Check',
-    text: 'Atomic staging JSON writes verified. The 100% local-first model feels instantaneous. Productivity rhythm score hit 94 today.',
-    mood: 'good',
-    energy: 4,
-    starred: false,
-    tags: ['engineering', 'design']
-  }
-];
-
-// 3. Analytics & Focus History
-// 3. Analytics & Focus History (84 days = 12 weeks of rich distributed sessions)
-storeManager.storeData.focusHistory = [];
-const sessionHours = [9, 10, 11, 14, 15, 16];
-const sessionDurations = [25, 30, 45, 50, 40, 35];
-
-for (let d = 0; d < 84; d++) {
-  const dt = new Date();
-  dt.setDate(dt.getDate() - d);
-  const dStr = dt.toISOString().split('T')[0];
-  const dayOfWeek = dt.getDay();
-  const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
-  const count = isWeekend ? (d % 2 === 0 ? 1 : 2) : (3 + (d % 3));
-
-  for (let c = 0; c < count; c++) {
-    const hour = sessionHours[(c + d) % sessionHours.length];
-    const minute = (c * 15) % 60;
-    const dur = sessionDurations[(c * 2 + d) % sessionDurations.length];
-    const dtObj = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate(), hour, minute, 0);
-
-    storeManager.storeData.focusHistory.push({
-      id: 2000 + d * 10 + c,
-      date: dStr,
-      startTime: dtObj.toISOString(),
-      durationMinutes: dur,
-      taskTitle: c % 2 === 0 ? 'Deep Work Flow Sprint' : 'Architecture & Code Review',
-      activeApps: ['VS Code', 'Chrome']
-    });
-  }
-}
-
-// 4. Notes & Scratchpad
-storeManager.storeData.notes = [
-  {
-    id: 401,
-    text: '### Engineering Architecture v4.4\n\n- **Local-First**: Atomic JSON staging prevents data corruption on crash\n- **Procedural Audio**: Web Audio zero-byte noise synthesizer\n- **Raycast Palette**: Global `Ctrl+K` entity & command routing\n- **Spotify Link**: Windows process link with live song polling\n\nCheck repository at https://github.com/sidhu1512/doing-it #docs',
-    pinned: true,
-    timestamp: new Date().toISOString()
-  },
-  {
-    id: 402,
-    text: '### Daily Scratchpad\n\n- [x] Refine Aceternity UI Light Design System (#fafafa)\n- [x] Verify razor-sharp multi-resolution favicons\n- [ ] Deploy live GitHub Pages release\n\n> "Productivity is deliberate focus sustained without friction."',
-    pinned: false,
-    timestamp: new Date().toISOString()
-  }
-];
-
-// 5. Day Planner / Agenda
-storeManager.storeData.calendar = {
-  icsUrl: 'https://example.com/calendar.ics',
-  lastSync: new Date().toISOString(),
-  events: [
-    {
-      id: 'cal-1',
-      title: 'Doing It v4.4 Sprint Architecture Sync',
-      start: `${todayStr}T11:00:00`,
-      end: `${todayStr}T11:45:00`,
-      location: 'Google Meet',
-      meetingUrl: 'https://meet.google.com/abc-defg-hij',
-      meetingType: 'google-meet'
-    },
-    {
-      id: 'cal-2',
-      title: 'Design Review & Aceternity UI Showcase',
-      start: `${todayStr}T14:30:00`,
-      end: `${todayStr}T15:15:00`,
-      location: 'Zoom Meeting',
-      meetingUrl: 'https://zoom.us/j/1234567890',
-      meetingType: 'zoom'
-    }
-  ]
-};
-
-// 6. Settings
-storeManager.storeData.settings = {
-  theme: 'light',
-  alwaysOnTop: true,
-  edgeDocking: true,
-  spotify: {
-    autoPlayOnFocus: true,
-    autoPauseOnComplete: true
-  }
-};
-storeManager.saveStore();
 
 const projectRoot = path.resolve(__dirname, '..');
 const windowManager = new WindowManager(projectRoot, storeManager, SystemIntegration);
 
-const sleep = ms => new Promise(res => setTimeout(res, ms));
+const todayStr = new Date().toISOString().split('T')[0];
+const sampleTodos = [
+  {
+    id: 't-1',
+    text: 'Finalize v4.4 production architecture & showcase',
+    completed: false,
+    priority: 'high',
+    dueDate: todayStr,
+    tags: ['release', 'architecture'],
+    created: Date.now() - 3600000 * 4
+  },
+  {
+    id: 't-2',
+    text: 'Review RFC 5545 iCalendar sync payloads with team',
+    completed: false,
+    priority: 'medium',
+    dueDate: todayStr,
+    tags: ['calendar'],
+    created: Date.now() - 3600000 * 3
+  },
+  {
+    id: 't-3',
+    text: 'Morning Mindfulness & Focus Calibration',
+    completed: true,
+    isHabit: true,
+    streak: 14,
+    priority: 'normal',
+    dueDate: todayStr,
+    created: Date.now() - 3600000 * 8
+  },
+  {
+    id: 't-4',
+    text: 'Circadian Deep Work Block (90m uninterrupted)',
+    completed: true,
+    isHabit: true,
+    streak: 8,
+    priority: 'high',
+    dueDate: todayStr,
+    created: Date.now() - 3600000 * 6
+  },
+  {
+    id: 't-5',
+    text: 'Polish Windows 11 Mica & Acrylic materials',
+    completed: false,
+    priority: 'normal',
+    dueDate: todayStr,
+    tags: ['design'],
+    created: Date.now() - 3600000 * 2
+  },
+  {
+    id: 't-6',
+    text: 'Evening Reflection & Gratitude Log',
+    completed: false,
+    isHabit: true,
+    streak: 21,
+    priority: 'normal',
+    dueDate: todayStr,
+    created: Date.now() - 3600000 * 1
+  }
+];
+
+const sampleDiary = [
+  {
+    id: 'd-1',
+    journal: 'personal',
+    title: 'Thursday Momentum: Deep Work & Clarity',
+    text: 'Early morning architectural push went exceptionally well. Local-first JSON storage eliminates network roundtrips entirely. Feeling sharp, calm, and ready for launch sprint.\n\nKey reflection: Protect the 9am–1pm cognitive peak at all costs.',
+    mood: 'great',
+    energy: 5,
+    starred: true,
+    tags: ['flow', 'architecture', 'velocity'],
+    date: todayStr,
+    created: Date.now() - 3600000 * 2,
+    audio: {
+      filePath: 'voice-note-2026-10-08.webm',
+      mediaUrl: '',
+      duration: 84
+    },
+    context: 'Visual Studio Code'
+  },
+  {
+    id: 'd-2',
+    journal: 'work',
+    title: 'Sprint Debrief: Zero-Asset Audio Engine',
+    text: 'Tested the procedural Web Audio synthesizer across multiple sessions. Brown noise + 6Hz binaural beats noticeably reduced context switching fatigue.',
+    mood: 'good',
+    energy: 4,
+    starred: false,
+    tags: ['focus', 'audio'],
+    date: todayStr,
+    created: Date.now() - 3600000 * 18
+  }
+];
+
+const sampleFocusHistory = [
+  {
+    id: 'f-1',
+    date: todayStr,
+    timestamp: Date.now() - 3600000 * 3,
+    durationMinutes: 45,
+    taskTitle: 'Finalize v4.4 production architecture & showcase',
+    activeApps: ['Visual Studio Code', 'Windows Terminal', 'Doing It']
+  },
+  {
+    id: 'f-2',
+    date: todayStr,
+    timestamp: Date.now() - 3600000 * 5,
+    durationMinutes: 50,
+    taskTitle: 'Review RFC 5545 iCalendar sync payloads with team',
+    activeApps: ['Visual Studio Code', 'Edge Dev']
+  },
+  {
+    id: 'f-3',
+    date: todayStr,
+    timestamp: Date.now() - 3600000 * 7,
+    durationMinutes: 30,
+    taskTitle: 'Polish Windows 11 Mica & Acrylic materials',
+    activeApps: ['Figma', 'Visual Studio Code']
+  }
+];
+
+const sampleNotes = [
+  {
+    id: 'n-1',
+    text: '### Doing It Architecture Principles #core\n- **Local-first JSON**: 0ms latency, zero cloud dependency\n- **Zero telemetry**: 100% private and offline\n- **Windows 11 Native**: Edge docking, Mica acrylic, Raycast palette\n\n- [x] High-DPI authentic captures\n- [x] Restored canonical brain logo\n- [x] Pixel-perfect desktop layout',
+    updated: Date.now() - 3600000
+  },
+  {
+    id: 'n-2',
+    text: '### Keyboard Shortcuts Cheat Sheet #shortcuts\n- `Ctrl + K`: Raycast Command Palette\n- `Ctrl + Shift + A`: Spotlight Quick Add\n- `Ctrl + 1..6`: Fast View Switcher\n- `Space`: Toggle Focus Timer',
+    updated: Date.now() - 7200000
+  }
+];
+
+const sampleCalendarEvents = [
+  {
+    id: 'cal-1',
+    summary: 'Architecture Sprint & Systems Review',
+    start: `${todayStr}T09:30:00`,
+    end: `${todayStr}T10:15:00`,
+    meetingUrl: 'https://meet.google.com/abc-defg-hij',
+    meetingPlatform: 'Google Meet'
+  },
+  {
+    id: 'cal-2',
+    summary: 'Deep Flow: Core Engine Optimization',
+    start: `${todayStr}T11:00:00`,
+    end: `${todayStr}T12:30:00`,
+    meetingUrl: null
+  },
+  {
+    id: 'cal-3',
+    summary: 'Product Design Sync',
+    start: `${todayStr}T14:00:00`,
+    end: `${todayStr}T14:45:00`,
+    meetingUrl: 'https://zoom.us/j/123456789',
+    meetingPlatform: 'Zoom'
+  },
+  {
+    id: 'cal-4',
+    summary: 'Async Documentation & Release Notes',
+    start: `${todayStr}T16:00:00`,
+    end: `${todayStr}T17:00:00`,
+    meetingUrl: null
+  }
+];
 
 app.whenReady().then(async () => {
   windowManager.registerMediaProtocol();
   setupIpcHandlers(storeManager, windowManager, SystemIntegration);
 
-  const mainWin = windowManager.createMainWindow(false);
-  await new Promise(r => mainWin.webContents.once('did-finish-load', r));
-  await sleep(1200);
+  const outImgs = path.join(projectRoot, 'imgs');
+  const outDocsImgs = path.join(projectRoot, 'docs', 'imgs');
+  if (!fs.existsSync(outImgs)) fs.mkdirSync(outImgs, { recursive: true });
+  if (!fs.existsSync(outDocsImgs)) fs.mkdirSync(outDocsImgs, { recursive: true });
 
-  const targetDirs = [
-    path.join(projectRoot, 'imgs'),
-    path.join(projectRoot, 'docs', 'imgs')
-  ];
-
-  targetDirs.forEach(dir => {
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  // Perfectly proportioned window: 620 x 980 with zoomFactor 1.35
+  // Logical size: 460 x 725, physical resolution: 620 x 980
+  const win = new BrowserWindow({
+    width: 620,
+    height: 980,
+    show: false,
+    frame: false,
+    transparent: true,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+      preload: path.join(projectRoot, 'preload.js')
+    }
   });
 
-  async function saveScreenshot(filename) {
-    const img = await mainWin.webContents.capturePage();
-    const png = img.toPNG();
-    targetDirs.forEach(dir => {
-      fs.writeFileSync(path.join(dir, filename), png);
-    });
+  await win.loadFile(path.join(projectRoot, 'index.html'));
+  win.webContents.setZoomFactor(1.35);
+
+  const wait = (ms) => new Promise(r => setTimeout(r, ms));
+  await wait(1500);
+
+  // In renderer: populate store state via reactive setters
+  await win.webContents.executeJavaScript(`
+    document.documentElement.setAttribute('data-theme', 'light');
+    window.appStore.set('tasks', ${JSON.stringify(sampleTodos)});
+    window.appStore.set('diary', ${JSON.stringify(sampleDiary)});
+    window.appStore.set('notes', ${JSON.stringify(sampleNotes)});
+    window.appStore.set('focusHistory', ${JSON.stringify(sampleFocusHistory)});
+    window.appStore.set('scratchpad', 'Rapid thought capture: Local-first architecture is the future of desktop software. Always instant, always accessible.');
+    window.appStore.set('calendarEvents', ${JSON.stringify(sampleCalendarEvents)});
+  `);
+  await wait(800);
+
+  async function captureView(viewName, filename, setupCode = '') {
+    if (setupCode) {
+      await win.webContents.executeJavaScript(setupCode);
+      await wait(300);
+    }
+    await win.webContents.executeJavaScript(`
+      document.documentElement.setAttribute('data-theme', 'light');
+      window.appStore.set('activeView', '${viewName}');
+    `);
+    await wait(600);
+
+    const img = await win.webContents.capturePage();
+    const pngBuf = img.toPNG();
+    fs.writeFileSync(path.join(outImgs, filename), pngBuf);
+    fs.writeFileSync(path.join(outDocsImgs, filename), pngBuf);
     console.log(`✔ Captured ${filename} (${img.getSize().width}x${img.getSize().height})`);
   }
 
-  // Suppress all toast notifications across all views for clean artifact capture
-  await mainWin.webContents.executeJavaScript(`
-    document.documentElement.setAttribute('data-theme', 'light');
-    if (window.toast) {
-      window.toast.show = () => {};
-    }
-    const tc = document.getElementById('toast-container');
-    if (tc) {
-      tc.innerHTML = '';
-      tc.style.display = 'none';
-    }
+  // 1. Core Views
+  await captureView('tasks', 'tasks-view.png');
+  await captureView('diary', 'diary-view.png');
+  await captureView('analytics', 'analytics-view.png');
+  await captureView('focus', 'focus-view.png', `
+    window.appStore.state.focus.linkedTaskId = 't-1';
+    window.appStore.state.focus.soundscape = 'brown';
+    window.appStore.state.focus.volume = 0.7;
+    window.appStore.notify('focus');
   `);
+  await captureView('planner', 'planner-view.png');
+  await captureView('notes', 'notes-view.png');
+  await captureView('settings', 'settings-view.png');
 
-  // 1. Tasks View
-  await mainWin.webContents.executeJavaScript(`
-    document.documentElement.setAttribute('data-theme', 'light');
-    if (window.appStore) window.appStore.set('theme', 'light');
-    if (window.appStore) window.appStore.set('activeView', 'tasks');
-    if (window.appStore) window.appStore.set('settingsOpen', false);
-    if (window.appStore) window.appStore.set('paletteOpen', false);
-  `);
-  await sleep(600);
-  await saveScreenshot('tasks-view.png');
-
-  // 2. Day One Diary View
-  await mainWin.webContents.executeJavaScript(`
-    window.appStore.set('activeView', 'diary');
-  `);
-  await sleep(600);
-  await saveScreenshot('diary-view.png');
-
-  // 3. Analytics View
-  await mainWin.webContents.executeJavaScript(`
-    window.appStore.set('activeView', 'analytics');
-  `);
-  await sleep(600);
-  await saveScreenshot('analytics-view.png');
-
-  // 4. Focus View
-  await mainWin.webContents.executeJavaScript(`
-    window.appStore.set('activeView', 'focus');
-  `);
-  await sleep(600);
-  await saveScreenshot('focus-view.png');
-
-  // 5. Notes View
-  await mainWin.webContents.executeJavaScript(`
-    window.appStore.set('activeView', 'notes');
-  `);
-  await sleep(300);
-  await mainWin.webContents.executeJavaScript(`
-    const scratch = document.getElementById('scratchpad-area');
-    if (scratch) scratch.style.height = '44px';
-    const container = document.querySelector('#view-notes .view-container') || document.querySelector('.notes-container');
-    if (container) container.scrollTop = 0;
-  `);
-  await sleep(300);
-  await saveScreenshot('notes-view.png');
-
-  // 6. Planner View (with real 1-click meeting join buttons)
-  await mainWin.webContents.executeJavaScript(`
-    const todayStr = new Date().toISOString().split('T')[0];
-    window.appStore.set('calendarEvents', [
-      {
-        id: 'cal-1',
-        title: 'Doing It v4.4 Sprint Architecture Sync',
-        startDate: todayStr + 'T11:00:00',
-        endDate: todayStr + 'T11:45:00',
-        location: 'Google Meet',
-        meetingUrl: 'https://meet.google.com/abc-defg-hij',
-        meetingPlatform: 'Google Meet'
-      },
-      {
-        id: 'cal-2',
-        title: 'Design Review & Aceternity UI Showcase',
-        startDate: todayStr + 'T14:30:00',
-        endDate: todayStr + 'T15:15:00',
-        location: 'Zoom Meeting',
-        meetingUrl: 'https://zoom.us/j/1234567890',
-        meetingPlatform: 'Zoom'
-      }
-    ]);
-    window.appStore.set('activeView', 'planner');
-  `);
-  await sleep(600);
-  await saveScreenshot('planner-view.png');
-
-  // 7. Settings Modal (with clean, realistic storage path)
-  await mainWin.webContents.executeJavaScript(`
-    if (window.api) window.api.getCurrentStorePath = async () => 'C:\\\\Users\\\\Alex\\\\AppData\\\\Roaming\\\\doing-it';
-    window.appStore.set('settingsOpen', true);
-  `);
-  await sleep(600);
-  await mainWin.webContents.executeJavaScript(`
-    const p = document.getElementById('inapp-settings-path');
-    if (p) p.textContent = 'C:\\\\Users\\\\Alex\\\\AppData\\\\Roaming\\\\doing-it';
-  `);
-  await sleep(200);
-  await saveScreenshot('settings-view.png');
-
-  // 8. Command Palette
-  await mainWin.webContents.executeJavaScript(`
-    window.appStore.set('settingsOpen', false);
+  // 2. Command Palette View
+  await win.webContents.executeJavaScript(`
+    window.appStore.set('activeView', 'tasks');
     window.appStore.set('paletteOpen', true);
   `);
-  await sleep(600);
-  await saveScreenshot('palette-view.png');
+  await wait(600);
+  const palImg = await win.webContents.capturePage();
+  fs.writeFileSync(path.join(outImgs, 'palette-view.png'), palImg.toPNG());
+  fs.writeFileSync(path.join(outDocsImgs, 'palette-view.png'), palImg.toPNG());
+  console.log(`✔ Captured palette-view.png`);
 
-  // 9. Mini Timer
-  const miniWin = windowManager.createMiniTimerWindow({ remaining: 1122, duration: 1500, running: true, task: 'Ship Doing It v4.4 Aceternity UI' });
-  await new Promise(r => miniWin.webContents.once('did-finish-load', r));
-  await miniWin.webContents.executeJavaScript(`document.documentElement.setAttribute('data-theme', 'light');`);
-  await sleep(600);
-  const miniImg = await miniWin.webContents.capturePage();
-  targetDirs.forEach(dir => {
-    fs.writeFileSync(path.join(dir, 'mini-timer.png'), miniImg.toPNG());
-  });
-  console.log(`✔ Captured mini-timer.png (${miniImg.getSize().width}x${miniImg.getSize().height})`);
-  miniWin.close();
+  await win.webContents.executeJavaScript(`window.appStore.set('paletteOpen', false);`);
+  await wait(300);
+  win.destroy();
 
-  // 10. Quick Add
-  const quickWin = windowManager.createQuickAddWindow();
-  await new Promise(r => quickWin.webContents.once('did-finish-load', r));
-  await quickWin.webContents.executeJavaScript(`document.documentElement.setAttribute('data-theme', 'light');`);
-  await sleep(600);
-  const quickImg = await quickWin.webContents.capturePage();
-  targetDirs.forEach(dir => {
-    fs.writeFileSync(path.join(dir, 'quick-add.png'), quickImg.toPNG());
-  });
-  console.log(`✔ Captured quick-add.png (${quickImg.getSize().width}x${quickImg.getSize().height})`);
-  quickWin.close();
+  // 3. Quick Add Window (Using WindowManager method directly)
+  try {
+    const qWin = windowManager.createQuickAddWindow();
+    await wait(800);
+    await qWin.webContents.executeJavaScript(`
+      const input = document.getElementById('quickadd-input');
+      if (input) {
+        input.value = 'Ship Doing It v4.4 website tomorrow 2pm !high #launch';
+      }
+    `);
+    await wait(400);
+    const qImg = await qWin.webContents.capturePage();
+    fs.writeFileSync(path.join(outImgs, 'quick-add.png'), qImg.toPNG());
+    fs.writeFileSync(path.join(outDocsImgs, 'quick-add.png'), qImg.toPNG());
+    console.log(`✔ Captured quick-add.png (${qImg.getSize().width}x${qImg.getSize().height})`);
+    qWin.destroy();
+  } catch (err) {
+    console.warn('QuickAdd capture error:', err.message);
+  }
 
-  // 11. FAB Overlay Bubble
-  const fabWin = windowManager.createFabWindow();
-  await new Promise(r => fabWin.webContents.once('did-finish-load', r));
-  await fabWin.webContents.executeJavaScript(`document.documentElement.setAttribute('data-theme', 'light');`);
-  await sleep(600);
-  const fabImg = await fabWin.webContents.capturePage();
-  targetDirs.forEach(dir => {
-    fs.writeFileSync(path.join(dir, 'fab-overlay.png'), fabImg.toPNG());
-  });
-  console.log(`✔ Captured fab-overlay.png (${fabImg.getSize().width}x${fabImg.getSize().height})`);
-  fabWin.close();
+  // 4. Mini-Timer Window
+  try {
+    const mWin = windowManager.createMiniTimerWindow({ remaining: 1125, duration: 1500, running: true });
+    await wait(800);
+    const mImg = await mWin.webContents.capturePage();
+    fs.writeFileSync(path.join(outImgs, 'mini-timer.png'), mImg.toPNG());
+    fs.writeFileSync(path.join(outDocsImgs, 'mini-timer.png'), mImg.toPNG());
+    console.log(`✔ Captured mini-timer.png (${mImg.getSize().width}x${mImg.getSize().height})`);
+    mWin.destroy();
+  } catch (err) {
+    console.warn('MiniTimer capture error:', err.message);
+  }
 
-  mainWin.close();
-  try { fs.rmSync(tmpDir, { recursive: true, force: true }); } catch (e) {}
-  console.log('✨ All 11 views captured flawlessly and saved to both imgs/ and docs/imgs/!');
+  // 5. FAB Window
+  try {
+    const fWin = windowManager.createFabWindow();
+    await wait(800);
+    const fImg = await fWin.webContents.capturePage();
+    fs.writeFileSync(path.join(outImgs, 'fab-overlay.png'), fImg.toPNG());
+    fs.writeFileSync(path.join(outDocsImgs, 'fab-overlay.png'), fImg.toPNG());
+    console.log(`✔ Captured fab-overlay.png (${fImg.getSize().width}x${fImg.getSize().height})`);
+    fWin.destroy();
+  } catch (err) {
+    console.warn('FAB capture error:', err.message);
+  }
+
+  console.log('\n🎉 ALL REAL PRODUCT CAPTURES COMPLETED CRISPLY!');
+  fs.rmSync(tmpDir, { recursive: true, force: true });
   app.exit(0);
 });

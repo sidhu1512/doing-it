@@ -1,1066 +1,696 @@
 /**
- * Doing It — Staff-Level Aceternity UI Product Experience Controller
- * 
- * Subsystems:
- * 1. 60fps Canvas Sparkles / Starfield Particle Engine
- * 2. Background Laser Beams with Surface Collision Shockwaves
- * 3. Dynamic Flip Words Typography Engine
- * 4. Hero Stage Video & View Inspector Controller
- * 5. Cinema Video Theater (Timeline scrubber, chapter sync, play/mute/fullscreen)
- * 6. 3D Hero Parallax (Scroll-reactive horizontal tier sliding & perspective tilt)
- * 7. 3D Pin Cards Interactive Perspective Tilt
- * 8. Real-Time Chrono NLP Task Parser with Interactive Streak Checklist
- * 9. Picture-in-Picture Mini-Timer Widget (Ticking countdown, SVG progress arc)
- * 10. Circadian Rhythm 0-100 Gauge & 12-Week Interactive Heatmap
- * 11. Zero-Asset Web Audio Procedural Synthesizer & Real-Time Canvas Spectrum Visualizer
- * 12. Bento Grid Cursor-Tracking Radial Spotlight
- * 13. Global Raycast Command Palette Modal (Ctrl+K fuzzy search & keyboard navigation)
- * 14. Screenshot Lightbox Zoom Inspection Modal
- * 15. Smooth FAQ Accordion
+ * Doing It — Public Website Showcase Controller
+ * Drives Interactive Product Stage, Real-Time Web Audio Synth, Chrono NLP, and Raycast Palette.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
 
   // =========================================================================
-  // 1. 60FPS CANVAS SPARKLES / STARFIELD ENGINE (ACETERNITY SIGNATURE)
+  // 1. INTERACTIVE PRODUCT SHOWCASE STAGE
   // =========================================================================
-  const sparklesCanvas = document.getElementById('sparkles-canvas');
-  if (sparklesCanvas) {
-    const ctx = sparklesCanvas.getContext('2d');
-    let animationFrameId = null;
-    let particles = [];
-    let isVisible = true;
-    let width = 0;
-    let height = 0;
-
-    function resizeSparkles() {
-      const rect = sparklesCanvas.parentElement.getBoundingClientRect();
-      width = sparklesCanvas.width = rect.width;
-      height = sparklesCanvas.height = rect.height;
-      initSparkles();
+  const stageData = {
+    tasks: {
+      tag: 'Core Task Engine',
+      title: 'Natural Language Tasks & Daily Habits',
+      desc: 'Type natural language task schedules like <code>Submit quarterly report tomorrow 3pm !high #finance</code>. The local Chrono engine parses dates, tags, and priorities without internet access.',
+      bullets: [
+        'Things 3 smart sections (Today, Upcoming, Backlog)',
+        'Daily habit streaks with midnight reset guard',
+        '1-click linkage to Focus Studio pomodoro timer'
+      ],
+      shortcut: 'Ctrl + 1',
+      image: 'imgs/tasks-view.png',
+      spec1: { label: 'Input Latency', val: '< 1 ms', detail: 'Synchronous local state update' },
+      spec2: { label: 'Storage Architecture', val: 'Local JSON', detail: 'Atomic file staging & 5-day backup' },
+      spec3: { label: 'Privacy Model', val: '100% Offline', detail: 'Zero outbound telemetry packets' }
+    },
+    diary: {
+      tag: 'Journaling & Mindfulness',
+      title: 'Day One Daily Journal & Voice Notes',
+      desc: 'Segregate personal thoughts from sprint debriefs. Record voice reflections directly via your microphone, log 5-point mood & energy ratings, and revisit On This Day flashbacks.',
+      bullets: [
+        'Multi-journal segregation (Work, Personal, Gratitude)',
+        'Zero-dependency microphone voice memos with waveform player',
+        'Daily guided prompts and calendar streak dots'
+      ],
+      shortcut: 'Ctrl + 5',
+      image: 'imgs/diary-view.png',
+      spec1: { label: 'Audio Engine', val: 'WebM / Opus', detail: 'Local disk storage, zero cloud latency' },
+      spec2: { label: 'Flashback Query', val: 'Indexed O(1)', detail: 'Instant historical memory retrieval' },
+      spec3: { label: 'Markdown Format', val: 'GFM Spec', detail: 'Plain text portable export anytime' }
+    },
+    focus: {
+      tag: 'Deep Flow Studio',
+      title: 'Pomodoro Timer with Native Spotify Link',
+      desc: 'Link active tasks directly to your focus blocks. Inspects Windows desktop processes to display your active Spotify track with zero lag and zero browser tab overhead.',
+      bullets: [
+        '25:00 circular pomodoro countdown with status ring',
+        'Native Windows Spotify process link & playlist launcher',
+        'Procedural ambient soundscapes (Brown noise, Rain, Binaural)'
+      ],
+      shortcut: 'Ctrl + 3',
+      image: 'imgs/focus-view.png',
+      spec1: { label: 'Process Polling', val: 'Low Overhead', detail: 'Native Windows API title detection' },
+      spec2: { label: 'Audio Synth', val: 'Web Audio', detail: '0 bytes downloaded, synthesized live' },
+      spec3: { label: 'Session Logging', val: 'Per-Task', detail: 'Active apps and minutes tracked' }
+    },
+    analytics: {
+      tag: 'Cognitive Momentum',
+      title: '0–100 Circadian Rhythm & Burnout Guard',
+      desc: 'Mathematically calculate your cognitive velocity. Analyzes completed habits, focused hours, and circadian energy peaks to prevent burnout before it happens.',
+      bullets: [
+        '0–100 Productivity Pulse momentum score',
+        '24-hour circadian energy distribution curve',
+        '12-week GitHub-style consistency activity heatmap'
+      ],
+      shortcut: 'Ctrl + 6',
+      image: 'imgs/analytics-view.png',
+      spec1: { label: 'Momentum Metric', val: '0–100 Pulse', detail: 'Habit streaks + focus duration' },
+      spec2: { label: 'Heatmap Window', val: '84 Days', detail: '12-week rolling consistency grid' },
+      spec3: { label: 'Burnout Guard', val: 'Proactive', detail: 'Configurable continuous work alerts' }
+    },
+    planner: {
+      tag: 'Calendar Coordination',
+      title: 'Day Planner Agenda & 1-Click Meetings',
+      desc: 'Sync RFC 5545 iCalendar feeds (.ics URLs) from Google Calendar, Outlook, Fastmail, or Apple. View your 7-day strip and launch Google Meet or Zoom calls in 1 click.',
+      bullets: [
+        'RFC 5545 offline parser with zero cloud OAuth dependencies',
+        '1-click launcher for Google Meet, Zoom, and Teams links',
+        'Unified time-blocking alongside native task list'
+      ],
+      shortcut: 'Ctrl + 4',
+      image: 'imgs/planner-view.png',
+      spec1: { label: 'Feed Protocol', val: 'RFC 5545', detail: 'Unfolded standard iCalendar sync' },
+      spec2: { label: 'Meeting Join', val: '1-Click', detail: 'Regex link detector for Meet/Zoom' },
+      spec3: { label: 'Week Strip', val: '7-Day View', detail: 'Fast day-by-day task navigation' }
+    },
+    notes: {
+      tag: 'Scratchpad & Notes',
+      title: 'Instant Markdown Scratchpad & Checklists',
+      desc: 'A split-second scratchpad that saves every keystroke locally. Create tagged markdown notes, toggle interactive checklists, and search across thousands of words instantly.',
+      bullets: [
+        'Instant auto-saving scratchpad for rapid thought capture',
+        'GitHub-Flavored Markdown with checklists and tags',
+        'Zero-latency full-text local search'
+      ],
+      shortcut: 'Ctrl + 2',
+      image: 'imgs/notes-view.png',
+      spec1: { label: 'Save Debounce', val: '300 ms', detail: 'Atomic staging with rollback safety' },
+      spec2: { label: 'Markdown Parse', val: 'Marked.js', detail: 'Full GFM checklist and code syntax' },
+      spec3: { label: 'Search Speed', val: '< 2 ms', detail: 'In-memory inverted index filter' }
     }
-
-    function initSparkles() {
-      particles = [];
-      const particleCount = Math.floor(Math.min(width, 1400) / 12);
-      for (let i = 0; i < particleCount; i++) {
-        particles.push({
-          x: Math.random() * width,
-          y: Math.random() * height,
-          size: Math.random() * 2.2 + 0.6,
-          speedY: Math.random() * 0.45 + 0.15,
-          speedX: (Math.random() - 0.5) * 0.25,
-          opacity: Math.random() * 0.7 + 0.2,
-          pulseSpeed: Math.random() * 0.02 + 0.008,
-          pulseVal: Math.random() * Math.PI,
-          isCyan: Math.random() > 0.6
-        });
-      }
-    }
-
-    function drawSparkles() {
-      if (!isVisible) return;
-      ctx.clearRect(0, 0, width, height);
-
-      for (let i = 0; i < particles.length; i++) {
-        const p = particles[i];
-        p.pulseVal += p.pulseSpeed;
-        const currentOpacity = Math.max(0.1, p.opacity + Math.sin(p.pulseVal) * 0.35);
-
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        if (p.isCyan) {
-          ctx.fillStyle = `rgba(37, 99, 235, ${currentOpacity * 0.35})`;
-          ctx.shadowColor = 'rgba(37, 99, 235, 0.2)';
-          ctx.shadowBlur = p.size * 2;
-        } else {
-          ctx.fillStyle = `rgba(148, 163, 184, ${currentOpacity * 0.3})`;
-          ctx.shadowColor = 'rgba(148, 163, 184, 0.15)';
-          ctx.shadowBlur = p.size;
-        }
-        ctx.fill();
-
-        p.y -= p.speedY;
-        p.x += p.speedX;
-
-        if (p.y < 0) {
-          p.y = height + 10;
-          p.x = Math.random() * width;
-        }
-        if (p.x < 0) p.x = width;
-        if (p.x > width) p.x = 0;
-      }
-
-      animationFrameId = requestAnimationFrame(drawSparkles);
-    }
-
-    window.addEventListener('resize', resizeSparkles);
-    resizeSparkles();
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        isVisible = entry.isIntersecting;
-        if (isVisible && !animationFrameId) {
-          drawSparkles();
-        } else if (!isVisible && animationFrameId) {
-          cancelAnimationFrame(animationFrameId);
-          animationFrameId = null;
-        }
-      });
-    }, { threshold: 0.05 });
-
-    observer.observe(sparklesCanvas.parentElement);
-    drawSparkles();
-  }
-
-  // =========================================================================
-  // 2. DYNAMIC FLIP WORDS TYPOGRAPHY ENGINE
-  // =========================================================================
-  const flipWordEl = document.getElementById('flip-word');
-  if (flipWordEl) {
-    const words = [
-      'deep flow state',
-      'daily journaling',
-      'circadian rhythm',
-      'focus sprints',
-      'meeting clarity',
-      'infinite momentum'
-    ];
-    let currentIndex = 0;
-
-    setInterval(() => {
-      flipWordEl.classList.remove('active');
-      flipWordEl.classList.add('exiting');
-
-      setTimeout(() => {
-        currentIndex = (currentIndex + 1) % words.length;
-        flipWordEl.textContent = words[currentIndex];
-        flipWordEl.classList.remove('exiting');
-        flipWordEl.classList.add('entering');
-
-        setTimeout(() => {
-          flipWordEl.classList.remove('entering');
-          flipWordEl.classList.add('active');
-        }, 50);
-      }, 400);
-    }, 3200);
-  }
-
-  // =========================================================================
-  // 4. HERO STAGE VIDEO & VIEW INSPECTOR CONTROLLER
-  // =========================================================================
-  const modeBtnVideo = document.getElementById('mode-btn-video');
-  const modeBtnScreens = document.getElementById('mode-btn-screens');
-  const heroVideo = document.getElementById('hero-video-player');
-  const heroImg = document.getElementById('hero-mockup-img');
-  const heroTabs = document.getElementById('hero-tabs-slider');
-  const heroPlayBtn = document.getElementById('hero-video-play-btn');
-  const heroPlayIcon = document.getElementById('hero-play-icon');
-
-  if (modeBtnVideo && modeBtnScreens) {
-    modeBtnVideo.addEventListener('click', () => {
-      modeBtnVideo.classList.add('active');
-      modeBtnScreens.classList.remove('active');
-      if (heroVideo) heroVideo.style.display = 'block';
-      if (heroImg) heroImg.style.display = 'none';
-      if (heroTabs) heroTabs.style.display = 'none';
-    });
-
-    modeBtnScreens.addEventListener('click', () => {
-      modeBtnScreens.classList.add('active');
-      modeBtnVideo.classList.remove('active');
-      if (heroVideo) heroVideo.style.display = 'none';
-      if (heroImg) heroImg.style.display = 'block';
-      if (heroTabs) heroTabs.style.display = 'flex';
-    });
-  }
-
-  if (heroPlayBtn && heroVideo) {
-    heroPlayBtn.addEventListener('click', () => {
-      if (heroVideo.paused) {
-        heroVideo.play();
-        heroPlayIcon.textContent = '⏸ Pause';
-      } else {
-        heroVideo.pause();
-        heroPlayIcon.textContent = '▶ Play';
-      }
-    });
-  }
-
-  const viewImages = {
-    tasks: 'imgs/tasks-view.png',
-    diary: 'imgs/diary-view.png',
-    analytics: 'imgs/analytics-view.png',
-    focus: 'imgs/focus-view.png',
-    notes: 'imgs/notes-view.png',
-    planner: 'imgs/planner-view.png',
-    palette: 'imgs/palette-view.png',
-    settings: 'imgs/settings-view.png'
   };
 
-  const heroTabButtons = document.querySelectorAll('.hero-tab-pill');
-  heroTabButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const view = btn.dataset.view;
-      heroTabButtons.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
+  const stageTabs = document.querySelectorAll('.stage-tab-btn');
+  const stageImg = document.getElementById('stage-view-image');
+  const stageTag = document.getElementById('stage-view-tag');
+  const stageTitle = document.getElementById('stage-view-title');
+  const stageDesc = document.getElementById('stage-view-desc');
+  const stageBullets = document.getElementById('stage-view-bullets');
+  const stageRailSpecs = document.getElementById('stage-right-rail');
 
-      if (heroImg && viewImages[view]) {
-        heroImg.style.opacity = '0';
-        heroImg.style.transform = 'scale(0.98)';
-        setTimeout(() => {
-          heroImg.src = viewImages[view];
-          heroImg.style.opacity = '1';
-          heroImg.style.transform = 'scale(1)';
-        }, 180);
-      }
+  function updateStage(viewKey) {
+    const data = stageData[viewKey];
+    if (!data) return;
+
+    // Update active tab button
+    stageTabs.forEach(tab => {
+      const isMatch = tab.dataset.view === viewKey;
+      tab.classList.toggle('active', isMatch);
+      tab.setAttribute('aria-selected', isMatch ? 'true' : 'false');
+    });
+
+    // Crossfade main image
+    if (stageImg) {
+      stageImg.style.opacity = '0';
+      setTimeout(() => {
+        stageImg.src = data.image;
+        stageImg.alt = `Doing It ${data.title}`;
+        stageImg.style.opacity = '1';
+      }, 120);
+    }
+
+    // Update left rail info
+    if (stageTag) stageTag.textContent = data.tag;
+    if (stageTitle) stageTitle.textContent = data.title;
+    if (stageDesc) stageDesc.innerHTML = data.desc;
+
+    if (stageBullets) {
+      stageBullets.innerHTML = data.bullets.map(b => `
+        <div class="stage-bullet-item">
+          <span class="bullet-check">✔</span>
+          <span>${b}</span>
+        </div>
+      `).join('');
+    }
+
+    // Update right rail specs
+    if (stageRailSpecs) {
+      stageRailSpecs.innerHTML = `
+        <div class="spec-card">
+          <span class="spec-label">${data.spec1.label}</span>
+          <span class="spec-value">${data.spec1.val}</span>
+          <span class="spec-detail">${data.spec1.detail}</span>
+        </div>
+        <div class="spec-card">
+          <span class="spec-label">${data.spec2.label}</span>
+          <span class="spec-value">${data.spec2.val}</span>
+          <span class="spec-detail">${data.spec2.detail}</span>
+        </div>
+        <div class="spec-card">
+          <span class="spec-label">${data.spec3.label}</span>
+          <span class="spec-value">${data.spec3.val}</span>
+          <span class="spec-detail">${data.spec3.detail}</span>
+        </div>
+      `;
+    }
+  }
+
+  stageTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const view = tab.dataset.view;
+      if (view) updateStage(view);
     });
   });
 
-  // 3D Perspective Tilt on Hero Stage
-  const stageWrap = document.querySelector('.stage-wrap');
-  const stageInner = document.querySelector('.stage-inner');
-
-  if (stageWrap && stageInner && window.matchMedia('(hover: hover)').matches) {
-    stageWrap.addEventListener('mousemove', (e) => {
-      const rect = stageWrap.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      const centerX = rect.width / 2;
-      const centerY = rect.height / 2;
-
-      const rotateX = ((y - centerY) / centerY) * -5;
-      const rotateY = ((x - centerX) / centerX) * 6;
-
-      stageInner.style.transform = `perspective(1200px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.01, 1.01, 1.01)`;
-    });
-
-    stageWrap.addEventListener('mouseleave', () => {
-      stageInner.style.transform = 'perspective(1200px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
-    });
-  }
-
   // =========================================================================
-  // 5. CINEMA VIDEO THEATER CONTROLLER
+  // 2. LIVE NATURAL LANGUAGE TASK PARSER (INTERACTIVE PLAYGROUND)
   // =========================================================================
-  const tourVideo = document.getElementById('main-tour-video');
-  const tourPlayBtn = document.getElementById('tour-play-pause-btn');
-  const tourBtnIcon = document.getElementById('tour-btn-icon');
-  const tourBtnText = document.getElementById('tour-btn-text');
-  const tourMuteBtn = document.getElementById('tour-mute-btn');
-  const tourMuteIcon = document.getElementById('tour-mute-icon');
-  const timelineFill = document.getElementById('theater-progress-fill');
-  const timelineBar = document.getElementById('theater-timeline');
-  const fullscreenBtn = document.getElementById('tour-fullscreen-btn');
-  const chapterPills = document.querySelectorAll('.chapter-pill');
+  const nlpInput = document.getElementById('demo-nlp-input');
+  const btnClearNlp = document.getElementById('btn-nlp-clear');
+  const nlpActionText = document.getElementById('nlp-action-text');
+  const nlpDateChip = document.getElementById('nlp-date-chip');
+  const nlpPriorityChip = document.getElementById('nlp-priority-chip');
+  const nlpTagChip = document.getElementById('nlp-tag-chip');
+  const presetBtns = document.querySelectorAll('.nlp-preset-btn');
 
-  if (tourVideo && tourPlayBtn) {
-    tourPlayBtn.addEventListener('click', () => {
-      if (tourVideo.paused) {
-        tourVideo.play();
-        tourBtnIcon.textContent = '⏸';
-        tourBtnText.textContent = 'Pause';
+  function parseNaturalLanguage(raw) {
+    if (!raw || !raw.trim()) {
+      if (nlpActionText) nlpActionText.textContent = 'None';
+      if (nlpDateChip) nlpDateChip.style.display = 'none';
+      if (nlpPriorityChip) nlpPriorityChip.style.display = 'none';
+      if (nlpTagChip) nlpTagChip.style.display = 'none';
+      return;
+    }
+
+    let text = raw.trim();
+
+    // Priority detection
+    let priority = 'Normal';
+    let priClass = 'chip-normal';
+    if (/[!#](high|h)\b/i.test(text)) {
+      priority = 'High';
+      priClass = 'chip-high';
+      text = text.replace(/[!#](high|h)\b/gi, '').trim();
+    } else if (/[!#](medium|med|m)\b/i.test(text)) {
+      priority = 'Medium';
+      priClass = 'chip-med';
+      text = text.replace(/[!#](medium|med|m)\b/gi, '').trim();
+    } else if (/[!#](low|l)\b/i.test(text)) {
+      priority = 'Low';
+      priClass = 'chip-low';
+      text = text.replace(/[!#](low|l)\b/gi, '').trim();
+    }
+
+    // Tag detection
+    const tags = [];
+    const tagMatch = text.match(/#(\w+)/g);
+    if (tagMatch) {
+      tagMatch.forEach(t => tags.push(t));
+      text = text.replace(/#(\w+)/g, '').trim();
+    }
+
+    // Date heuristic detection
+    let dateStr = 'No date assigned';
+    const hasTomorrow = /\btomorrow\b/i.test(text);
+    const hasToday = /\btoday\b/i.test(text);
+    const hasFriday = /\bfriday\b/i.test(text);
+    const hasTonight = /\btonight\b/i.test(text);
+    const hasMorning = /\bmorning\b/i.test(text);
+    const timeMatch = text.match(/\b(\d{1,2}(?::\d{2})?\s*(?:am|pm)?)\b/i);
+
+    if (hasTomorrow) {
+      dateStr = '📅 Tomorrow' + (timeMatch ? `, ${timeMatch[0]}` : ', 9:00 AM');
+      text = text.replace(/\btomorrow\b/gi, '').trim();
+    } else if (hasFriday) {
+      dateStr = '📅 Friday' + (timeMatch ? `, ${timeMatch[0]}` : ', 10:00 AM');
+      text = text.replace(/\bfriday\b/gi, '').trim();
+    } else if (hasTonight) {
+      dateStr = '📅 Tonight' + (timeMatch ? `, ${timeMatch[0]}` : ', 8:00 PM');
+      text = text.replace(/\btonight\b/gi, '').trim();
+    } else if (hasToday) {
+      dateStr = '📅 Today' + (timeMatch ? `, ${timeMatch[0]}` : '');
+      text = text.replace(/\btoday\b/gi, '').trim();
+    } else if (hasMorning) {
+      dateStr = '📅 Every Morning' + (timeMatch ? `, ${timeMatch[0]}` : ', 7:00 AM');
+      text = text.replace(/\b(every\s+)?morning\b/gi, '').trim();
+    }
+
+    // Clean up stray words
+    text = text.replace(/\b(at|on|due)\s+\d{1,2}(?::\d{2})?\s*(?:am|pm)?\b/gi, '').trim();
+    text = text.replace(/\s+/g, ' ');
+
+    if (nlpActionText) nlpActionText.textContent = text || raw;
+    if (nlpDateChip) {
+      nlpDateChip.textContent = dateStr;
+      nlpDateChip.style.display = 'inline-flex';
+    }
+    if (nlpPriorityChip) {
+      nlpPriorityChip.textContent = `⚡ Priority: ${priority}`;
+      nlpPriorityChip.className = `chip-pill chip-priority ${priClass}`;
+      nlpPriorityChip.style.display = 'inline-flex';
+    }
+    if (nlpTagChip) {
+      if (tags.length > 0) {
+        nlpTagChip.textContent = `🏷️ ${tags.join(' ')}`;
+        nlpTagChip.style.display = 'inline-flex';
       } else {
-        tourVideo.pause();
-        tourBtnIcon.textContent = '▶';
-        tourBtnText.textContent = 'Play';
+        nlpTagChip.style.display = 'none';
       }
-    });
-
-    if (tourMuteBtn) {
-      tourMuteBtn.addEventListener('click', () => {
-        tourVideo.muted = !tourVideo.muted;
-        tourMuteIcon.textContent = tourVideo.muted ? '🔇' : '🔊';
-      });
-    }
-
-    tourVideo.addEventListener('timeupdate', () => {
-      if (tourVideo.duration) {
-        const percent = (tourVideo.currentTime / tourVideo.duration) * 100;
-        if (timelineFill) timelineFill.style.width = percent + '%';
-
-        // Update active chapter based on time
-        chapterPills.forEach(pill => {
-          const startTime = parseFloat(pill.dataset.time || 0);
-          if (tourVideo.currentTime >= startTime) {
-            chapterPills.forEach(p => p.classList.remove('active'));
-            pill.classList.add('active');
-          }
-        });
-      }
-    });
-
-    if (timelineBar) {
-      timelineBar.addEventListener('click', (e) => {
-        const rect = timelineBar.getBoundingClientRect();
-        const clickX = e.clientX - rect.left;
-        const width = rect.width;
-        if (tourVideo.duration) {
-          tourVideo.currentTime = (clickX / width) * tourVideo.duration;
-        }
-      });
-    }
-
-    if (fullscreenBtn) {
-      fullscreenBtn.addEventListener('click', () => {
-        if (tourVideo.requestFullscreen) {
-          tourVideo.requestFullscreen();
-        } else if (tourVideo.webkitRequestFullscreen) {
-          tourVideo.webkitRequestFullscreen();
-        }
-      });
-    }
-
-    chapterPills.forEach(pill => {
-      pill.addEventListener('click', () => {
-        const time = parseFloat(pill.dataset.time || 0);
-        chapterPills.forEach(p => p.classList.remove('active'));
-        pill.classList.add('active');
-        tourVideo.currentTime = time;
-        if (tourVideo.paused) {
-          tourVideo.play();
-          tourBtnIcon.textContent = '⏸';
-          tourBtnText.textContent = 'Pause';
-        }
-      });
-    });
-  }
-
-  // =========================================================================
-  // 6. 3D HERO PARALLAX CONTROLLER
-  // =========================================================================
-  const parallaxGrid = document.getElementById('parallax-grid');
-  const parallaxSection = document.getElementById('parallax');
-  const row1 = document.querySelector('.parallax-row.row-1');
-  const row2 = document.querySelector('.parallax-row.row-2');
-  const row3 = document.querySelector('.parallax-row.row-3');
-
-  if (parallaxGrid && row1 && row2) {
-    let ticking = false;
-
-    function onParallaxScroll() {
-      const rect = parallaxGrid.parentElement.getBoundingClientRect();
-      const windowHeight = window.innerHeight;
-
-      // Only calculate if visible
-      if (rect.top < windowHeight && rect.bottom > 0) {
-        const progress = (windowHeight - rect.top) / (windowHeight + rect.height);
-        const shift1 = (progress - 0.5) * 160;
-        const shift2 = (progress - 0.5) * -180;
-
-        row1.style.transform = `translateX(${shift1}px)`;
-        row2.style.transform = `translateX(${shift2}px)`;
-        if (row3) {
-          const shift3 = (progress - 0.5) * 140;
-          row3.style.transform = `translateX(${shift3}px)`;
-        }
-      }
-      ticking = false;
-    }
-
-    window.addEventListener('scroll', () => {
-      if (!ticking) {
-        requestAnimationFrame(onParallaxScroll);
-        ticking = true;
-      }
-    }, { passive: true });
-
-    onParallaxScroll();
-
-    // 3D Perspective Mouse Tracking across Hero Parallax
-    if (parallaxSection && window.matchMedia('(hover: hover)').matches) {
-      parallaxSection.addEventListener('mousemove', (e) => {
-        const rect = parallaxSection.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-
-        const tiltX = 10 + ((y - centerY) / centerY) * -5;
-        const tiltZ = -3 + ((x - centerX) / centerX) * 4;
-
-        parallaxGrid.style.transform = `rotateX(${tiltX}deg) rotateZ(${tiltZ}deg) skewX(3deg)`;
-      });
-
-      parallaxSection.addEventListener('mouseleave', () => {
-        parallaxGrid.style.transform = 'rotateX(10deg) rotateZ(-3deg) skewX(3deg)';
-      });
-    }
-  }
-
-  // =========================================================================
-  // 7. 3D PIN CARDS INTERACTIVE PERSPECTIVE TILT
-  // =========================================================================
-  const pinContainers = document.querySelectorAll('.pin-card-container');
-  pinContainers.forEach(container => {
-    container.addEventListener('mousemove', (e) => {
-      const rect = container.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      const centerX = rect.width / 2;
-      const centerY = rect.height / 2;
-
-      const rotX = ((y - centerY) / centerY) * -10;
-      const rotY = ((x - centerX) / centerX) * 12;
-
-      container.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg) translateY(-8px)`;
-    });
-
-    container.addEventListener('mouseleave', () => {
-      container.style.transform = 'rotateX(0deg) rotateY(0deg) translateY(0px)';
-    });
-  });
-
-  // =========================================================================
-  // 8. INTERACTIVE CHRONO NLP TASK PARSER
-  // =========================================================================
-  const nlpInput = document.getElementById('nlp-demo-input');
-  const nlpAddBtn = document.getElementById('nlp-add-btn');
-  const nlpTitleVal = document.getElementById('nlp-parsed-title');
-  const nlpDateBadge = document.getElementById('nlp-due-date-badge');
-  const nlpPriorityBadge = document.getElementById('nlp-priority-badge');
-  const nlpTaskList = document.getElementById('nlp-tasks-demo-list');
-  const nlpPresets = document.querySelectorAll('.nlp-preset-pill');
-
-  function parseNlpString(text) {
-    let clean = text;
-    let priority = 'NORMAL';
-    let priorityClass = 'nlp-badge-normal';
-    let dateStr = 'No due date';
-
-    if (/!urgent|!high/i.test(clean)) {
-      priority = 'HIGH';
-      priorityClass = 'nlp-badge-high';
-      clean = clean.replace(/!urgent|!high/gi, '').trim();
-    } else if (/!med|!medium/i.test(clean)) {
-      priority = 'MEDIUM';
-      priorityClass = 'nlp-badge-medium';
-      clean = clean.replace(/!med|!medium/gi, '').trim();
-    }
-
-    if (/today/i.test(clean)) {
-      dateStr = 'Today';
-      clean = clean.replace(/today/gi, '').trim();
-    } else if (/tomorrow/i.test(clean)) {
-      dateStr = 'Tomorrow';
-      clean = clean.replace(/tomorrow/gi, '').trim();
-    } else if (/friday/i.test(clean)) {
-      dateStr = 'Friday, 10:00 AM';
-      clean = clean.replace(/friday/gi, '').trim();
-    }
-
-    const timeMatch = clean.match(/(\d{1,2}(?::\d{2})?\s*(?:am|pm))/i);
-    if (timeMatch) {
-      dateStr += `, ${timeMatch[1].toUpperCase()}`;
-      clean = clean.replace(timeMatch[0], '').trim();
-    }
-
-    if (/#streak/i.test(clean)) {
-      priority = 'HABIT';
-      priorityClass = 'nlp-badge-medium';
-      clean = clean.replace(/#streak/gi, '').trim();
-    }
-
-    return { title: clean || 'New Task', dateStr, priority, priorityClass };
-  }
-
-  function updateNlpFeedback() {
-    if (!nlpInput) return;
-    const parsed = parseNlpString(nlpInput.value);
-    if (nlpTitleVal) nlpTitleVal.textContent = parsed.title;
-    if (nlpDateBadge) nlpDateBadge.textContent = parsed.dateStr;
-    if (nlpPriorityBadge) {
-      nlpPriorityBadge.textContent = parsed.priority;
-      nlpPriorityBadge.className = `nlp-badge ${parsed.priorityClass}`;
     }
   }
 
   if (nlpInput) {
-    nlpInput.addEventListener('input', updateNlpFeedback);
-    updateNlpFeedback();
+    nlpInput.addEventListener('input', (e) => parseNaturalLanguage(e.target.value));
+    parseNaturalLanguage(nlpInput.value);
+  }
 
-    nlpPresets.forEach(preset => {
-      preset.addEventListener('click', () => {
-        nlpInput.value = preset.dataset.preset;
-        updateNlpFeedback();
-      });
+  if (btnClearNlp && nlpInput) {
+    btnClearNlp.addEventListener('click', () => {
+      nlpInput.value = '';
+      nlpInput.focus();
+      parseNaturalLanguage('');
     });
-
-    if (nlpAddBtn) {
-      nlpAddBtn.addEventListener('click', () => {
-        const parsed = parseNlpString(nlpInput.value);
-        if (!parsed.title) return;
-
-        const taskItem = document.createElement('div');
-        taskItem.className = 'demo-task-item';
-        taskItem.innerHTML = `
-          <div class="demo-task-left">
-            <input type="checkbox" class="demo-task-check">
-            <span class="demo-task-label">${escapeHtml(parsed.title)}</span>
-          </div>
-          <div class="demo-task-tags">
-            <span class="demo-date-tag">${escapeHtml(parsed.dateStr)}</span>
-            <span class="nlp-badge ${parsed.priorityClass}">${escapeHtml(parsed.priority)}</span>
-          </div>
-        `;
-
-        if (nlpTaskList) nlpTaskList.prepend(taskItem);
-        nlpInput.value = '';
-        updateNlpFeedback();
-      });
-    }
-
-    if (nlpTaskList) {
-      nlpTaskList.addEventListener('change', (e) => {
-        if (e.target.classList.contains('demo-task-check')) {
-          const item = e.target.closest('.demo-task-item');
-          if (item) {
-            item.classList.toggle('completed', e.target.checked);
-          }
-        }
-      });
-    }
   }
 
-  function escapeHtml(str) {
-    const div = document.createElement('div');
-    div.textContent = str;
-    return div.innerHTML;
-  }
-
-  // =========================================================================
-  // 9. DETACHED MINI-TIMER PIP WIDGET
-  // =========================================================================
-  const timerRing = document.getElementById('mini-timer-progress-ring');
-  const timerTimeDisplay = document.getElementById('mini-timer-time');
-  const timerToggleBtn = document.getElementById('mini-timer-toggle-btn');
-  const timerResetBtn = document.getElementById('mini-timer-reset-btn');
-  const timerModePills = document.querySelectorAll('.timer-mode-pill');
-
-  let totalDurationSec = 25 * 60;
-  let remainingSec = totalDurationSec;
-  let timerInterval = null;
-  let isTimerRunning = false;
-  const ringCircumference = 2 * Math.PI * 40; // r = 40, ~251.32
-
-  function updateTimerDisplay() {
-    const mins = Math.floor(remainingSec / 60);
-    const secs = remainingSec % 60;
-    if (timerTimeDisplay) {
-      timerTimeDisplay.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-    }
-
-    if (timerRing) {
-      const progress = remainingSec / totalDurationSec;
-      const offset = ringCircumference * (1 - progress);
-      timerRing.style.strokeDasharray = ringCircumference;
-      timerRing.style.strokeDashoffset = offset;
-    }
-  }
-
-  if (timerToggleBtn) {
-    timerToggleBtn.addEventListener('click', () => {
-      if (isTimerRunning) {
-        clearInterval(timerInterval);
-        isTimerRunning = false;
-        timerToggleBtn.innerHTML = `
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-          <span>Resume</span>
-        `;
-      } else {
-        isTimerRunning = true;
-        timerToggleBtn.innerHTML = `
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
-          <span>Pause</span>
-        `;
-        timerInterval = setInterval(() => {
-          if (remainingSec > 0) {
-            remainingSec--;
-            updateTimerDisplay();
-          } else {
-            clearInterval(timerInterval);
-            isTimerRunning = false;
-            timerToggleBtn.innerHTML = `
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-              <span>Start</span>
-            `;
-          }
-        }, 1000);
+  presetBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const preset = btn.dataset.preset;
+      if (preset && nlpInput) {
+        nlpInput.value = preset;
+        parseNaturalLanguage(preset);
       }
     });
-
-    if (timerResetBtn) {
-      timerResetBtn.addEventListener('click', () => {
-        clearInterval(timerInterval);
-        isTimerRunning = false;
-        remainingSec = totalDurationSec;
-        updateTimerDisplay();
-        timerToggleBtn.innerHTML = `
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-          <span>Start</span>
-        `;
-      });
-    }
-
-    timerModePills.forEach(pill => {
-      pill.addEventListener('click', () => {
-        timerModePills.forEach(p => p.classList.remove('active'));
-        pill.classList.add('active');
-        const mins = parseInt(pill.dataset.mins, 10);
-        totalDurationSec = mins * 60;
-        remainingSec = totalDurationSec;
-        clearInterval(timerInterval);
-        isTimerRunning = false;
-        updateTimerDisplay();
-        timerToggleBtn.innerHTML = `
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-          <span>Start</span>
-        `;
-      });
-    });
-
-    updateTimerDisplay();
-  }
+  });
 
   // =========================================================================
-  // 10. PRODUCTIVITY RHYTHM GAUGE & 12-WEEK HEATMAP
-  // =========================================================================
-  const needle = document.getElementById('circadian-dial-needle');
-  if (needle) {
-    setTimeout(() => {
-      needle.style.transform = 'rotate(78deg)';
-    }, 400);
-  }
-
-  // =========================================================================
-  // 11. ZERO-ASSET WEB AUDIO PROCEDURAL SYNTHESIZER
+  // 3. ZERO-ASSET WEB AUDIO PROCEDURAL SYNTHESIZER
+  // Synthesizes Brown Noise, Rain, and 6Hz Binaural beats in Web Audio
   // =========================================================================
   let audioCtx = null;
   let activeNodes = [];
-  let currentSound = null;
-  let analyser = null;
-  let visualizerAnimId = null;
+  let masterGain = null;
+  let currentSound = 'none';
+  let animId = null;
 
-  const visualizerCanvas = document.getElementById('audio-visualizer-canvas');
-  const nowPlayingEl = document.getElementById('sound-now-playing');
-  const soundBtns = document.querySelectorAll('.sound-btn');
-  const volSlider = document.getElementById('audio-volume-slider');
+  const synthBtns = document.querySelectorAll('.synth-btn');
+  const synthCanvas = document.getElementById('synth-canvas');
+  const synthStatus = document.getElementById('synth-status-label');
+  const synthVolSlider = document.getElementById('synth-volume');
+  const synthVolText = document.getElementById('synth-vol-text');
 
-  function initAudioCtx() {
+  function getAudioContext() {
     if (!audioCtx) {
       const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-      if (AudioContextClass) {
-        audioCtx = new AudioContextClass();
-        analyser = audioCtx.createAnalyser();
-        analyser.fftSize = 64;
-      }
+      audioCtx = new AudioContextClass();
+      masterGain = audioCtx.createGain();
+      masterGain.gain.value = 0.7;
+      masterGain.connect(audioCtx.destination);
     }
-    if (audioCtx && audioCtx.state === 'suspended') {
+    if (audioCtx.state === 'suspended') {
       audioCtx.resume();
     }
+    return audioCtx;
   }
 
-  function stopAllSounds() {
-    activeNodes.forEach(node => {
+  function stopSynthesizer() {
+    activeNodes.forEach(n => {
       try {
-        if (node.stop) node.stop();
-        if (node.disconnect) node.disconnect();
+        if (n.stop) n.stop();
+        if (n.disconnect) n.disconnect();
       } catch (e) {}
     });
     activeNodes = [];
-    currentSound = null;
-    soundBtns.forEach(b => b.classList.remove('active'));
-    if (nowPlayingEl) nowPlayingEl.textContent = 'Synthesizer Idle';
-    if (visualizerAnimId) {
-      cancelAnimationFrame(visualizerAnimId);
-      visualizerAnimId = null;
-      clearVisualizer();
+    currentSound = 'none';
+    if (synthStatus) synthStatus.textContent = 'Synthesizer Idle — Select a soundscape above';
+    if (animId) {
+      cancelAnimationFrame(animId);
+      animId = null;
     }
+    clearVisualizer();
   }
 
-  function getMasterGain() {
-    const gainNode = audioCtx.createGain();
-    const vol = volSlider ? parseFloat(volSlider.value) : 0.2;
-    gainNode.gain.setValueAtTime(vol, audioCtx.currentTime);
-    gainNode.connect(analyser);
-    analyser.connect(audioCtx.destination);
-    return gainNode;
-  }
+  function startBrownNoise() {
+    stopSynthesizer();
+    const ctx = getAudioContext();
+    const bufferSize = ctx.sampleRate * 2;
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
 
-  function playBrownNoise() {
-    initAudioCtx();
-    stopAllSounds();
-    const bufferSize = audioCtx.sampleRate * 2;
-    const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-    const output = noiseBuffer.getChannelData(0);
     let lastOut = 0.0;
     for (let i = 0; i < bufferSize; i++) {
       const white = Math.random() * 2 - 1;
-      output[i] = (lastOut + (0.02 * white)) / 1.02;
-      lastOut = output[i];
-      output[i] *= 3.5;
+      data[i] = (lastOut + (0.02 * white)) / 1.02;
+      lastOut = data[i];
+      data[i] *= 3.5;
     }
-    const whiteNoise = audioCtx.createBufferSource();
-    whiteNoise.buffer = noiseBuffer;
-    whiteNoise.loop = true;
 
-    const filter = audioCtx.createBiquadFilter();
+    const noiseNode = ctx.createBufferSource();
+    noiseNode.buffer = buffer;
+    noiseNode.loop = true;
+
+    const filter = ctx.createBiquadFilter();
     filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(450, audioCtx.currentTime);
+    filter.frequency.value = 400;
 
-    const master = getMasterGain();
-    whiteNoise.connect(filter);
-    filter.connect(master);
-    whiteNoise.start();
+    noiseNode.connect(filter);
+    filter.connect(masterGain);
+    noiseNode.start(0);
 
-    activeNodes.push(whiteNoise, filter, master);
+    activeNodes.push(noiseNode, filter);
     currentSound = 'brown';
-    if (nowPlayingEl) nowPlayingEl.textContent = 'Playing: Deep Brown Noise (450Hz Low-Pass)';
+    if (synthStatus) synthStatus.textContent = 'Synthesizing: Deep Brown Noise (400Hz Low-pass)';
     startVisualizer();
   }
 
-  function playRain() {
-    initAudioCtx();
-    stopAllSounds();
-    const bufferSize = audioCtx.sampleRate * 2;
-    const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-    const output = noiseBuffer.getChannelData(0);
-    for (let i = 0; i < bufferSize; i++) {
-      output[i] = Math.random() * 2 - 1;
-    }
-    const noise = audioCtx.createBufferSource();
-    noise.buffer = noiseBuffer;
-    noise.loop = true;
+  function startRainfall() {
+    stopSynthesizer();
+    const ctx = getAudioContext();
+    const bufferSize = ctx.sampleRate * 2;
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
 
-    const filter = audioCtx.createBiquadFilter();
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = Math.random() * 2 - 1;
+    }
+
+    const noiseNode = ctx.createBufferSource();
+    noiseNode.buffer = buffer;
+    noiseNode.loop = true;
+
+    const filter = ctx.createBiquadFilter();
     filter.type = 'bandpass';
-    filter.frequency.setValueAtTime(1200, audioCtx.currentTime);
-    filter.Q.setValueAtTime(1.2, audioCtx.currentTime);
+    filter.frequency.value = 1000;
+    filter.Q.value = 0.6;
 
-    const master = getMasterGain();
-    noise.connect(filter);
-    filter.connect(master);
-    noise.start();
+    noiseNode.connect(filter);
+    filter.connect(masterGain);
+    noiseNode.start(0);
 
-    activeNodes.push(noise, filter, master);
+    activeNodes.push(noiseNode, filter);
     currentSound = 'rain';
-    if (nowPlayingEl) nowPlayingEl.textContent = 'Playing: Filtered Acoustic Rain';
+    if (synthStatus) synthStatus.textContent = 'Synthesizing: Ambient Rainfall (Pink Bandpass)';
     startVisualizer();
   }
 
-  function playForest() {
-    initAudioCtx();
-    stopAllSounds();
-    const bufferSize = audioCtx.sampleRate * 2;
-    const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-    const output = noiseBuffer.getChannelData(0);
-    for (let i = 0; i < bufferSize; i++) {
-      output[i] = Math.random() * 2 - 1;
-    }
-    const noise = audioCtx.createBufferSource();
-    noise.buffer = noiseBuffer;
-    noise.loop = true;
+  function startBinaural() {
+    stopSynthesizer();
+    const ctx = getAudioContext();
 
-    const filter = audioCtx.createBiquadFilter();
-    filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(800, audioCtx.currentTime);
-
-    const lfo = audioCtx.createOscillator();
-    lfo.frequency.setValueAtTime(0.2, audioCtx.currentTime);
-    const lfoGain = audioCtx.createGain();
-    lfoGain.gain.setValueAtTime(400, audioCtx.currentTime);
-    lfo.connect(lfoGain);
-    lfoGain.connect(filter.frequency);
-    lfo.start();
-
-    const master = getMasterGain();
-    noise.connect(filter);
-    filter.connect(master);
-    noise.start();
-
-    activeNodes.push(noise, filter, lfo, lfoGain, master);
-    currentSound = 'forest';
-    if (nowPlayingEl) nowPlayingEl.textContent = 'Playing: Modulated Forest Wind';
-    startVisualizer();
-  }
-
-  function playLoFiCalm() {
-    initAudioCtx();
-    stopAllSounds();
-
-    // 6Hz Theta binaural beat: 216Hz Left, 222Hz Right
-    const oscLeft = audioCtx.createOscillator();
+    // Base carrier 200Hz in left ear, 206Hz in right ear = 6Hz Theta frequency
+    const oscLeft = ctx.createOscillator();
+    const oscRight = ctx.createOscillator();
     oscLeft.type = 'sine';
-    oscLeft.frequency.setValueAtTime(216, audioCtx.currentTime);
-
-    const oscRight = audioCtx.createOscillator();
     oscRight.type = 'sine';
-    oscRight.frequency.setValueAtTime(222, audioCtx.currentTime);
+    oscLeft.frequency.value = 200;
+    oscRight.frequency.value = 206;
 
-    const merger = audioCtx.createChannelMerger(2);
+    const merger = ctx.createChannelMerger(2);
     oscLeft.connect(merger, 0, 0);
     oscRight.connect(merger, 0, 1);
 
-    const master = getMasterGain();
-    merger.connect(master);
+    const gain = ctx.createGain();
+    gain.gain.value = 0.25;
 
-    oscLeft.start();
-    oscRight.start();
+    merger.connect(gain);
+    gain.connect(masterGain);
 
-    activeNodes.push(oscLeft, oscRight, merger, master);
-    currentSound = 'lofi';
-    if (nowPlayingEl) nowPlayingEl.textContent = 'Playing: 6Hz Theta Wave Binaural Calm';
+    oscLeft.start(0);
+    oscRight.start(0);
+
+    activeNodes.push(oscLeft, oscRight, merger, gain);
+    currentSound = 'binaural';
+    if (synthStatus) synthStatus.textContent = 'Synthesizing: 6Hz Theta Binaural Beats (200Hz & 206Hz)';
     startVisualizer();
   }
 
-  function clearVisualizer() {
-    if (!visualizerCanvas) return;
-    const ctx = visualizerCanvas.getContext('2d');
-    ctx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
+  synthBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      synthBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const sound = btn.dataset.sound;
+
+      if (sound === 'brown') startBrownNoise();
+      else if (sound === 'rain') startRainfall();
+      else if (sound === 'binaural') startBinaural();
+      else stopSynthesizer();
+    });
+  });
+
+  if (synthVolSlider) {
+    synthVolSlider.addEventListener('input', (e) => {
+      const val = Number(e.target.value);
+      if (synthVolText) synthVolText.textContent = `${val}%`;
+      if (masterGain) masterGain.gain.value = val / 100;
+    });
   }
+
+  // Visualizer Animation
+  function clearVisualizer() {
+    if (!synthCanvas) return;
+    const ctx = synthCanvas.getContext('2d');
+    ctx.clearRect(0, 0, synthCanvas.width, synthCanvas.height);
+    ctx.strokeStyle = '#334155';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(0, synthCanvas.height / 2);
+    ctx.lineTo(synthCanvas.width, synthCanvas.height / 2);
+    ctx.stroke();
+  }
+  clearVisualizer();
 
   function startVisualizer() {
-    if (!visualizerCanvas || !analyser) return;
-    const ctx = visualizerCanvas.getContext('2d');
-    const bufferLength = analyser.frequencyBinCount;
-    const dataArray = new Uint8Array(bufferLength);
+    if (!synthCanvas) return;
+    const ctx = synthCanvas.getContext('2d');
+    const width = synthCanvas.width;
+    const height = synthCanvas.height;
+    let phase = 0;
 
-    function draw() {
-      visualizerAnimId = requestAnimationFrame(draw);
-      analyser.getByteFrequencyData(dataArray);
+    function render() {
+      if (currentSound === 'none') return;
+      ctx.clearRect(0, 0, width, height);
 
-      ctx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
+      phase += 0.08;
+      ctx.beginPath();
+      ctx.strokeStyle = currentSound === 'brown' ? '#f59e0b' : currentSound === 'rain' ? '#38bdf8' : '#a855f7';
+      ctx.lineWidth = 2;
 
-      const barWidth = (visualizerCanvas.width / bufferLength) * 2.2;
-      let x = 0;
-
-      for (let i = 0; i < bufferLength; i++) {
-        const barHeight = (dataArray[i] / 255) * visualizerCanvas.height;
-        const grad = ctx.createLinearGradient(0, visualizerCanvas.height, 0, 0);
-        grad.addColorStop(0, '#2563eb');
-        grad.addColorStop(1, '#4f46e5');
-
-        ctx.fillStyle = grad;
-        ctx.fillRect(x, visualizerCanvas.height - barHeight, barWidth - 2, barHeight);
-        x += barWidth;
-      }
-    }
-
-    draw();
-  }
-
-  soundBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const type = btn.dataset.sound;
-      if (currentSound === type) {
-        stopAllSounds();
-      } else {
-        soundBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        if (type === 'brown') playBrownNoise();
-        else if (type === 'rain') playRain();
-        else if (type === 'forest') playForest();
-        else if (type === 'lofi') playLoFiCalm();
-      }
-    });
-  });
-
-  if (volSlider) {
-    volSlider.addEventListener('input', () => {
-      if (activeNodes.length > 0) {
-        const master = activeNodes[activeNodes.length - 1];
-        if (master && master.gain) {
-          master.gain.setValueAtTime(parseFloat(volSlider.value), audioCtx.currentTime);
+      for (let x = 0; x < width; x++) {
+        let y = height / 2;
+        if (currentSound === 'brown') {
+          y += Math.sin(x * 0.02 + phase) * 14 + (Math.random() - 0.5) * 6;
+        } else if (currentSound === 'rain') {
+          y += (Math.random() - 0.5) * 22;
+        } else if (currentSound === 'binaural') {
+          y += Math.sin(x * 0.05 + phase) * 18 * Math.sin(x * 0.008 + phase * 0.2);
         }
+        if (x === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
       }
+      ctx.stroke();
+      animId = requestAnimationFrame(render);
+    }
+    render();
+  }
+
+  // =========================================================================
+  // 4. MOBILE NAVIGATION DRAWER
+  // =========================================================================
+  const mobileToggle = document.getElementById('mobile-toggle');
+  const mobileDrawer = document.getElementById('mobile-drawer');
+
+  if (mobileToggle && mobileDrawer) {
+    mobileToggle.addEventListener('click', () => {
+      mobileDrawer.classList.toggle('open');
+    });
+
+    mobileDrawer.querySelectorAll('.m-nav-item').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileDrawer.classList.remove('open');
+      });
     });
   }
 
   // =========================================================================
-  // 12. BENTO GRID MOUSE SPOTLIGHT ENGINE
+  // 5. RAYCAST COMMAND PALETTE MODAL (Ctrl + K / Global Launcher)
   // =========================================================================
-  const bentoItems = document.querySelectorAll('.bento-item');
-  bentoItems.forEach(item => {
-    item.addEventListener('mousemove', (e) => {
-      const rect = item.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      item.style.setProperty('--mouse-x', `${x}px`);
-      item.style.setProperty('--mouse-y', `${y}px`);
-    });
-  });
-
-  // =========================================================================
-  // 13. GLOBAL RAYCAST COMMAND PALETTE MODAL (CTRL + K)
-  // =========================================================================
-  const raycastModal = document.getElementById('raycast-modal');
-  const raycastInput = document.getElementById('raycast-search-input');
-  const raycastList = document.getElementById('raycast-results-list');
+  const raycastBackdrop = document.getElementById('raycast-backdrop');
+  const raycastSearch = document.getElementById('raycast-search');
+  const raycastResults = document.getElementById('raycast-results');
   const openRaycastBtns = document.querySelectorAll('.open-raycast-btn');
 
-  const commandCatalog = [
-    { title: 'Open Live Video Tour', sub: 'Watch full screen recording of Doing It on Windows 11', cat: 'Media', action: () => scrollToSection('video-tour') },
-    { title: 'Open 3D Hero Parallax', sub: 'Inspect layered workspaces floating in perspective space', cat: 'Showcase', action: () => scrollToSection('parallax') },
-    { title: 'Open Chrono NLP Tasks', sub: 'Test natural language parsing and habit streaks', cat: 'Demos', action: () => scrollToSection('demos') },
-    { title: 'Play Brown Noise Focus Sound', sub: 'Synthesize low-pass filtered audio in Web Audio', cat: 'Audio', action: () => playBrownNoise() },
-    { title: 'Play Lo-Fi Binaural Theta Waves', sub: 'Generate 6Hz theta frequency soundscape', cat: 'Audio', action: () => playLoFiCalm() },
-    { title: 'Inspect 0–100 Rhythm Analytics', sub: 'Explore circadian score and 12-week heatmap', cat: 'Analytics', action: () => scrollToSection('demos') },
-    { title: 'View Operating System Synergy', sub: 'Always-on-top pinning, Spotify link & atomic staging', cat: 'Features', action: () => scrollToSection('features') },
-    { title: 'View Keyboard Shortcuts Matrix', sub: 'Review global Ctrl+Shift+N and Ctrl+K shortcuts', cat: 'Efficiency', action: () => scrollToSection('shortcuts') },
-    { title: 'Download Doing It v4.4.0', sub: 'Official Windows 10 & 11 64-bit installer (.exe)', cat: 'Download', action: () => window.location.href = 'https://github.com/sidhu1512/doing-it/releases/download/v4.4.0/Doing.It.Setup.4.4.0.exe' },
-    { title: 'GitHub Repository', sub: 'View source code, star project, or report issues', cat: 'Source', action: () => window.open('https://github.com/sidhu1512/doing-it', '_blank') }
+  const commands = [
+    { name: 'Switch to Tasks & Habits', category: 'Workspace', action: () => { updateStage('tasks'); scrollToSection('showcase'); } },
+    { name: 'Switch to Day One Diary', category: 'Workspace', action: () => { updateStage('diary'); scrollToSection('showcase'); } },
+    { name: 'Switch to Focus Studio', category: 'Workspace', action: () => { updateStage('focus'); scrollToSection('showcase'); } },
+    { name: 'Switch to Rhythm Analytics', category: 'Workspace', action: () => { updateStage('analytics'); scrollToSection('showcase'); } },
+    { name: 'Switch to Day Planner', category: 'Workspace', action: () => { updateStage('planner'); scrollToSection('showcase'); } },
+    { name: 'Switch to Instant Notes', category: 'Workspace', action: () => { updateStage('notes'); scrollToSection('showcase'); } },
+    { name: 'Start Brown Noise Audio', category: 'Soundscapes', action: () => { startBrownNoise(); scrollToSection('lab'); } },
+    { name: 'Start Rainfall Ambient Audio', category: 'Soundscapes', action: () => { startRainfall(); scrollToSection('lab'); } },
+    { name: 'Start 6Hz Binaural Beats', category: 'Soundscapes', action: () => { startBinaural(); scrollToSection('lab'); } },
+    { name: 'Download Doing It for Windows 11', category: 'Download', action: () => { window.location.href = 'https://github.com/sidhu1512/doing-it/releases/download/v4.4.0/Doing.It.Setup.4.4.0.exe'; } },
+    { name: 'View GitHub Repository', category: 'External', action: () => { window.open('https://github.com/sidhu1512/doing-it', '_blank'); } }
   ];
 
-  function openRaycast() {
-    if (!raycastModal) return;
-    raycastModal.classList.add('open');
-    if (raycastInput) {
-      raycastInput.value = '';
-      raycastInput.focus();
+  let selectedIdx = 0;
+  let filteredCommands = [...commands];
+
+  function renderRaycastResults() {
+    if (!raycastResults) return;
+    if (filteredCommands.length === 0) {
+      raycastResults.innerHTML = '<div style="padding: 16px; text-align: center; color: var(--text-muted); font-size: 13px;">No matching commands found</div>';
+      return;
     }
-    renderRaycastResults('');
+
+    raycastResults.innerHTML = filteredCommands.map((cmd, idx) => `
+      <div class="raycast-item ${idx === selectedIdx ? 'active' : ''}" data-idx="${idx}">
+        <div class="raycast-item-left">
+          <span>${cmd.name}</span>
+        </div>
+        <span class="raycast-item-badge">${cmd.category}</span>
+      </div>
+    `).join('');
+
+    raycastResults.querySelectorAll('.raycast-item').forEach(el => {
+      el.addEventListener('click', () => {
+        const idx = Number(el.dataset.idx);
+        executeCommand(idx);
+      });
+    });
+  }
+
+  function executeCommand(idx) {
+    const cmd = filteredCommands[idx];
+    if (cmd && cmd.action) {
+      cmd.action();
+      closeRaycast();
+    }
+  }
+
+  function openRaycast() {
+    if (!raycastBackdrop) return;
+    raycastBackdrop.style.display = 'flex';
+    if (raycastSearch) {
+      raycastSearch.value = '';
+      raycastSearch.focus();
+    }
+    filteredCommands = [...commands];
+    selectedIdx = 0;
+    renderRaycastResults();
   }
 
   function closeRaycast() {
-    if (!raycastModal) return;
-    raycastModal.classList.remove('open');
+    if (!raycastBackdrop) return;
+    raycastBackdrop.style.display = 'none';
   }
 
   function scrollToSection(id) {
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: 'smooth' });
-    closeRaycast();
   }
 
-  function renderRaycastResults(query) {
-    if (!raycastList) return;
-    raycastList.innerHTML = '';
-    const q = query.toLowerCase().trim();
-
-    const filtered = commandCatalog.filter(c => {
-      return !q || c.title.toLowerCase().includes(q) || c.sub.toLowerCase().includes(q) || c.cat.toLowerCase().includes(q);
+  openRaycastBtns.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      openRaycast();
     });
+  });
 
-    if (filtered.length === 0) {
-      raycastList.innerHTML = '<div style="padding: 16px; color: var(--text-muted); font-size: 0.85rem; text-align: center;">No matching commands found.</div>';
-      return;
-    }
-
-    filtered.forEach((cmd, idx) => {
-      const item = document.createElement('div');
-      item.className = `raycast-item ${idx === 0 ? 'active' : ''}`;
-      item.innerHTML = `
-        <div class="raycast-item-left">
-          <div class="raycast-item-icon">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="9 18 15 12 9 6"/></svg>
-          </div>
-          <div>
-            <div class="raycast-item-title">${escapeHtml(cmd.title)}</div>
-            <div class="raycast-item-sub">${escapeHtml(cmd.sub)}</div>
-          </div>
-        </div>
-        <span class="raycast-item-shortcut">${escapeHtml(cmd.cat)}</span>
-      `;
-      item.addEventListener('click', () => {
-        cmd.action();
-        closeRaycast();
-      });
-      raycastList.appendChild(item);
+  if (raycastBackdrop) {
+    raycastBackdrop.addEventListener('click', (e) => {
+      if (e.target === raycastBackdrop) closeRaycast();
     });
   }
 
-  openRaycastBtns.forEach(btn => btn.addEventListener('click', openRaycast));
-
-  if (raycastInput) {
-    raycastInput.addEventListener('input', (e) => {
-      renderRaycastResults(e.target.value);
+  if (raycastSearch) {
+    raycastSearch.addEventListener('input', (e) => {
+      const q = e.target.value.toLowerCase().trim();
+      if (!q) {
+        filteredCommands = [...commands];
+      } else {
+        filteredCommands = commands.filter(c => 
+          c.name.toLowerCase().includes(q) || c.category.toLowerCase().includes(q)
+        );
+      }
+      selectedIdx = 0;
+      renderRaycastResults();
     });
 
-    raycastInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        closeRaycast();
-      } else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+    raycastSearch.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown') {
         e.preventDefault();
-        const items = raycastList.querySelectorAll('.raycast-item');
-        if (!items.length) return;
-        let activeIdx = Array.from(items).findIndex(i => i.classList.contains('active'));
-        if (e.key === 'ArrowDown') {
-          activeIdx = (activeIdx + 1) % items.length;
-        } else {
-          activeIdx = (activeIdx - 1 + items.length) % items.length;
-        }
-        items.forEach(i => i.classList.remove('active'));
-        items[activeIdx].classList.add('active');
-        items[activeIdx].scrollIntoView({ block: 'nearest' });
+        selectedIdx = (selectedIdx + 1) % filteredCommands.length;
+        renderRaycastResults();
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        selectedIdx = (selectedIdx - 1 + filteredCommands.length) % filteredCommands.length;
+        renderRaycastResults();
       } else if (e.key === 'Enter') {
-        const active = raycastList.querySelector('.raycast-item.active');
-        if (active) active.click();
+        e.preventDefault();
+        executeCommand(selectedIdx);
+      } else if (e.key === 'Escape') {
+        closeRaycast();
       }
     });
   }
 
-  if (raycastModal) {
-    raycastModal.addEventListener('click', (e) => {
-      if (e.target.classList.contains('raycast-backdrop')) closeRaycast();
-    });
-  }
-
-  // Global Ctrl+K / Cmd+K
+  // Global Keyboard listener for Ctrl+K
   document.addEventListener('keydown', (e) => {
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
       e.preventDefault();
-      if (raycastModal && raycastModal.classList.contains('open')) {
+      if (raycastBackdrop && raycastBackdrop.style.display === 'flex') {
         closeRaycast();
       } else {
         openRaycast();
       }
+    } else if (e.key === 'Escape') {
+      closeRaycast();
+      closeLightbox();
     }
   });
 
   // =========================================================================
-  // 14. SCREENSHOT LIGHTBOX ZOOM MODAL
+  // 6. HIGH-DPI LIGHTBOX INSPECTOR
   // =========================================================================
-  const lightboxModal = document.getElementById('lightbox-modal');
+  const lightboxBackdrop = document.getElementById('lightbox-backdrop');
   const lightboxImg = document.getElementById('lightbox-img');
-  const lightboxCloseBtn = document.getElementById('lightbox-close-btn');
-  const zoomableImgs = document.querySelectorAll('.zoomable-img');
+  const lightboxClose = document.getElementById('lightbox-close');
+  const lightboxCaption = document.getElementById('lightbox-caption');
 
-  zoomableImgs.forEach(img => {
+  function openLightbox(src, caption = '') {
+    if (!lightboxBackdrop || !lightboxImg) return;
+    lightboxImg.src = src;
+    if (lightboxCaption) lightboxCaption.textContent = caption || 'Doing It Native Resolution Capture';
+    lightboxBackdrop.style.display = 'flex';
+  }
+
+  function closeLightbox() {
+    if (!lightboxBackdrop) return;
+    lightboxBackdrop.style.display = 'none';
+  }
+
+  document.querySelectorAll('.zoomable-img').forEach(img => {
     img.addEventListener('click', () => {
-      if (lightboxModal && lightboxImg) {
-        lightboxImg.src = img.src;
-        lightboxModal.classList.add('open');
-      }
+      openLightbox(img.src, img.alt);
     });
   });
 
-  if (lightboxCloseBtn) {
-    lightboxCloseBtn.addEventListener('click', () => {
-      if (lightboxModal) lightboxModal.classList.remove('open');
+  if (lightboxClose) lightboxClose.addEventListener('click', closeLightbox);
+  if (lightboxBackdrop) {
+    lightboxBackdrop.addEventListener('click', (e) => {
+      if (e.target === lightboxBackdrop) closeLightbox();
     });
   }
-
-  if (lightboxModal) {
-    lightboxModal.addEventListener('click', (e) => {
-      if (e.target.classList.contains('lightbox-backdrop')) {
-        lightboxModal.classList.remove('open');
-      }
-    });
-  }
-
-  // =========================================================================
-  // 15. SMOOTH FAQ ACCORDION
-  // =========================================================================
-  const faqCards = document.querySelectorAll('.faq-card');
-  faqCards.forEach(card => {
-    const q = card.querySelector('.faq-q');
-    if (q) {
-      q.addEventListener('click', () => {
-        const wasOpen = card.classList.contains('open');
-        faqCards.forEach(c => c.classList.remove('open'));
-        if (!wasOpen) card.classList.add('open');
-      });
-    }
-  });
 
 });
