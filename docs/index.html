@@ -27,15 +27,49 @@
   <meta property="twitter:description" content="Frameless, local-first desktop productivity companion for Windows 11. Tasks, Day One journaling, procedural focus audio, and calendar sync.">
   <meta property="twitter:image" content="https://sidhu1512.github.io/doing-it/imgs/tasks-view.png">
 
-  <!-- Canonical Doing It Icon & Adaptive Favicon Suite (100% visible on light & dark tabs) -->
-  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg?v=4.4.2">
-  <link rel="icon" type="image/x-icon" href="favicon.ico?v=4.4.2">
-  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico?v=4.4.2">
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png?v=4.4.2">
-  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png?v=4.4.2">
-  <link rel="icon" type="image/png" sizes="48x48" href="assets/favicon-48x48.png?v=4.4.2">
-  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png?v=4.4.2">
-  <meta name="theme-color" content="#fcfcfb">
+  <!-- Canonical Doing It Icon & Adaptive Favicon Suite (White logo for Dark Theme tabs, Charcoal logo for Light Theme tabs) -->
+  <link id="favicon-svg" rel="icon" type="image/svg+xml" href="assets/favicon-dark.svg?v=4.4.4">
+  <link id="favicon-ico" rel="icon" type="image/x-icon" href="favicon-dark.ico?v=4.4.4">
+  <link id="favicon-shortcut" rel="shortcut icon" type="image/x-icon" href="favicon-dark.ico?v=4.4.4">
+  <link id="favicon-png32" rel="icon" type="image/png" sizes="32x32" href="assets/favicon-dark-32x32.png?v=4.4.4">
+  <link id="favicon-png16" rel="icon" type="image/png" sizes="16x16" href="assets/favicon-dark-16x16.png?v=4.4.4">
+  <link id="favicon-png48" rel="icon" type="image/png" sizes="48x48" href="assets/favicon-dark-48x48.png?v=4.4.4">
+  <link id="apple-touch-icon" rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png?v=4.4.4">
+  <meta name="theme-color" content="#090a0f" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#fcfcfb" media="(prefers-color-scheme: light)">
+
+  <!-- Instant Browser Theme Favicon Switcher: 100% visible on Dark Chrome/Windows Tabs & Light Tabs -->
+  <script>
+    (function() {
+      function applyThemeFavicon(e) {
+        var isDark = e && typeof e.matches === 'boolean' ? e.matches : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        var v = '4.4.4';
+        var theme = isDark ? 'dark' : 'light';
+        var svgEl = document.getElementById('favicon-svg');
+        var icoEl = document.getElementById('favicon-ico');
+        var shortcutEl = document.getElementById('favicon-shortcut');
+        var p32El = document.getElementById('favicon-png32');
+        var p16El = document.getElementById('favicon-png16');
+        var p48El = document.getElementById('favicon-png48');
+
+        if (svgEl) svgEl.href = 'assets/favicon-' + theme + '.svg?v=' + v;
+        if (icoEl) icoEl.href = 'favicon-' + theme + '.ico?v=' + v;
+        if (shortcutEl) shortcutEl.href = 'favicon-' + theme + '.ico?v=' + v;
+        if (p32El) p32El.href = 'assets/favicon-' + theme + '-32x32.png?v=' + v;
+        if (p16El) p16El.href = 'assets/favicon-' + theme + '-16x16.png?v=' + v;
+        if (p48El) p48El.href = 'assets/favicon-' + theme + '-48x48.png?v=' + v;
+      }
+      try {
+        var mql = window.matchMedia('(prefers-color-scheme: dark)');
+        applyThemeFavicon(mql);
+        if (mql.addEventListener) {
+          mql.addEventListener('change', applyThemeFavicon);
+        } else if (mql.addListener) {
+          mql.addListener(applyThemeFavicon);
+        }
+      } catch (err) {}
+    })();
+  </script>
 
   <!-- Inter & JetBrains Mono Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -81,7 +115,6 @@
       <a href="#" class="brand-link" aria-label="Doing It Home">
         <img src="assets/icon.png" alt="Doing It Logo" class="brand-logo" width="26" height="26">
         <span class="brand-name">Doing It</span>
-        <span class="brand-badge">v4.4.0</span>
       </a>
 
       <nav class="desktop-nav" aria-label="Main Navigation">
@@ -144,14 +177,6 @@
          ===================================================================== -->
     <section class="hero-section">
       <div class="container hero-content">
-        <!-- Status Pill -->
-        <div class="status-pill">
-          <span class="status-indicator"></span>
-          <span class="status-text">Doing It v4.4.0 for Windows 11</span>
-          <span class="status-sep">•</span>
-          <span class="status-sub">100% Local-First Desktop Overlay</span>
-        </div>
-
         <h1 class="hero-title">
           Your day, in deep flow.<br>
           <span class="hero-title-accent">Always within arm’s reach.</span>
