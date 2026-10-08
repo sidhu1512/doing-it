@@ -145,7 +145,7 @@
     let parseDebounce = null;
 
     // Theme sync
-    if (window.api.getSettings) {
+    if (window.api && window.api.getSettings) {
       window.api.getSettings().then(settings => {
         if (settings && settings.theme) {
           document.documentElement.setAttribute('data-theme', settings.theme);
@@ -175,7 +175,7 @@
       // Debounce natural language date parsing
       clearTimeout(parseDebounce);
       parseDebounce = setTimeout(async () => {
-        if (!val.trim() || !window.api.parseNLP) {
+        if (!val.trim() || !window.api || !window.api.parseNLP) {
           previewPill.classList.remove('visible');
           return;
         }

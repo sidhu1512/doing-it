@@ -143,7 +143,7 @@
     });
 
     // Timer progress sync
-    if (window.api.onFabTimerSync) {
+    if (window.api && window.api.onFabTimerSync) {
       window.api.onFabTimerSync((state) => {
         if (!state) return;
         if (state.running && state.duration > 0) {
@@ -158,7 +158,7 @@
     }
 
     // Theme sync
-    if (window.api.getSettings) {
+    if (window.api && window.api.getSettings) {
       window.api.getSettings().then(settings => {
         if (settings && settings.theme) {
           document.documentElement.setAttribute('data-theme', settings.theme);
@@ -166,7 +166,7 @@
       });
     }
 
-    if (window.api.onThemeUpdated) {
+    if (window.api && window.api.onThemeUpdated) {
       window.api.onThemeUpdated((theme) => {
         if (theme) {
           document.documentElement.setAttribute('data-theme', theme);

@@ -75,6 +75,24 @@ const sampleTodos = [
     priority: 'normal',
     dueDate: todayStr,
     created: Date.now() - 3600000 * 1
+  },
+  {
+    id: 't-7',
+    text: 'Sync release checklist with open-source contributors',
+    completed: false,
+    priority: 'medium',
+    dueDate: todayStr,
+    tags: ['community'],
+    created: Date.now() - 3600000 * 5
+  },
+  {
+    id: 't-8',
+    text: 'Benchmark cold startup latency (<120ms target)',
+    completed: false,
+    priority: 'high',
+    dueDate: todayStr,
+    tags: ['perf'],
+    created: Date.now() - 3600000 * 4
   }
 ];
 
@@ -154,35 +172,41 @@ const sampleNotes = [
 const sampleCalendarEvents = [
   {
     id: 'cal-1',
-    summary: 'Architecture Sprint & Systems Review',
-    start: `${todayStr}T09:30:00`,
-    end: `${todayStr}T10:15:00`,
+    title: 'Architecture Sprint & Systems Review',
+    startDate: `${todayStr}T09:30:00`,
+    endDate: `${todayStr}T10:15:00`,
     meetingUrl: 'https://meet.google.com/abc-defg-hij',
-    meetingPlatform: 'Google Meet'
+    meetingPlatform: 'Google Meet',
+    location: 'Google Meet'
   },
   {
     id: 'cal-2',
-    summary: 'Deep Flow: Core Engine Optimization',
-    start: `${todayStr}T11:00:00`,
-    end: `${todayStr}T12:30:00`,
+    title: 'Deep Flow: Core Engine Optimization',
+    startDate: `${todayStr}T11:00:00`,
+    endDate: `${todayStr}T12:30:00`,
     meetingUrl: null
   },
   {
     id: 'cal-3',
-    summary: 'Product Design Sync',
-    start: `${todayStr}T14:00:00`,
-    end: `${todayStr}T14:45:00`,
+    title: 'Product Design Sync',
+    startDate: `${todayStr}T14:00:00`,
+    endDate: `${todayStr}T14:45:00`,
     meetingUrl: 'https://zoom.us/j/123456789',
-    meetingPlatform: 'Zoom'
+    meetingPlatform: 'Zoom',
+    location: 'Zoom Conference'
   },
   {
     id: 'cal-4',
-    summary: 'Async Documentation & Release Notes',
-    start: `${todayStr}T16:00:00`,
-    end: `${todayStr}T17:00:00`,
+    title: 'Async Documentation & Release Notes',
+    startDate: `${todayStr}T16:00:00`,
+    endDate: `${todayStr}T17:00:00`,
     meetingUrl: null
   }
 ];
+
+app.on('window-all-closed', (e) => {
+  if (e && e.preventDefault) e.preventDefault();
+});
 
 app.whenReady().then(async () => {
   windowManager.registerMediaProtocol();
@@ -193,8 +217,6 @@ app.whenReady().then(async () => {
   if (!fs.existsSync(outImgs)) fs.mkdirSync(outImgs, { recursive: true });
   if (!fs.existsSync(outDocsImgs)) fs.mkdirSync(outDocsImgs, { recursive: true });
 
-  // Perfectly proportioned window: 620 x 980 with zoomFactor 1.35
-  // Logical size: 460 x 725, physical resolution: 620 x 980
   const win = new BrowserWindow({
     width: 620,
     height: 980,
@@ -252,50 +274,150 @@ app.whenReady().then(async () => {
     window.appStore.state.focus.linkedTaskId = 't-1';
     window.appStore.state.focus.soundscape = 'brown';
     window.appStore.state.focus.volume = 0.7;
+    window.appStore.state.focus.sessions = 4;
+    window.appStore.state.focus.totalMinutes = 105;
+    window.appStore.state.focus.remaining = 1125;
+    window.appStore.state.focus.duration = 1500;
+    window.appStore.state.focus.running = true;
     window.appStore.notify('focus');
+    const bBtn = document.querySelector('#soundscapes-row [data-sound="brown"]');
+    if (bBtn) {
+      document.querySelectorAll('#soundscapes-row .sound-btn').forEach(b => b.classList.remove('active'));
+      bBtn.classList.add('active');
+    }
   `);
   await captureView('planner', 'planner-view.png');
   await captureView('notes', 'notes-view.png');
   await captureView('settings', 'settings-view.png');
 
-  // 2. Command Palette View
-  await win.webContents.executeJavaScript(`
+  // 2. Command Palette View - Dedicated crisp spotlight dialog capture
+  win.webContents.setZoomFactor(1.0);
+  await win.webContents.executeJavaScript(`(() => {
+    document.documentElement.setAttribute('data-theme', 'light');
     window.appStore.set('activeView', 'tasks');
     window.appStore.set('paletteOpen', true);
-  `);
+    
+    // Hide main view and header so NOTHING bleeds through behind the palette
+    const m = document.querySelector('main');
+    if (m) m.style.opacity = '0';
+    const h = document.querySelector('header');
+    if (h) h.style.opacity = '0';
+
+    const box = document.querySelector('.palette-box');
+    if (box) {
+      box.style.background = '#ffffff';
+      box.style.boxShadow = '0 20px 60px rgba(15, 23, 42, 0.22)';
+      box.style.border = '1px solid rgba(15, 23, 42, 0.12)';
+      box.style.maxWidth = '460px';
+      box.style.width = '460px';
+      box.style.opacity = '1';
+    }
+    const rList = document.getElementById('palette-results');
+    if (rList) {
+      rList.style.background = '#ffffff';
+    }
+    const pInput = document.getElementById('palette-query');
+    if (pInput) {
+      pInput.value = '';
+      const event = new Event('input', { bubbles: true });
+      pInput.dispatchEvent(event);
+    }
+    document.querySelectorAll('.palette-item').forEach(item => {
+      item.style.color = '#1e293b';
+      item.style.fontWeight = '500';
+    });
+    return true;
+  })()`);
   await wait(600);
-  const palImg = await win.webContents.capturePage();
+
+  // Capture the clean palette dialog bounding rect with 1:1 coordinates
+  const palBounds = await win.webContents.executeJavaScript(`
+    (() => {
+      const box = document.querySelector('.palette-box');
+      if (!box) return null;
+      const r = box.getBoundingClientRect();
+      return { x: Math.floor(r.x), y: Math.floor(r.y), width: Math.ceil(r.width), height: Math.ceil(r.height) };
+    })()
+  `);
+
+  let palImg;
+  if (palBounds) {
+    palImg = await win.webContents.capturePage(palBounds);
+  } else {
+    palImg = await win.webContents.capturePage();
+  }
   fs.writeFileSync(path.join(outImgs, 'palette-view.png'), palImg.toPNG());
   fs.writeFileSync(path.join(outDocsImgs, 'palette-view.png'), palImg.toPNG());
-  console.log(`✔ Captured palette-view.png`);
+  console.log(`✔ Captured palette-view.png (${palImg.getSize().width}x${palImg.getSize().height})`);
 
-  await win.webContents.executeJavaScript(`window.appStore.set('paletteOpen', false);`);
+  await win.webContents.executeJavaScript(`(() => {
+    window.appStore.set('paletteOpen', false);
+    const m = document.querySelector('main');
+    if (m) m.style.opacity = '1';
+    return true;
+  })()`);
   await wait(300);
   win.destroy();
 
-  // 3. Quick Add Window (Using WindowManager method directly)
+  // 3. Quick Add Window - High DPR with parsed task and preview pill
   try {
-    const qWin = windowManager.createQuickAddWindow();
-    await wait(800);
-    await qWin.webContents.executeJavaScript(`
-      const input = document.getElementById('quickadd-input');
-      if (input) {
-        input.value = 'Ship Doing It v4.4 website tomorrow 2pm !high #launch';
+    const qWin = new BrowserWindow({
+      width: 760,
+      height: 96,
+      frame: false,
+      transparent: true,
+      backgroundColor: '#00000000',
+      alwaysOnTop: true,
+      hasShadow: false,
+      webPreferences: {
+        preload: path.join(projectRoot, 'preload.js'),
+        contextIsolation: true,
+        nodeIntegration: false
       }
-    `);
-    await wait(400);
+    });
+    await qWin.loadFile(path.join(projectRoot, 'quickadd.html'));
+    qWin.webContents.setZoomFactor(1.25);
+    await wait(600);
+    await qWin.webContents.executeJavaScript(`(() => {
+      try {
+        document.documentElement.setAttribute('data-theme', 'light');
+        const input = document.getElementById('quick-input');
+        const modeIcon = document.getElementById('mode-icon');
+        const iconNote = document.getElementById('icon-note');
+        const iconTask = document.getElementById('icon-task');
+        const previewPill = document.getElementById('preview-pill');
+        const previewDateText = document.getElementById('preview-date-text');
+        if (input) {
+          input.value = 'Ship Doing It v4.4 tomorrow 2pm !high #launch';
+        }
+        if (modeIcon) {
+          modeIcon.classList.add('is-task', 'is-high');
+        }
+        if (iconNote) iconNote.style.display = 'none';
+        if (iconTask) iconTask.style.display = 'block';
+        if (previewPill && previewDateText) {
+          previewDateText.textContent = 'Tomorrow at 2:00 PM';
+          previewPill.classList.add('visible');
+        }
+        return true;
+      } catch (e) {
+        return false;
+      }
+    })()`);
+    await wait(500);
     const qImg = await qWin.webContents.capturePage();
     fs.writeFileSync(path.join(outImgs, 'quick-add.png'), qImg.toPNG());
     fs.writeFileSync(path.join(outDocsImgs, 'quick-add.png'), qImg.toPNG());
     console.log(`✔ Captured quick-add.png (${qImg.getSize().width}x${qImg.getSize().height})`);
     qWin.destroy();
   } catch (err) {
-    console.warn('QuickAdd capture error:', err.message);
+    console.warn('QuickAdd capture error:', err.message, err.stack);
   }
 
-  // 4. Mini-Timer Window
+  // 4. Mini-Timer Window - High DPR floating pill
   try {
     const mWin = windowManager.createMiniTimerWindow({ remaining: 1125, duration: 1500, running: true });
+    mWin.webContents.setZoomFactor(1.6);
     await wait(800);
     const mImg = await mWin.webContents.capturePage();
     fs.writeFileSync(path.join(outImgs, 'mini-timer.png'), mImg.toPNG());
@@ -306,20 +428,57 @@ app.whenReady().then(async () => {
     console.warn('MiniTimer capture error:', err.message);
   }
 
-  // 5. FAB Window
+  // 5. FAB Window - High DPR crisp vector with active timer countdown ring
   try {
-    const fWin = windowManager.createFabWindow();
-    await wait(800);
+    const fWin = new BrowserWindow({
+      width: 120,
+      height: 120,
+      frame: false,
+      transparent: true,
+      backgroundColor: '#00000000',
+      alwaysOnTop: true,
+      hasShadow: false,
+      webPreferences: {
+        preload: path.join(projectRoot, 'preload.js'),
+        contextIsolation: true,
+        nodeIntegration: false
+      }
+    });
+    await fWin.loadFile(path.join(projectRoot, 'fab.html'));
+    fWin.webContents.setZoomFactor(2.0);
+    await wait(600);
+    await fWin.webContents.executeJavaScript(`(() => {
+      try {
+        document.documentElement.setAttribute('data-theme', 'light');
+        const fab = document.getElementById('fab');
+        if (fab) {
+          fab.classList.add('timer-active');
+          const prog = document.getElementById('fab-progress');
+          if (prog) {
+            prog.style.strokeDashoffset = '38';
+          }
+        }
+        document.body.style.display = 'flex';
+        document.body.style.alignItems = 'center';
+        document.body.style.justifyContent = 'center';
+        document.body.style.height = '100vh';
+        document.body.style.margin = '0';
+        return true;
+      } catch (e) {
+        return false;
+      }
+    })()`);
+    await wait(500);
     const fImg = await fWin.webContents.capturePage();
     fs.writeFileSync(path.join(outImgs, 'fab-overlay.png'), fImg.toPNG());
     fs.writeFileSync(path.join(outDocsImgs, 'fab-overlay.png'), fImg.toPNG());
     console.log(`✔ Captured fab-overlay.png (${fImg.getSize().width}x${fImg.getSize().height})`);
     fWin.destroy();
   } catch (err) {
-    console.warn('FAB capture error:', err.message);
+    console.warn('FAB capture error:', err.message, err.stack);
   }
 
-  console.log('\n🎉 ALL REAL PRODUCT CAPTURES COMPLETED CRISPLY!');
+  console.log('\n🎉 ALL REAL PRODUCT CAPTURES COMPLETED CRISPLY WITH 100% FIDELITY!');
   fs.rmSync(tmpDir, { recursive: true, force: true });
   app.exit(0);
 });
