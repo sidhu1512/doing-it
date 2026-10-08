@@ -14,19 +14,19 @@ document.addEventListener('DOMContentLoaded', () => {
       title: 'Natural Language Tasks & Daily Habits',
       desc: 'Type natural language task schedules like <code>Submit quarterly report tomorrow 3pm !high #finance</code>. The local Chrono engine parses dates, tags, and priorities without internet access.',
       bullets: [
-        'Things 3 smart sections (Today, Upcoming, Backlog)',
+        'Smart sections (Today, Upcoming, Backlog)',
         'Daily habit streaks with midnight reset guard',
         '1-click linkage to Focus Studio pomodoro timer'
       ],
       shortcut: 'Ctrl + 1',
       image: 'imgs/tasks-view.png',
-      spec1: { label: 'Input Latency', val: '< 1 ms', detail: 'Synchronous local state update' },
+      spec1: { label: 'Input Architecture', val: 'Synchronous', detail: 'Instant local state mutation' },
       spec2: { label: 'Storage Architecture', val: 'Local JSON', detail: 'Atomic file staging & 5-day backup' },
-      spec3: { label: 'Privacy Model', val: '100% Offline', detail: 'Zero outbound telemetry packets' }
+      spec3: { label: 'Privacy Model', val: 'Zero Telemetry', detail: 'Network only for features you enable' }
     },
     diary: {
       tag: 'Journaling & Mindfulness',
-      title: 'Day One Daily Journal & Voice Notes',
+      title: 'Daily Journal & Voice Notes',
       desc: 'Segregate personal thoughts from sprint debriefs. Record voice reflections directly via your microphone, log 5-point mood & energy ratings, and revisit On This Day flashbacks.',
       bullets: [
         'Multi-journal segregation (Work, Personal, Gratitude)',
@@ -531,7 +531,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const commands = [
     { name: 'Switch to Tasks & Habits', category: 'Workspace', action: () => { updateStage('tasks'); scrollToSection('showcase'); } },
-    { name: 'Switch to Day One Diary', category: 'Workspace', action: () => { updateStage('diary'); scrollToSection('showcase'); } },
+    { name: 'Switch to Daily Journal', category: 'Workspace', action: () => { updateStage('diary'); scrollToSection('showcase'); } },
     { name: 'Switch to Focus Studio', category: 'Workspace', action: () => { updateStage('focus'); scrollToSection('showcase'); } },
     { name: 'Switch to Rhythm Analytics', category: 'Workspace', action: () => { updateStage('analytics'); scrollToSection('showcase'); } },
     { name: 'Switch to Day Planner', category: 'Workspace', action: () => { updateStage('planner'); scrollToSection('showcase'); } },

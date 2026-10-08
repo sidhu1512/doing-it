@@ -1,253 +1,258 @@
-# Doing It — Project Documentation (v4.3.2)
+# Doing It — Technical Architecture & Developer Reference
 
-> **Core Maintenance Documentation**: For in-depth architectural breakdown, state machine flow, IPC catalog, theme tokens, and developer guidelines, see [`MAINTENANCE.md`](MAINTENANCE.md).
+> **Comprehensive Developer & Contributor Guide**  
+> *Target Audience: Core Engineers, Contributors & Future Maintainers*  
+> *Release Track: v4.4.x*
 
-## 1. Concept
+---
 
-Doing It is a Windows desktop overlay widget for quick productivity. It stays always-on-top, providing instant access to notes, tasks, reminders, a focus timer, and a calendar — without interrupting your workflow. It's deeply integrated with Windows 11 APIs and features a command palette, markdown rendering, task-driven timers, external calendar sync, and edge docking.
+## Table of Contents
+1. [System Overview & Architecture](#1-system-overview--architecture)
+2. [Process Model & Security Boundaries](#2-process-model--security-boundaries)
+3. [Window Management & Multi-Window Topology](#3-window-management--multi-window-topology)
+4. [IPC Communication Architecture](#4-ipc-communication-architecture)
+5. [Strict Invariant Constraints](#5-strict-invariant-constraints)
+6. [Data Storage, Atomic Writes & Rolling Backups](#6-data-storage-atomic-writes--rolling-backups)
+7. [Modular UI Components & Reactive Store](#7-modular-ui-components--reactive-store)
+8. [Procedural Audio Synthesizer (Web Audio API)](#8-procedural-audio-synthesizer-web-audio-api)
+9. [RFC 5545 iCalendar Engine](#9-rfc-5545-icalendar-engine)
+10. [Packaging, NSIS Installer & App Icons](#10-packaging-nsis-installer--app-icons)
+11. [Testing & Quality Verification](#11-testing--quality-verification)
 
-## 2. Architecture
+---
 
-### 2.1 Window System (5 Integrated Windows)
+## 1. System Overview & Architecture
 
-1. **Main Widget** (`index.html`) — 400×650 panel (or full-height when edge-docked)
-2. **FAB Window** (`fab.html`) — 48×48 AssistiveTouch floating button with live timer progress ring and ghost mode
-3. **Quick Add Bar** (`quickadd.html`) — 520×68 Spotlight-style capture modal with real-time NLP preview
-4. **Mini Timer** (`mini-timer.html`) — 180×56 PiP countdown pill
-5. **Settings Window** (`settings.html`) — 500×650 preferences panel
+**Doing It** is a desktop productivity overlay engineered for Windows 10 and Windows 11. It unifies rapid task management, markdown notes, a Pomodoro focus timer with procedural ambient sound, a daily journal with voice reflections, productivity rhythm analytics, and RFC 5545 calendar feeds into a lightweight, local-first companion widget.
 
-### 2.2 Data Flow
+```mermaid
+flowchart TD
+    subgraph Main_Process["Electron Main Process (Node.js)"]
+        WM[WindowManager<br/>src/main/windows.js]
+        SM[StoreManager<br/>src/main/store.js]
+        IPC[IPC Dispatcher<br/>src/main/ipc.js]
+        SYS[SystemIntegration<br/>src/main/system.js]
+        CAL[CalendarService<br/>src/main/calendar.js]
+    end
 
-```
-User Input → renderer.js → IPC (preload.js) → main.js → JSON store
-                                                      ↓
-                    renderer.js ← IPC events ← main.js (data-changed, timer-pause, dock-state)
-```
+    subgraph Security_Boundary["Context Isolation Boundary"]
+        PL[Preload Bridge<br/>preload.js]
+    end
 
-### 2.3 IPC Channels (25+)
+    subgraph Renderer_Process["Renderer Process (DOM & UI)"]
+        RS[ReactiveStore<br/>src/renderer/store/state.js]
+        HDR[HeaderComponent<br/>src/renderer/components/Header.js]
+        TV[TasksViewComponent<br/>src/renderer/components/TasksView.js]
+        NV[NotesViewComponent<br/>src/renderer/components/NotesView.js]
+        FV[FocusViewComponent<br/>src/renderer/components/FocusView.js]
+        PV[PlannerViewComponent<br/>src/renderer/components/PlannerView.js]
+        DV[DiaryViewComponent<br/>src/renderer/components/DiaryView.js]
+        AV[AnalyticsViewComponent<br/>src/renderer/components/AnalyticsView.js]
+        PAL[PaletteComponent<br/>src/renderer/components/Palette.js]
+        SET[SettingsViewComponent<br/>src/renderer/components/SettingsView.js]
+        AUD[AudioEngine<br/>src/renderer/audio.js]
+    end
 
-**Data CRUD:** `get-notes`, `save-notes`, `get-todos`, `save-todos`, `get-reminders`, `save-reminders`, `get-pomodoro`, `save-pomodoro`, `get-settings`, `save-settings`
+    subgraph Auxiliary_Windows["Auxiliary Desktop Companions"]
+        FAB[Floating Orb Window<br/>fab.html]
+        PIP[Mini-Timer PiP Player<br/>mini-timer.html]
+        QA[Quick Add Bar<br/>quickadd.html]
+    end
 
-**System:** `show-notification`, `close-window`, `minimize-window`, `choose-directory`, `get-current-store-path`, `toggle-fab`
-
-**Phase 2:** `quick-add-save`, `quick-add-close`, `pop-out-timer`, `mini-timer-close`, `mini-timer-update`, `open-file-path`
-
-**Phase 3:** `get-active-window`, `save-clipboard-image`, `fetch-ics-calendar`, `open-external-url`, `get-dock-state`, `undock-window`
-
-**Phase 4:** `toggle-focus-assist`
-
-**Events (Main → Renderer):** `data-changed`, `timer-pause`, `timer-resumed`, `timer-sync`, `dock-state-changed`
-
-## 3. Feature Documentation
-
-### 3.1 Task-Driven Focus Timers
-
-When the user clicks the ▶ button on any task:
-1. `startFocusOnTask(todoId)` stores `focusedTaskId` and `focusedTaskName`
-2. Auto-switches to Focus tab via `switchToTab(3)`
-3. Displays task text in the timer label
-4. Auto-starts the Pomodoro if not running
-5. On completion, `onPomodoroComplete()` logs `task.timeSpent += selectedMinutes`
-6. Shows "Did you finish?" prompt reusing the reminder overlay
-7. "Yes, done!" auto-completes the task; "Not yet" dismisses
-
-### 3.2 Command Palette (Ctrl+K)
-
-- **Search mode** (default): Fuzzy search across notes + tasks using `fuzzyMatch()` — a lightweight sequential character matcher
-- **Action mode** (prefix `>`): 10 built-in commands including Start Timer, Reset Timer, Clear Completed, Switch to Tabs, Open Settings, Undock Window
-- Arrow keys navigate results, Enter executes, Escape closes
-- Overlay uses `backdrop-filter: blur(6px)` for premium feel
-
-### 3.3 Arrow-Key Navigation
-
-Global `keydown` handler on document:
-- Only active when no input/textarea is focused and palette is not open
-- Queries active panel for `.note-item, .todo-item, .reminder-item`
-- Tracks `highlightedIndex`, applies `.kb-highlight` CSS class
-- `Space` → click checkbox, `Enter` → dispatch dblclick, `Delete` → click delete button
-
-### 3.4 Markdown Parser
-
-Lightweight zero-dependency renderer in `renderMarkdown(text, itemType, itemId)`:
-1. Escapes HTML first (via `escapeHtml()`)
-2. Applies regex transforms: `` `code` `` → `<code>`, `**bold**` → `<strong>`, `*italic*` → `<em>`, `~~strike~~` → `<del>`
-3. Highlights `#hashtags` with purple accent + click-to-filter
-4. Auto-links URLs matching `https?://...`
-5. Renders `- [ ]` / `- [x]` as interactive checkboxes (markdown checklists)
-6. Links open in default browser via `openMdLink()` → `shell.openExternal()`
-7. Plain text editing is preserved — markdown only renders on display
-
-### 3.5 Context-Aware Capture
-
-Active window detection via PowerShell calling `user32.dll`:
-```powershell
-Add-Type @" ... WinAPI class with GetForegroundWindow + GetWindowText ... "@
-```
-- Called via `child_process.exec` with 2-second timeout
-- Returns the foreground window title (e.g., "Visual Studio Code - main.js")
-- Stored in note/task `context` field, rendered as a purple context pill
-
-### 3.6 Screen Edge Docking
-
-On `mainWindow.on('moved')`:
-- Gets window position `[wx, wy]` and nearest display work area
-- If `wx <= workArea.x + 20px` or `wx + 400 >= workArea.x + workArea.width - 20px`:
-  - Snaps to full-height: `setBounds({ x, y: workArea.y, width: 400, height: workArea.height })`
-  - Sets `isDocked = true`, sends `dock-state-changed` event
-  - Renderer applies `body.docked` class (removes border-radius, sets 100vh)
-- Dragging away from edge undocks back to 400×650
-
-### 3.7 Image Pasting
-
-`paste` event listener on document:
-1. Only triggers when Notes panel is active and no textarea is focused
-2. Calls `window.api.saveClipboardImage()` → IPC to main process
-3. Main process: `clipboard.readImage()` → `img.toPNG()` → saves to `images/img-{timestamp}.png`
-4. Creates a note with `image: filePath` field
-5. Rendered as `<img src="file:///...">` thumbnail with hover scale
-
-### 3.8 .ics Calendar Sync
-
-- Settings modal has "External Calendar (.ics)" input field
-- URL saved to `settings.icsUrl` in JSON store
-- `initCalendarSync()` fetches on startup + every 60 minutes
-- Main process fetches via `https.get()`, parses with custom `parseICS()`:
-  - Splits on `BEGIN:VEVENT`, extracts `SUMMARY`, `DTSTART`, `DTEND`, `DESCRIPTION`, `LOCATION`
-  - Detects Zoom/Teams/Meet links in description/location
-- Events rendered as grey `.has-ics` dots on calendar + "Join" button in upcoming list
-
-### 3.9 Drag-and-Drop Scheduling
-
-- Tasks rendered with `draggable="true"` and `ondragstart="dragTask(event, todoId)"`
-- Calendar day cells have `ondragover`, `ondragleave`, `ondrop` handlers
-- On drop: reads `text/todo-id` from `dataTransfer`, validates with `isNaN()` guard, sets `todo.dueDate = dateStr`
-- Visual indicator: `.cal-drop-target` class with green glow on hover
-
-### 3.10 Universal #Hashtags (v4.0)
-
-- Users type `#tagname` inline in any note or task text
-- `extractHashtags(items)` scans all items, collects unique tags via regex `/#(\w+)/g`
-- `renderTagBar(containerId, items)` builds scrollable pill bar with `All` + tag pills
-- `filterByTag(tag)` sets `activeTag` filter; re-renders both notes and tasks
-- `renderMarkdown()` highlights tags as clickable `<span class="hashtag">` elements
-- Replaces hardcoded Personal/Work/Ideas categories — zero UI configuration
-
-### 3.11 Markdown Checklists (v4.0)
-
-- Pattern: `- [ ] text` (unchecked) and `- [x] text` (checked)
-- Rendered as `<label class="md-check"><input type="checkbox"><span>text</span></label>`
-- `toggleMdCheck(itemType, itemId, checkIdx)` finds the nth checkbox in raw text, toggles `[ ]` ↔ `[x]`, saves
-- Checked items get strikethrough + dimmed styling via `.md-check.checked span`
-
-### 3.12 "My Day" Unified View (v4.0)
-
-- `renderMyDay()` aggregates three sources into `#my-day-section` at top of Tasks panel:
-  - Tasks where `dueDate === today` (active only)
-  - Reminders where `date === today` and not fired
-  - ICS events where `date === today`
-- Items sorted chronologically by time; tasks without time appear last
-- Compact rows with type-specific color-coded icons (green check, amber bell, grey calendar)
-
-### 3.13 Focus Assist / Auto-DND (v4.0)
-
-- `startPomodoro()` calls `window.api.toggleFocusAssist('on')` → IPC to main process
-- `pausePomodoro()`, `resetPomodoro()`, `completePomodoro()` call `toggleFocusAssist('off')`
-- Main process toggles registry key:
-  ```
-  HKCU:\Software\Microsoft\Windows\CurrentVersion\Notifications\Settings
-  NOC_GLOBAL_SETTING_TOASTS_ENABLED = 0 (DND on) / 1 (DND off)
-  ```
-- Runs via PowerShell `New-ItemProperty` with 3-second timeout
-
-### 3.14 Silent Image Garbage Collection (v4.0)
-
-- Runs 30 seconds after app boot via `setTimeout` in main process
-- Reads `notes[].image` paths from the JSON store
-- Scans `images/` directory, deletes any `.png` not referenced
-- Logs count: `Image GC: cleaned N orphaned image(s)`
-
-## 4. Data Schema
-
-```json
-{
-  "notes": [{ "id": 123, "text": "Call client #work", "category": "work", "pinned": false, "image": null, "context": null, "timestamp": "..." }],
-  "todos": [{ "id": 456, "text": "Review PR #dev - [ ] Tests - [x] Linting", "completed": false, "priority": "high", "dueDate": "2026-03-25", "timeSpent": 25, "isHabit": false, "streak": 0, "files": [...], "context": null, "timestamp": "..." }],
-  "reminders": [{ "id": 789, "text": "...", "date": "2026-03-25", "time": "09:00", "repeat": "none", "fired": false }],
-  "pomodoroState": { "sessions": 3, "totalMinutes": 75, "lastDate": "2026-03-23", "weeklyHistory": [...] },
-  "settings": { "savePath": null, "icsUrl": null },
-  "windowPosition": { "x": 1400, "y": 200 },
-  "fabPosition": { "x": 1860, "y": 500 }
-}
+    Main_Process <-->|ContextBridge IPC| PL
+    PL <-->|window.api| Renderer_Process
+    WM <--> Auxiliary_Windows
 ```
 
-## 5. File Manifest & Architecture
+---
 
-| File / Module | Purpose |
-|---------------|---------|
-| `main.js` | App entry point: registers IPC handlers, global shortcuts, and background GC |
-| `src/main/store.js` | Atomic JSON persistence with `.tmp` staging, schema versioning, and auto-repairing rolling backups |
-| `src/main/windows.js` | WindowManager: handles all 5 windows, protocol registration (`doingit-media://`), docking bounds |
-| `src/main/system.js` | Windows 11 integration: PowerShell foreground detection with TTL caching, Focus Assist (DND) |
-| `src/main/calendar.js` | RFC 5545 iCalendar fetcher & parser: line unfolding, Zoom/Teams/Meet link detection |
-| `src/renderer/toast.js` | Floating Toast HUD with status icons and functional Undo action bar |
-| `src/renderer/audio.js` | Web Audio singleton engine: acoustic harmonic chimes & ambient synthesized focus sounds |
-| `src/renderer/markdown.js` | Hardened markdown pipeline with checklist toggle, hashtags, and media protocol resolution |
-| `preload.js` | Context bridge with safe, validated API methods |
-| `renderer.js` | Primary UI controller: tabs, Pomodoro, calendar drag-drop, command palette, insights |
-| `index.html` | Main widget UI layout |
-| `fab.html` | AssistiveTouch floating button with live timer progress ring and ghost mode |
-| `quickadd.html` | Spotlight-style floating quick capture bar with real-time NLP preview |
-| `mini-timer.html` | PiP detached focus timer pill |
-| `settings.html` / `settings.js` | Storage BYOC, external calendar URL, and app preferences |
-| `test/*.test.js` | Automated test suite for StoreManager, CalendarService, and NLP |
+## 2. Process Model & Security Boundaries
 
-## 6. Security Hardening
+The application strictly implements Electron security hardening:
+* `contextIsolation: true` across all BrowserWindows.
+* `nodeIntegration: false` across all renderer contexts.
+* **Custom Protocol**: `doingit-media://` is registered in the main process to stream locally saved images and WebM audio notes (`recordings/`) without granting unrestricted `file://` access.
+* **DOM Sanitization**: User markdown input is parsed and sanitized through `DOMPurify` before rendering to prevent script injection.
+* **Bounded Subprocesses**: PowerShell queries (such as active foreground window detection via `user32.dll` and Focus Assist registry modifications) execute with strict timeouts (2–3 seconds) and result caching.
 
-- `contextIsolation: true` + `nodeIntegration: false` across all windows
-- **`webSecurity: true` enabled**: custom `doingit-media://` protocol registered in main process securely serves pasted local images without exposing arbitrary file system access
-- Markdown output sanitized through `DOMPurify` with tag whitelisting
-- Event delegation for checklist toggles and links (no raw inline string code execution)
-- PowerShell executions have strict timeouts and query caching to prevent hanging processes
+---
 
-## 7. Known Limitations
+## 3. Window Management & Multi-Window Topology
 
-- Markdown parser is lightweight: no headers, no block quotes, no tables
-- .ics parser handles basic VEVENT blocks only (no RRULE recurrence)
-- Active window detection requires PowerShell — ~200ms latency per capture
-- Edge docking uses fixed 400px width
-- Focus Assist DND toggle uses registry — may require restart of Notification Center on some Windows builds
+All application windows are instantiated, coordinated, and positioned in [`src/main/windows.js`](src/main/windows.js):
 
-## 8. Audit Fixes (v3.0.1)
+| Window | Dimensions | File | Purpose & Invariants |
+| :--- | :--- | :--- | :--- |
+| **Main Widget** | 400×650 (resizable: 360–680w, 520–max h) | `index.html` | Frameless (`frame: false, transparent: true`). Restores persisted dimensions on startup. Edge-docks with Windows screen borders. |
+| **FAB Window** | 48×48 | `fab.html` | Draggable floating desktop companion. Displays the crisp app logo (`assets/icon.png`) with drop-shadow and SVG countdown progress ring. Shown when main window is minimized. |
+| **Mini-Timer** | 290×50 | `mini-timer.html` | Picture-in-Picture countdown pill. Standalone drag handle, play/pause toggle, linked task ticker, and restore button. |
+| **Quick Add** | 520×68 | `quickadd.html` | Spotlight-style global capture bar triggered via shortcut (`Ctrl+Shift+A`). Features real-time Chrono NLP preview. |
+| **Settings** | Modal overlay | In-App (`index.html`) | Embedded preferences interface replacing detached popup windows. |
 
-The following issues were found and fixed during a comprehensive code audit:
+### Minimizing & Restoring Lifecycle
+* When the user presses `Esc` or clicks Minimize in the header:
+  1. Main window is hidden (`mainWindow.hide()`).
+  2. If `disableFab` is `false` in settings, FAB window is displayed at its persisted desktop coordinates (`fabWindow.show()`).
+* Clicking the floating orb immediately hides the FAB and brings the main window to the foreground (`mainWindow.show(); mainWindow.focus();`).
 
-| # | Issue | File | Fix |
-|---|-------|------|-----|
-| 1 | Delete note/task undo captured dead reference after `filter()` | `renderer.js` | Clone object before filtering; fallback for filtered-out items |
-| 2 | `clearPastReminders` filter kept fired repeating reminders | `renderer.js` | Fixed filter logic + added count feedback toast |
-| 3 | `weeklyHistory.slice(-7)` trimmed by array size, not calendar days | `renderer.js` | Date-based filtering with 7-day cutoff |
-| 4 | `dropTaskOnDate` falsy check failed for `id === 0` | `renderer.js` | `isNaN()` guard instead of falsy check |
-| 5 | ICS fetch timeout didn't abort the HTTP request | `main.js` | `req.destroy()` on timeout event |
-| 6 | Backup cleanup crash on corrupt file | `main.js` | Per-file try-catch in cleanup loop |
-| 7 | Missing `.settings-path-row` CSS class | `styles.css` | Added flex layout rule |
+---
 
-## 9. Protected Elements — DO NOT CHANGE
+## 4. IPC Communication Architecture
 
-The following are **strictly protected** and must never be modified:
+The preload context bridge (`preload.js`) exposes validated methods via `window.api`. All IPC communication follows structured request-reply or one-way notification semantics:
 
-### Icons
-- `build/icon.ico` — build icon for NSIS installer and exe patching
-- `assets/icon.ico` — runtime app icon for BrowserWindow
-- `assets/icon.png` — runtime icon PNG variant
-- `afterPack.js` patches the exe icon using `rcedit` npm package — always uses `build/icon.ico`
+| Channel Name | Direction | Payload | Functional Responsibility |
+|---|---|---|---|
+| `get-todos` / `save-todos` | Two-way | Array of tasks | Read and write task entities |
+| `get-notes` / `save-notes` | Two-way | Array of notes | Read and write note records |
+| `get-diary` / `save-diary` | Two-way | Array of diary entries | Read and write daily journal entries |
+| `get-focus-history` / `log-focus-session` | Two-way | Session record | Log and analyze focus session records |
+| `save-audio-recording` | Two-way | Base64 audio & filename | Store voice memo file into `recordings/` |
+| `export-diary-markdown` | Two-way | Diary data | Save formatted `.md` file to user chosen path |
+| `get-pomodoro` / `save-pomodoro` | Two-way | Focus state object | Synchronize timer duration and session logs |
+| `get-settings` / `save-settings` | Two-way | Settings schema | Update preferences and trigger live theme broadcast |
+| `choose-directory` | Two-way | None | Invoke native Windows directory selection dialog |
+| `get-current-store-path` | Two-way | None | Query resolved path of active data store |
+| `quick-add-save` | Renderer -> Main | Raw string | Parse quick capture string and route to tasks or notes |
+| `pop-out-timer` | Renderer -> Main | Timer state | Spawn detached Picture-in-Picture window |
+| `mini-timer-update` | Renderer -> Main | Countdown state | Broadcast countdown ticks to FAB and PiP companions |
+| `fetch-ics-calendar` | Two-way | URL string | Download remote iCalendar feed and parse events |
+| `get-active-window` | Two-way | None | Execute cached PowerShell WinAPI foreground title query |
+| `save-clipboard-image` | Two-way | None | Extract clipboard image data and serialize to PNG |
+| `toggle-focus-assist` | Two-way | State ('on' / 'off') | Modify Windows Focus Assist registry value |
+| `toggle-pin-window` | Two-way | Boolean | Toggle always-on-top window pinning |
+| `uninstall-app` | Renderer -> Main | None | Spawn uninstaller executable and terminate process |
 
-### Window Transparency & Corners
-- `main.js` → `frame: false` — frameless window required for custom drag bar
-- `main.js` → `transparent: true` — enables CSS-driven transparency
-- `main.js` → `backgroundColor: '#00000000'` — fully transparent window background
-- `styles.css` → `body { background: transparent }` — CSS transparent background
-- `styles.css` → `body { clip-path: inset(0 round 8px) }` — creates rounded window corners
-- `styles.css` → `.app-container { border-radius: 0 }` — intentional; clip-path handles corners
+---
 
-### Why
-Changing any of these will cause: default Electron icon, sharp rectangle window, opaque background, or broken drag behavior.
+## 5. Strict Invariant Constraints
+
+The following structural configurations are **mandatory** for correct window rendering and must **never** be altered:
+
+1. **Window Transparency & Frameless Invariants**:
+   - `main.js`: Must configure `frame: false, transparent: true, backgroundColor: '#00000000'`.
+   - `src/renderer/theme.css`: Must apply `clip-path: inset(0 round 8px)` to `body` for clean anti-aliased border radius on transparent viewports.
+   - Do not set CSS `border-radius` directly on root containers when `clip-path` handles viewport rounding; mixing them introduces rendering artifacts.
+
+2. **App Icons & Packaging**:
+   - `build/icon.ico`: Master Windows icon for NSIS installer packaging.
+   - `assets/icon.ico`: Runtime app icon for BrowserWindow instances.
+   - `assets/icon.png`: Master high-resolution 256×256 app logo.
+   - `afterPack.js`: Patches the executable icon directly via `rcedit`. Never remove this hook.
+
+3. **Zero-Emoji UI Rule**:
+   - The UI strictly enforces clean vector SVGs for all icons and badges.
+   - Unit tests in `test/components.test.js` verify that source templates contain zero raw emoji characters.
+
+---
+
+## 6. Data Storage, Atomic Writes & Rolling Backups
+
+All user state is managed by [`src/main/store.js`](src/main/store.js):
+
+```
+Data Flow:
+[User Action] --> [ReactiveStore] --> [ContextBridge IPC] --> [StoreManager]
+                                                                  |
+                                                                  v
+                                               [Atomic Staging: file.tmp]
+                                                                  |
+                                                                  v
+                                                  [RenameSync: target.json]
+                                                                  |
+                                                                  v
+                                               [Rolling Daily Backups (5d)]
+```
+
+* **Atomic File Writes**: Serializes updates to isolated temporary staging files (`doing-it-data.json.<timestamp>.tmp`) before executing atomic replacements via filesystem rename. Ensures resilience against sudden termination or power disruptions.
+* **Bring Your Own Cloud (BYOC)**: Storage directories can be redirected to cloud-synchronized folders (OneDrive, Google Drive, Dropbox) while retaining local pointer references.
+* **Automated Daily Backups**: Captures snapshot backups on application startup, enforcing a rolling 5-day retention policy with automatic corrupt-store self-healing.
+* **Background Asset Garbage Collection**: Asynchronous background cleanup sweeps the local image directory 30 seconds post-boot, removing unreferenced image files.
+
+---
+
+## 7. Modular UI Components & Reactive Store
+
+The frontend architecture uses a lightweight, reactive state store ([`src/renderer/store/state.js`](src/renderer/store/state.js)) and modular ES6 view controllers:
+
+- **TasksView** (`src/renderer/components/TasksView.js`):
+  - Natural language parsing with Chrono (dates, priorities, `#hashtags`, `/habit`).
+  - Smart sections (Today, Upcoming, Backlog, Completed).
+  - Habit streak tracking with automatic midnight unchecking.
+  - Task-driven focus timer linkage (clicking ▶ launches Focus session linked to task).
+- **NotesView** (`src/renderer/components/NotesView.js`):
+  - Real-time debounced auto-saving scratchpad.
+  - Interactive markdown checklists (`- [ ]`, `- [x]`).
+  - Clipboard image ingestion (`Ctrl+V`) and OpenGraph rich link previews.
+- **FocusView** (`src/renderer/components/FocusView.js`):
+  - Circular SVG countdown timer ring.
+  - Procedural soundscape player.
+  - Local Windows Spotify process integration with playback controls.
+- **PlannerView** (`src/renderer/components/PlannerView.js`):
+  - 7-day horizontal week strip.
+  - Drag-and-drop task scheduling.
+  - Direct meeting join links (Teams, Zoom, Google Meet).
+- **DiaryView** (`src/renderer/components/DiaryView.js`):
+  - Specialized notebooks (Daily, Work, Ideas, Gratitude, Personal).
+  - 5-point emotional state tracker with luminous badges.
+  - Zero-dependency microphone voice notes via Web MediaRecorder API.
+  - Flashback "On This Day" and markdown export.
+- **AnalyticsView** (`src/renderer/components/AnalyticsView.js`):
+  - Dynamic 0–100 productivity score.
+  - 24-hour focus rhythm circadian distribution curve.
+  - 12-week GitHub-style activity contribution heatmap.
+  - Burnout Guard cognitive load monitor.
+- **Palette** (`src/renderer/components/Palette.js`):
+  - Global `Ctrl+K` command palette with unified fuzzy search across commands, tasks, and notes.
+
+---
+
+## 8. Procedural Audio Synthesizer (Web Audio API)
+
+Located in [`src/renderer/audio.js`](src/renderer/audio.js), the audio engine generates soundscapes mathematically in real time without external audio assets:
+- **Brown Noise**: Multi-pole lowpass filtered noise buffer producing low-frequency rumble.
+- **Rainfall**: Randomized bandpass filters and white noise simulating precipitation.
+- **Forest Breeze**: Pink noise modulated by low-frequency oscillation.
+- **Lo-Fi Calm**: Dual sinusoidal oscillators tuned with a 6Hz offset generating theta-wave binaural beats.
+- **Acoustic Feedback**: Harmonic triad chimes (C5-E5-G5) on session completion and tactile pops on task check-off.
+
+---
+
+## 9. RFC 5545 iCalendar Engine
+
+Located in [`src/main/calendar.js`](src/main/calendar.js):
+- Fetches private `.ics` feeds directly from Google Calendar, Outlook, Fastmail, or Apple iCloud.
+- Handles line unfolding (RFC 5545 §3.1), multi-line descriptions, and ISO date formatting.
+- Automatically detects meeting video links (Google Meet, Microsoft Teams, Zoom, Webex) to generate 1-click meeting join buttons.
+
+---
+
+## 10. Packaging, NSIS Installer & App Icons
+
+Packaging configuration is maintained in `package.json`:
+
+```bash
+# Package standard NSIS one-click installer
+npm run build
+
+# Package portable executable
+npm run build:portable
+```
+
+- NSIS builds output to `dist/Doing.It.Setup.4.4.0.exe`.
+- Post-pack lifecycle hook [`afterPack.js`](afterPack.js) uses `rcedit` to inject `build/icon.ico` directly into the binary.
+
+---
+
+## 11. Testing & Quality Verification
+
+```bash
+# Execute unit and component test suites (Node.js test runner)
+npm test
+
+# Run syntax check across all source files
+npm run lint
+
+# Run full end-to-end multi-window smoke tests
+npm run test:e2e
+```

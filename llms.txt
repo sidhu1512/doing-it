@@ -1,0 +1,21 @@
+# Doing It
+> Free, open-source (MIT) Windows 10/11 desktop widget combining tasks, markdown notes, a Pomodoro focus timer, a daily journal, analytics and iCalendar sync. Local-first, no accounts, no telemetry.
+
+## Overview
+Doing It is a frameless, local-first Windows 10 and 11 productivity companion that stays always-on-top or docks to screen edges. It unifies natural language task capture, markdown scratchpad notes, Pomodoro focus intervals with procedural ambient audio synthesizers, a daily journal with voice reflections, 0-100 rhythm analytics, and RFC 5545 iCalendar synchronization.
+
+## Key Features
+- **Local-First & Offline**: All tasks, notes, habits, and journals are stored in `%APPDATA%/doing-it/doing-it-data.json`. Zero telemetry, zero external tracking, and no account required. Network access occurs only for user-configured external iCalendar feeds and OpenGraph link previews.
+- **Always-On-Top & Edge Docking**: Pin to the foreground above full-screen editors and browsers, or snap to screen boundaries for a full-height sidebar.
+- **Tasks & Habit Streaks**: Smart sections (Today, Upcoming, Backlog, Completed), inline editing, and habit streaks with automatic midnight reset.
+- **Focus Studio**: Circular countdown timer, task linkage, and Web Audio procedural ambient soundscapes (Brown Noise, Rainfall, Forest Breeze, Lo-Fi binaural beats).
+- **Daily Journal**: 5-point mood tracking, guided reflective prompts, zero-dependency audio voice recording (Web MediaRecorder), and markdown export.
+- **Calendar Synchronization**: Private RFC 5545 `.ics` feeds from Google Calendar, Outlook, Fastmail, or Apple iCloud with 1-click meeting join links (Teams, Zoom, Google Meet).
+- **Command Palette**: `Ctrl+K` keyboard launcher for instantaneous fuzzy search and navigation.
+
+## Documentation & Links
+- [Repository](https://github.com/sidhu1512/doing-it)
+- [Website](https://sidhu1512.github.io/doing-it/)
+- [User Guide](https://github.com/sidhu1512/doing-it/blob/main/USER_GUIDE.md)
+- [Developer Documentation](https://github.com/sidhu1512/doing-it/blob/main/DOCUMENTATION.md)
+- [Releases & Downloads](https://github.com/sidhu1512/doing-it/releases/latest)

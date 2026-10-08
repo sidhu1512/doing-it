@@ -1,256 +1,217 @@
 # Doing It
 
-[![Download for Windows](https://img.shields.io/badge/Download-Windows_Setup-blue?style=for-the-badge&logo=windows)](https://github.com/sidhu1512/doing-it/releases/download/v4.4.0/Doing.It.Setup.4.4.0.exe)
-[![Version](https://img.shields.io/badge/version-4.4.0-informational?style=for-the-badge)](https://github.com/sidhu1512/doing-it/releases/tag/v4.4.0)
-[![Website](https://img.shields.io/badge/Website-Live_Landing_Page-purple?style=for-the-badge&logo=googlechrome)](https://sidhu1512.github.io/doing-it/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-success?style=for-the-badge)](LICENSE)
-[![Platform](https://img.shields.io/badge/platform-Windows%2011%20%7C%2010-lightgrey?style=for-the-badge)](https://github.com/sidhu1512/doing-it)
+[![Download for Windows](https://img.shields.io/badge/Download-Windows_Setup-0078D4?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/sidhu1512/doing-it/releases/download/v4.4.0/Doing.It.Setup.4.4.0.exe)
+[![Portable Build](https://img.shields.io/badge/Download-Portable_Exe-6366F1?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/sidhu1512/doing-it/releases/download/v4.4.0/Doing.It.4.4.0.exe)
+[![Version](https://img.shields.io/badge/version-4.4.0-0ea5e9?style=for-the-badge)](https://github.com/sidhu1512/doing-it/releases/tag/v4.4.0)
+[![Website](https://img.shields.io/badge/Website-sidhu1512.github.io-8b5cf6?style=for-the-badge&logo=googlechrome&logoColor=white)](https://sidhu1512.github.io/doing-it/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-10b981?style=for-the-badge)](LICENSE)
+[![Platform](https://img.shields.io/badge/Platform-Windows%2011%20%7C%2010-64748b?style=for-the-badge)](https://github.com/sidhu1512/doing-it)
 
-Doing It is a high-performance desktop productivity overlay engineered for Windows 11. Designed around local-first data ownership, zero-friction keyboard capture, and glassmorphic aesthetics, it unifies task tracking, Day One-style daily journaling, audio voice notes, productivity analytics, markdown scratchpad, procedural focus audio, and calendar synchronization into an always-accessible, frameless companion widget.
-
-> [!NOTE]
-> **Windows SmartScreen Alert during Installation**
-> Because this is an open-source tool distributed directly without a corporate code-signing certificate, Windows Defender SmartScreen may display an "Unknown Publisher" prompt upon first running the installer.
-> **Resolution:** Select **"More Info"**, then select **"Run Anyway"**.
+> **Local-first Windows widget: always-on-top tasks, markdown notes, Pomodoro focus timer, daily journal & calendar sync. Offline, no accounts. MIT.**
 
 ---
 
-## Visual Tour
+<p align="center">
+  <img src="assets/social-preview.png" alt="Doing It — Desktop Productivity Overlay for Windows" width="100%">
+</p>
+
+---
+
+## Installation & Distribution
+
+### 1. Direct Downloads (Latest: v4.4.0)
+
+| Package | Description | Download Link |
+|---|---|---|
+| **Windows Installer** | Recommended NSIS 1-click installer with Start Menu & Desktop shortcuts | [Doing.It.Setup.4.4.0.exe](https://github.com/sidhu1512/doing-it/releases/download/v4.4.0/Doing.It.Setup.4.4.0.exe) |
+| **Portable Build** | Standalone single executable — runs instantly without installation | [Doing.It.4.4.0.exe](https://github.com/sidhu1512/doing-it/releases/download/v4.4.0/Doing.It.4.4.0.exe) |
+| **Checksums** | SHA-256 verification hashes for all release artifacts | [SHA256SUMS.txt](https://github.com/sidhu1512/doing-it/releases/download/v4.4.0/SHA256SUMS.txt) |
+
+#### Verifying SHA-256 Checksums
+```powershell
+# In PowerShell:
+Get-FileHash .\Doing.It.Setup.4.4.0.exe -Algorithm SHA256
+# Expected: 0D234D6D5DE3DE9721EDD018384813B4CACFBF4696BEFAF6920998BFBD9286BA
+
+Get-FileHash .\Doing.It.4.4.0.exe -Algorithm SHA256
+# Expected: 112ADCDB657CE503C9D61226027450A7D63B2387B1324580DB68626F41E005F1
+```
+
+---
+
+### 2. Package Managers
+
+```powershell
+# Windows Package Manager (winget) — manifest submission in progress
+winget install DoingIt.DoingIt
+
+# Or run portable directly via PowerShell
+Invoke-WebRequest -Uri "https://github.com/sidhu1512/doing-it/releases/download/v4.4.0/Doing.It.4.4.0.exe" -OutFile "$env:TEMP\DoingIt.exe"; Start-Process "$env:TEMP\DoingIt.exe"
+```
+
+---
+
+### 3. Windows SmartScreen Notice
+
+> [!NOTE]
+> **Why does Windows SmartScreen appear?**  
+> Doing It is an open-source community project distributed free of charge under the MIT license without an expensive commercial code-signing certificate ($400+/yr). Windows Defender SmartScreen may display an *"Unknown Publisher"* prompt when launching the executable for the first time.
+>
+> **How to proceed:**
+> 1. Click **More info** on the SmartScreen dialog.
+> 2. Click **Run anyway**.
+>
+> Doing It is 100% open source. Every line of code is auditable in this repository. We are actively pursuing free code signing through the SignPath Foundation.
+
+---
+
+## Features
 
 <p align="center">
-  <img src="imgs/tasks-view.png" width="31%" alt="Tasks View">
-  <img src="imgs/diary-view.png" width="31%" alt="Day One Daily Diary">
-  <img src="imgs/analytics-view.png" width="31%" alt="Productivity Analytics">
+  <img src="imgs/tasks-view.png" width="31%" alt="Tasks & Habits">
+  <img src="imgs/diary-view.png" width="31%" alt="Daily Journal">
+  <img src="imgs/analytics-view.png" width="31%" alt="Rhythm Analytics">
 </p>
 <p align="center">
   <img src="imgs/focus-view.png" width="31%" alt="Focus Studio">
-  <img src="imgs/notes-view.png" width="31%" alt="Notes & Voice Notes">
+  <img src="imgs/notes-view.png" width="31%" alt="Markdown Notes">
   <img src="imgs/planner-view.png" width="31%" alt="Day Planner">
 </p>
-<p align="center">
-  <img src="imgs/palette-view.png" width="31%" alt="Command Palette">
-  <img src="imgs/settings-view.png" width="31%" alt="In-App Settings">
-</p>
-<p align="center">
-  <img src="imgs/mini-timer.png" width="48%" alt="Picture-in-Picture Mini Timer">
-  <img src="imgs/quick-add.png" width="48%" alt="Spotlight Quick Add Bar">
-</p>
+
+### 1. Tasks & Habits
+- **Natural Language Parsing**: Type `Ship feature tomorrow 3pm !high #launch /habit` — Chrono extracts dates, priorities, and tags instantly.
+- **Smart Sections**: Dynamic categorization across Today, Upcoming, Backlog, and Completed buckets.
+- **Habit Streaks**: Daily habit counters uncheck automatically at midnight without manual intervention.
+- **Task Focus Linkage**: Clicking ▶ on any task links it directly to the Pomodoro timer, tracking accumulated minutes upon check-off.
+
+### 2. Instant Markdown Notes
+- **Debounced Auto-Saving Scratchpad**: Unstructured text persists immediately without requiring explicit save keystrokes.
+- **Interactive Checklists**: Markdown `- [ ]` and `- [x]` checkboxes toggle in place without switching into edit mode.
+- **Universal Hashtag Filtering**: Inline `#tags` dynamically populate filter pill ribbons.
+- **Clipboard Image Ingestion**: Paste screenshots (`Ctrl+V`) directly into notes, saved securely to local disk.
+- **Rich OpenGraph Link Previews**: External URLs automatically resolve into structured visual preview cards.
+
+### 3. Focus Studio & Procedural Audio
+- **Circular Countdown Ring**: High-precision SVG progress arc and timer.
+- **Zero-Bandwidth Synthesizers**: Real-time ambient soundscapes generated mathematically via the Web Audio API without downloading audio files:
+  - *Brown Noise*: Deep low-frequency rumble for concentration.
+  - *Rainfall*: Randomized bandpass precipitation simulation.
+  - *Forest Breeze*: Low-frequency modulated pink noise.
+  - *Lo-Fi Calm*: 6Hz binaural theta beats.
+- **Desktop Spotify Control**: Queries the local Windows Spotify process to display live track title and artist with play/pause/skip controls.
+- **Windows Focus Assist**: Automatically suppresses Windows notification banners during active focus intervals.
+
+### 4. Day Planner & Calendar Sync
+- **Horizontal 7-Day Agenda**: Interactive week view centered around your schedule.
+- **RFC 5545 iCalendar Feeds**: Direct HTTP/HTTPS line-unfolding sync with Google Calendar, Microsoft Outlook, Fastmail, or Apple iCloud feeds.
+- **1-Click Meeting Join**: Regex extraction for Zoom, Microsoft Teams, Google Meet, and Webex meeting links.
+- **Drag-and-Drop Scheduling**: Drag tasks directly onto calendar dates to reassign deadlines.
+
+### 5. Daily Journal & Voice Reflections
+- **Segregated Notebooks**: Organize entries across Daily, Work, Ideas, Gratitude, and Personal diaries.
+- **Guided Prompts**: Spontaneous prompts for daily reflection and evening debriefs.
+- **5-Point Emotional State Tracker**: Log mood and energy ratings (Joyful, Calm, Focused, Tired, Stressed) with visual glowing badges.
+- **Audio Voice Memos**: Record voice notes with the Web MediaRecorder API. Local `.webm` recordings stream directly through an in-app waveform player.
+- **Retrospective Timeline**: 7-day strip surfacing entries, starred bookmarks, and "On This Day" flashback memories.
+- **Markdown Export**: One-click export to GitHub-Flavored Markdown (`.md`).
+
+### 6. Productivity & Burnout Analytics
+- **0–100 Circadian Rhythm Score**: Heuristic weighting task completions, deep focus blocks, and mood consistency.
+- **24-Hour Work Curve & Peak Hours**: Identifies your highest-output focus hours throughout the day.
+- **12-Week Activity Heatmap**: GitHub-style contribution matrix of focus blocks.
+- **Burnout Guard**: Monitors continuous high-cognitive sessions, recommending rest breaks when fatigue thresholds are met.
 
 ---
 
-## Architectural Highlights
+## Privacy Policy & Network Model
 
-### Multi-Window Topology
-* **Main Widget Panel** (`400x650px`, resizable): Frameless, transparent floating panel with custom native drag bar and hardware-accelerated frosted glass backdrop.
-* **AssistiveTouch Floating Action Button (FAB)** (`48x48px`): Compact desktop companion button with real-time SVG timer progress ring. Minimizing the main window transitions state to the FAB without cluttering the taskbar.
-* **Detached Picture-in-Picture Mini-Timer** (`290x50px`): Floating countdown pill with play/pause controls, task ticker, and direct completion toggle.
-* **Spotlight Quick Add Bar** (`520x68px`): Global shortcut modal (`Ctrl+Shift+A`) featuring real-time natural language date and priority parsing.
-* **In-App Preferences Panel**: Integrated modal settings interface (`Ctrl+,`) that never spawns external windows or breaks focus.
+Doing It is built around **strict local-first data ownership**.
 
-### Native Windows 11 Integration
-* **Always-On-Top Window Pinning**: Quick-toggle pin button in header, settings, or command palette keeps the widget floating above code editors and browsers without losing focus.
-* **Desktop Spotify Integration**: Inspects the local Windows Spotify process to display the live playing track and artist in Focus Studio with native Prev / Play-Pause / Next controls.
-* **Proactive Meeting & Priority Task Alerts**: Background scheduler monitoring RFC 5545 calendar feeds and tasks, alerting 5 minutes before scheduled meetings via Web Audio chimes and Windows notifications.
-* **Screen-Edge Docking**: Dragging the widget within 20px of any display boundary automatically docks it to the full height of the monitor's work area.
-* **Context-Aware Foreground Capture**: Global shortcut (`Ctrl+Shift+C`) triggers an OS copy interrupt, extracts foreground window metadata via PowerShell WinAPI bindings (`user32.dll`), and attaches the active application title directly to the clipped note.
-* **Focus Assist (Do Not Disturb) Automation**: Activating a focus session toggles the Windows Notification Center registry key (`NOC_GLOBAL_SETTING_TOASTS_ENABLED`), suppressing system notification banners during deep work.
-* **Workstation Lock Detection**: Integrated power monitor listeners automatically pause active timers upon workstation lock (`Win+L`) and resume upon unlock.
-
----
-
-## Core Feature Breakdown
-
-### 1. Task Engine & Habit Tracking
-* **Natural Language Processing (Chrono NLP)**: Real-time parsing of relative and absolute dates (e.g., "Review PR tomorrow at 3pm", "Ship release in 2 days"), priority indicators (`!high`, `!med`, `!low`), and habit flags (`/habit`).
-* **Smart Sections**: Dynamic categorization across Today, Upcoming, Backlog, and Completed groups.
-* **Habit Streaks with Midnight Reset**: Habits persist cumulative streaks while unchecking automatically at 00:00 without manual user intervention.
-* **Task-Driven Focus Linkage**: Clicking the Focus action on any task links the task identifier to the countdown timer, logging accumulated focus duration directly upon completion.
-
-### 2. Notes, Scratchpad & Media Pipeline
-* **Auto-Saving Instant Scratchpad**: Debounced persistent buffer for rapid unstructured capture, saved directly without explicit submission.
-* **GitHub Flavored Markdown (GFM)**: Full markdown pipeline with sanitized output, code block formatting, and auto-linked URLs.
-* **Interactive Checklists**: Interactive checkboxes embedded within raw markdown text (`- [ ]` / `- [x]`) toggle state in place without requiring edit mode.
-* **Universal Hashtags**: Dynamic aggregation of inline tags (`#architecture`, `#dev`) with a dedicated filter pill ribbon.
-* **Clipboard Image Ingestion**: Direct paste support for screenshots (`Ctrl+V`), saving PNG assets into internal storage and rendering them via a secure local protocol (`doingit-media://`).
-* **Rich OpenGraph Link Previews**: Automated metadata scraping for pasted URLs, rendering preview cards with titles, descriptions, and thumbnail graphics.
-
-### 3. Focus Studio & Procedural Web Audio Engine
-* **Circular Progress Arc**: High-precision SVG countdown visualization calculated via normalized circle circumference.
-* **Zero-Asset Procedural Synthesizers**: Real-time synthesized ambient soundscapes generated mathematically using the Web Audio API without bundled MP3/WAV assets:
-  * **Brown Noise**: Multi-pole filtered noise buffer producing low-frequency rumble.
-  * **Rainfall**: Randomized bandpass filters and white noise simulating precipitation.
-  * **Forest Breeze**: Pink noise modulated by low-frequency oscillation.
-  * **Lo-Fi Calm**: Dual sinusoidal oscillators tuned with a 6Hz offset generating theta-wave binaural beats.
-* **Acoustic Feedback**: Web Audio harmonic triad chimes (C5-E5-G5) on session completion and tactile pop feedback on task check-off.
-
-### 4. Day Planner & RFC 5545 Calendar Synchronization
-* **Interactive Week Strip**: 7-day horizontal date selector centered around the active schedule.
-* **Line-Unfolding iCalendar Parser**: Native HTTP/HTTPS client fetching and unfolding RFC 5545 `.ics` feeds from Google Calendar, Microsoft Outlook, or Apple Calendar.
-* **Meeting Link Extraction**: Regular-expression detection for Google Meet, Zoom, Microsoft Teams, and Webex URLs, exposing direct one-click join buttons in the agenda feed.
-
-### 5. Command Palette (Ctrl+K)
-* **Unified Fuzzy Search**: Rapid item matching across all tasks, notes, diary entries, calendar events, and system commands.
-* **Direct Navigation**: Instant keyboard jumping between application views, timer actions, and diary export.
-
-### 6. Day One Daily Journaling Suite
-* **Notebook Segregation**: Multiple specialized journals (Daily, Work, Ideas, Gratitude, Personal) for organized life logging.
-* **Daily Guided Prompts**: Instant creative and reflective prompts ("What was your biggest breakthrough today?", "What drained your energy?", etc.).
-* **Mood & Energy Tagging**: 5-point emotional state tracker (Joyful, Calm, Focused, Tired, Stressed) with visual glowing indicators.
-* **Voice Memos & Audio Reflections**: High-fidelity microphone capture with real-time timers and integrated dark audio waveform player.
-* **Retrospective Timeline**: Interactive 7-day horizontal strip highlighting days with logged entries.
-* **Flashback "On This Day"**: Automatically surfaces past memories written on the current day in history.
-* **Markdown Export**: Direct file export of complete diary entries to clean GitHub-Flavored Markdown.
-
-### 7. Productivity & Burnout Analytics
-* **Productivity Score (0–100)**: Dynamic real-time calculation weighting task completions, deep focus volume, and energy levels.
-* **24-Hour Energy & Focus Rhythm**: Hourly distribution chart plotting work intensity and circadian peaks.
-* **Peak Focus Hours Histogram**: Identifies user's highest-output operating windows.
-* **12-Week Activity Heatmap**: GitHub-style visual contribution matrix displaying daily focus intensity across quarters.
-* **30-Day Consistency Pixel Matrix**: Daily square grid correlating mood stability with task execution.
-* **Burnout Guard**: Native heuristic monitoring continuous focus time, alerting users when deep work thresholds risk cognitive fatigue.
-* **Windows Application Usage Tracking**: Foreground window telemetry capturing time spent in IDEs, browsers, and terminal tools.
-
-### 8. Native Audio Voice Notes
-* **Web MediaRecorder Audio Engine**: Zero-dependency audio recording saved to local atomic `.webm` files (`recordings/`).
-* **In-App Media Streaming**: Direct playback via secure custom protocol (`doingit-media://`) with duration seeking, play/pause toggles, and formatted timestamps.
-
----
-
-## Storage & Reliability Engineering
-
-```
-Data Flow:
-[User Input] --> [ReactiveStore] --> [ContextBridge IPC] --> [StoreManager]
-                                                                  |
-                                                                  v
-                                              [Atomic Staging: file.tmp]
-                                                                  |
-                                                                  v
-                                                 [RenameSync: target.json]
-                                                                  |
-                                                                  v
-                                              [Rolling Daily Backups (5d)]
-```
-
-* **Atomic File Writes**: Serializes updates to isolated temporary staging files (`doing-it-data.json.<timestamp>.tmp`) before executing atomic replacements via filesystem rename. Ensures resilience against sudden termination or power disruptions.
-* **Bring Your Own Cloud (BYOC)**: Storage directories can be redirected to cloud-synchronized folders (OneDrive, Google Drive, Dropbox) while retaining local pointer references.
-* **Automated Daily Backups**: Captures snapshot backups on application startup, enforcing a rolling 5-day retention policy with automatic corrupt-store self-healing.
-* **Background Asset Garbage Collection**: Asynchronous background cleanup sweeps the local image directory 30 seconds post-boot, removing unreferenced image files.
-
----
-
-## Design System & Theme Engine
-
-Theme tokens are defined in `src/renderer/theme.css` and applied via the `data-theme` attribute:
-
-| Theme Name | Identifier | Primary Accent | Background Base |
-|---|---|---|---|
-| Obsidian Silver | `:root` (default) | `#a2a2b0` | `rgba(13, 14, 18, 0.94)` |
-| Midnight Blue | `midnight` | `#38bdf8` | `rgba(10, 14, 26, 0.95)` |
-| Emerald Forest | `emerald` | `#10b981` | `rgba(9, 18, 14, 0.95)` |
-| Warm Sunset | `sunset` | `#f59e0b` | `rgba(20, 16, 12, 0.95)` |
-| Crimson Rose | `crimson` | `#f43f5e` | `rgba(22, 11, 16, 0.95)` |
-| Amethyst Violet | `violet` | `#a855f7` | `rgba(17, 13, 26, 0.95)` |
-| Daybreak Light | `light` | `#2563eb` | `rgba(248, 249, 251, 0.96)` |
-
----
-
-## IPC Communication Architecture
-
-The application strictly implements context isolation and security hardening:
-* `contextIsolation: true`
-* `nodeIntegration: false`
-* `webSecurity: true` (with custom protocol `doingit-media://` for local asset isolation)
-
-| Channel Name | Direction | Payload | Functional Responsibility |
-|---|---|---|---|
-| `get-todos` / `save-todos` | Two-way | Array of tasks | Read and write task entities |
-| `get-notes` / `save-notes` | Two-way | Array of notes | Read and write note records |
-| `get-diary` / `save-diary` | Two-way | Array of diary entries | Read and write Day One diary entries |
-| `get-focus-history` / `log-focus-session` | Two-way | Session record | Log and analyze focus session records |
-| `save-audio-recording` | Two-way | Base64 audio & filename | Store voice memo file into `recordings/` |
-| `export-diary-markdown` | Two-way | Diary data | Save formatted `.md` file to user chosen path |
-| `get-pomodoro` / `save-pomodoro` | Two-way | Focus state object | Synchronize timer duration and session logs |
-| `get-settings` / `save-settings` | Two-way | Settings schema | Update preferences and trigger live theme broadcast |
-| `choose-directory` | Two-way | None | Invoke native Windows directory selection dialog |
-| `get-current-store-path` | Two-way | None | Query resolved path of active data store |
-| `quick-add-save` | Renderer -> Main | Raw string | Parse quick capture string and route to tasks or notes |
-| `pop-out-timer` | Renderer -> Main | Timer state | Spawn detached Picture-in-Picture window |
-| `mini-timer-update` | Renderer -> Main | Countdown state | Broadcast countdown ticks to FAB and PiP companions |
-| `fetch-ics-calendar` | Two-way | URL string | Download remote iCalendar feed and parse events |
-| `get-active-window` | Two-way | None | Execute cached PowerShell WinAPI foreground title query |
-| `save-clipboard-image` | Two-way | None | Extract clipboard image data and serialize to PNG |
-| `toggle-focus-assist` | Two-way | State ('on' / 'off') | Modify Windows Focus Assist registry value |
-| `uninstall-app` | Renderer -> Main | None | Spawn uninstaller executable and terminate process |
+### What Touches the Network?
+- **Zero Telemetry**: No user analytics, no behavioral tracking, no telemetry beacons, no third-party tracking scripts.
+- **No Cloud Accounts**: No logins, email registrations, passwords, or subscriptions. All data is saved on your local hard drive at `%APPDATA%/doing-it/doing-it-data.json`.
+- **Network calls only happen for features you explicitly enable**:
+  1. **Calendar Synchronization**: If you configure a private `.ics` URL in Settings, your local machine fetches the feed directly from your calendar host.
+  2. **Link Previews**: If you paste an external URL into a note, an HTTP request fetches OpenGraph title and image metadata directly from the source host.
+  3. **Procedural Ambient Sound**: 100% synthesized locally via the Web Audio API with zero audio file downloads or streaming bandwidth.
 
 ---
 
 ## Keyboard Shortcuts
 
-| Shortcut | Context | Functional Action |
+| Shortcut | Context | Action |
 |---|---|---|
-| `Ctrl+Shift+N` | Global (OS-wide) | Toggle Main Widget visibility |
-| `Ctrl+Shift+A` | Global (OS-wide) | Open Spotlight Quick Add dialog |
-| `Ctrl+Shift+C` | Global (OS-wide) | Clip active selection with foreground window context |
-| `Ctrl+K` | In-App | Open Raycast-style Command Palette |
-| `Ctrl+,` | In-App | Toggle In-App Preferences Panel |
-| `1`, `2`, `3`, `4`, `5`, `6` | In-App | Switch views (Tasks, Notes, Focus, Planner, Diary, Stats) |
-| `↓` / `↑` | In-App | Navigate list items with luminous selection ring |
-| `Space` | In-App | Toggle task completion checkbox |
-| `Enter` | In-App | Edit highlighted task title inline or join meeting |
-| `Delete` | In-App | Delete highlighted task or note card |
-| `Esc` | In-App | Clear selection ring, dismiss modals, or minimize to FAB |
+| `Ctrl+Shift+N` | Global (Windows) | Toggle Main Widget visibility |
+| `Ctrl+Shift+A` | Global (Windows) | Open Spotlight Quick Add dialog |
+| `Ctrl+Shift+C` | Global (Windows) | Clip selected text with active foreground window context |
+| `Ctrl+K` | In-App | Open Command Palette (fuzzy search & actions) |
+| `Ctrl+,` | In-App | Open Preferences & Settings panel |
+| `1` .. `6` / `Ctrl+1` .. `6` | In-App | Switch workspaces (Tasks, Notes, Focus, Planner, Diary, Stats) |
+| `↓` / `↑` | In-App | Navigate list items with highlight ring |
+| `Space` | In-App | Toggle highlighted task checkbox / Start or pause timer (in Focus view) |
+| `Enter` | In-App | Edit highlighted task inline / Join meeting link |
+| `Delete` | In-App | Delete highlighted task or note |
+| `Esc` | In-App | Dismiss palette/modals or minimize to floating companion orb |
 
 ---
 
-## Verification & Developer Workflows
+## Comparison: Doing It vs Other Tools
 
-### Prerequisites
-* Node.js 18.x or 20.x
-* Windows 10/11 x64 environment
+| Feature | Doing It | Todoist | Windows Sticky Notes | Notion |
+|---|:---:|:---:|:---:|:---:|
+| **Always-On-Top Windows Overlay** | :white_check_mark: | :x: | :white_check_mark: | :x: |
+| **Local-First (No Account Required)** | :white_check_mark: | :x: | :x: | :x: |
+| **Zero Telemetry / Total Privacy** | :white_check_mark: | :x: | :x: | :x: |
+| **Offline Synthesized Ambient Audio** | :white_check_mark: | :x: | :x: | :x: |
+| **Integrated Daily Journal & Audio Memos**| :white_check_mark: | :x: | :x: | :white_check_mark: |
+| **Circadian Rhythm & Burnout Analytics** | :white_check_mark: | :x: | :x: | :x: |
+| **RFC 5545 iCalendar Feeds** | :white_check_mark: | :white_check_mark: | :x: | :white_check_mark: |
+| **Command Palette & Hotkeys** | :white_check_mark: | :white_check_mark: | :x: | :white_check_mark: |
+| **License & Pricing** | **Free & MIT Open Source** | Freemium ($5/mo) | Free (Proprietary) | Freemium ($10/mo) |
 
-### Installation & Execution
+---
+
+## Frequently Asked Questions (FAQ)
+
+### What Windows versions are supported?
+Doing It is built and verified for 64-bit **Windows 11** and **Windows 10 (version 1809 and later)**. On Windows 11 it supports native Mica acrylic materials, with dark/light surface fallback on Windows 10.
+
+### Where is my data saved, and can I sync across devices?
+All data is stored on your machine in `%APPDATA%/doing-it/doing-it-data.json`. In Settings, you can set a custom storage folder (such as a local OneDrive, Dropbox, or Syncthing folder) to sync across your own machines without third-party cloud servers.
+
+### Can I run Doing It without installing it?
+Yes! Download the [Portable Build (`Doing.It.4.4.0.exe`)](https://github.com/sidhu1512/doing-it/releases/download/v4.4.0/Doing.It.4.4.0.exe). It runs as a self-contained executable from any folder or USB drive.
+
+### How does Doing It protect against data loss?
+All saves use atomic filesystem replacement via temporary staging files (`.tmp`) and synchronous renames. Additionally, Doing It creates automated rolling 5-day snapshot backups in `%APPDATA%/doing-it/backups/`.
+
+---
+
+## Development & Contributing
+
+We welcome community contributions, bug fixes, and feature ideas!
+
+- **Contributing Guide**: See [`CONTRIBUTING.md`](CONTRIBUTING.md) for local development instructions, test suites, and PR conventions.
+- **Technical Architecture & IPC Catalog**: Detailed process models, IPC channel tables, and window invariants are documented in [`DOCUMENTATION.md`](DOCUMENTATION.md).
+- **Code of Conduct**: Governed by the Contributor Covenant in [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md).
+- **Security Policy**: Read our vulnerability disclosure policy in [`SECURITY.md`](SECURITY.md).
+
 ```bash
+# Clone the repository
 git clone https://github.com/sidhu1512/doing-it.git
 cd doing-it
+
+# Install dependencies and start
 npm install
 npm start
-```
 
-### Automated Test Suite
-```bash
-# Execute unit and component test suites
+# Run automated tests and linting
 npm test
-
-# Run syntax and linter checks
 npm run lint
-
-# Execute multi-window E2E smoke test
-npm run test:e2e
 ```
-
-### Production Build
-```bash
-# Package standard NSIS one-click installer
-npm run build
-
-# Package portable executable
-npm run build:portable
-```
-
-The resulting installer is placed in `dist/Doing It Setup 4.4.0.exe`. Post-packaging hooks (`afterPack.js`) automatically patch the executable icon using `rcedit`.
-
----
-
-## Invariant Constraints
-
-The following structural configurations are mandatory for correct window rendering and must not be altered:
-* `main.js`: Must configure `frame: false, transparent: true, backgroundColor: '#00000000'`.
-* `src/renderer/theme.css`: Must apply `clip-path: inset(0 round 8px)` to `body` for clean anti-aliased border radius on transparent viewports.
-* `afterPack.js`: Must patch icons directly into the packaged binary via `build/icon.ico`.
 
 ---
 
 ## License
 
-Distributed under the [MIT License](LICENSE).
+Distributed under the permissive **[MIT License](LICENSE)**. Free for personal, commercial, and educational use.

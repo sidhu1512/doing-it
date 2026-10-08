@@ -7,25 +7,27 @@
   <!-- Primary Meta Tags & SEO -->
   <title>Doing It — The Desktop Productivity Overlay for Windows 11</title>
   <meta name="title" content="Doing It — The Desktop Productivity Overlay for Windows 11">
-  <meta name="description" content="A frameless, local-first Windows 11 desktop productivity overlay. Natural language tasks, Day One daily journaling with audio voice notes, 0–100 rhythm analytics, procedural ambient audio, Spotify desktop link, and RFC 5545 calendar sync. 100% offline & open source.">
-  <meta name="keywords" content="Doing It, Windows 11 productivity, desktop overlay, task manager, pomodoro timer, ambient audio, markdown notes, calendar sync, local-first, day one journal, raycast windows">
-  <meta name="author" content="Doing It">
+  <meta name="description" content="Free, open-source Windows 10/11 productivity widget: tasks, markdown notes, Pomodoro timer, daily journal and calendar sync. Local-first, no account.">
+  <meta name="author" content="sidhu1512">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://sidhu1512.github.io/doing-it/">
+  <link rel="icon" href="assets/icon.png">
 
   <!-- Open Graph / Social Sharing -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://sidhu1512.github.io/doing-it/">
   <meta property="og:title" content="Doing It — The Desktop Productivity Overlay for Windows 11">
-  <meta property="og:description" content="Supercharged productivity, always within arm’s reach. Frameless Windows 11 overlay with natural language tasks, Day One journaling, rhythm analytics, focus soundscapes, and calendar sync.">
-  <meta property="og:image" content="https://sidhu1512.github.io/doing-it/imgs/tasks-view.png">
+  <meta property="og:description" content="Local-first Windows productivity overlay: always-on-top tasks, markdown notes, Pomodoro timer, daily journal, and calendar sync. Zero telemetry, no accounts.">
+  <meta property="og:image" content="https://sidhu1512.github.io/doing-it/assets/og-card.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
 
   <!-- Twitter Card -->
   <meta property="twitter:card" content="summary_large_image">
   <meta property="twitter:url" content="https://sidhu1512.github.io/doing-it/">
   <meta property="twitter:title" content="Doing It — The Desktop Productivity Overlay for Windows 11">
-  <meta property="twitter:description" content="Frameless, local-first desktop productivity companion for Windows 11. Tasks, Day One journaling, procedural focus audio, and calendar sync.">
-  <meta property="twitter:image" content="https://sidhu1512.github.io/doing-it/imgs/tasks-view.png">
+  <meta property="twitter:description" content="Local-first Windows productivity overlay: always-on-top tasks, markdown notes, Pomodoro timer, daily journal, and calendar sync. Zero telemetry, no accounts.">
+  <meta property="twitter:image" content="https://sidhu1512.github.io/doing-it/assets/og-card.png">
 
   <!-- Canonical Doing It Icon & Adaptive Favicon Suite (White logo for Dark Theme tabs, Charcoal logo for Light Theme tabs) -->
   <link id="favicon-svg" rel="icon" type="image/svg+xml" href="assets/favicon-dark.svg?v=4.4.4">
@@ -78,26 +80,81 @@
 
   <link rel="stylesheet" href="styles.css?v=4.4.2">
 
-  <!-- Schema.org Structured Data -->
+  <!-- Schema.org Structured Data: SoftwareApplication -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
     "name": "Doing It",
-    "operatingSystem": "Windows 10, Windows 11",
     "applicationCategory": "ProductivityApplication",
-    "downloadUrl": "https://github.com/sidhu1512/doing-it/releases/download/v4.4.0/Doing.It.Setup.4.4.0.exe",
+    "operatingSystem": "Windows 10, Windows 11",
     "softwareVersion": "4.4.0",
+    "license": "https://opensource.org/licenses/MIT",
+    "isAccessibleForFree": true,
     "offers": {
       "@type": "Offer",
       "price": "0",
       "priceCurrency": "USD"
     },
-    "description": "High-performance desktop productivity overlay for Windows 11 with Day One daily journaling, audio voice notes, productivity analytics, tasks, markdown scratchpad, procedural focus audio, and calendar sync.",
+    "downloadUrl": "https://github.com/sidhu1512/doing-it/releases/latest",
+    "codeRepository": "https://github.com/sidhu1512/doing-it",
+    "description": "Local-first Windows desktop widget with tasks, markdown notes, Pomodoro focus timer, daily journal and iCalendar sync.",
+    "image": "https://sidhu1512.github.io/doing-it/assets/og-card.png",
     "author": {
       "@type": "Person",
-      "name": "sidhu1512"
+      "name": "sidhu1512",
+      "url": "https://github.com/sidhu1512"
     }
+  }
+  </script>
+
+  <!-- Schema.org Structured Data: FAQPage -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What versions of Windows are supported?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Doing It is built and verified for 64-bit Windows 11 and Windows 10 (version 1809 and later). It supports native Mica acrylic materials on Windows 11 while gracefully falling back to optimized dark/light surfaces on Windows 10."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How does Doing It sync with my calendar?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Doing It syncs via RFC 5545 private iCalendar feeds (.ics URLs) provided by Google Calendar, Microsoft Outlook, Fastmail, or Apple iCloud. Your machine fetches and parses the feed directly without transmitting credentials to any intermediary proxy server."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Where is my data stored on my PC?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "All tasks, diary entries, voice notes, and habit records are stored in your Windows user profile at %APPDATA%/doing-it/doing-it-data.json. You can also select a custom storage directory (e.g. OneDrive, Dropbox, or Syncthing) inside Settings to sync across your own personal devices."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does the ambient focus audio use network bandwidth?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. The ambient sound synthesizer (Brown Noise, Rainfall, Forest Wind, and 6Hz Binaural Beats) is 100% procedurally synthesized in real time via the Web Audio API with zero audio file downloads and zero bandwidth consumption."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is Doing It free to use commercially?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Doing It is licensed under the permissive MIT Open Source License. You are free to use it for personal, commercial, or organizational work without fees or subscription locks."
+        }
+      }
+    ]
   }
   </script>
 </head>
@@ -130,7 +187,7 @@
       </nav>
 
       <div class="nav-cta-group">
-        <button class="btn-ctrlk open-raycast-btn" title="Open Raycast Command Palette (Ctrl + K)">
+        <button class="btn-ctrlk open-raycast-btn" title="Open Command Palette (Ctrl + K)">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
           <span class="ctrlk-label">Ctrl K</span>
         </button>
@@ -183,7 +240,7 @@
         </h1>
 
         <p class="hero-lead">
-          A frameless, local-first Windows 11 productivity companion. Natural language tasks, Day One daily journaling with audio voice notes, 0–100 circadian rhythm analytics, procedural ambient soundscapes, and RFC 5545 calendar sync — pinned above your workspace or docked to display edges.
+          A frameless, local-first Windows 11 productivity companion. Natural language tasks, daily journaling with audio voice notes, 0–100 circadian rhythm analytics, procedural ambient soundscapes, and RFC 5545 calendar sync — pinned above your workspace or docked to display edges.
         </p>
 
         <!-- CTA Bar -->
@@ -239,7 +296,7 @@
             </button>
             <button class="stage-tab-btn" data-view="diary" role="tab" aria-selected="false">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-              <span>Day One Diary</span>
+              <span>Daily Journal</span>
             </button>
             <button class="stage-tab-btn" data-view="focus" role="tab" aria-selected="false">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
@@ -272,7 +329,7 @@
               <div class="stage-bullet-list" id="stage-view-bullets">
                 <div class="stage-bullet-item">
                   <span class="bullet-check">✔</span>
-                  <span>Things 3 smart sections (Today, Upcoming, Backlog)</span>
+                  <span>Smart sections (Today, Upcoming, Backlog)</span>
                 </div>
                 <div class="stage-bullet-item">
                   <span class="bullet-check">✔</span>
@@ -376,20 +433,20 @@
             </div>
           </div>
 
-          <!-- Ecosystem Card 3: Raycast Command Palette -->
+          <!-- Ecosystem Card 3: Command Palette -->
           <div class="ecosystem-card">
             <div class="eco-card-header">
               <div class="eco-icon-box">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
               </div>
               <div class="eco-title-group">
-                <h3 class="eco-card-title">Raycast Command Palette</h3>
+                <h3 class="eco-card-title">Command Palette</h3>
                 <span class="eco-hotkey">Ctrl + K</span>
               </div>
             </div>
             <p class="eco-card-p">Full keyboard command center. Fuzzy search through all notes, switch workspaces, trigger soundscapes, and manage backups with zero mouse movement.</p>
             <div class="eco-preview-box">
-              <img src="imgs/palette-view.png" alt="Raycast Command Palette" class="eco-img zoomable-img">
+              <img src="imgs/palette-view.png" alt="Command Palette" class="eco-img zoomable-img">
             </div>
           </div>
 
@@ -521,11 +578,11 @@
         <p class="section-sub-center">Every subsystem is built to replace multiple subscription tools with one fast, local Windows overlay.</p>
 
         <div class="editorial-story-stack">
-          <!-- Story 1: Day One Diary & Audio Reflections -->
+          <!-- Story 1: Daily Journal & Audio Reflections -->
           <article class="story-row">
             <div class="story-copy">
               <span class="story-tag">Journaling &amp; Mindfulness</span>
-              <h3 class="story-title">Day One Daily Journal with Built-In Voice Memos</h3>
+              <h3 class="story-title">Daily Journal with Built-In Voice Memos</h3>
               <p class="story-p">
                 Segregate work reflections from personal gratitude. Capture thoughts using guided daily prompts, record zero-dependency microphone voice notes with custom dark audio players, and rate mood and energy from 1 to 5.
               </p>
@@ -536,7 +593,7 @@
               </ul>
             </div>
             <div class="story-media-container">
-              <img src="imgs/diary-view.png" alt="Day One Diary View" class="story-img zoomable-img">
+              <img src="imgs/diary-view.png" alt="Daily Journal View" class="story-img zoomable-img">
             </div>
           </article>
 
@@ -661,7 +718,7 @@
         <div class="shortcuts-table-container">
           <div class="shortcut-row-card">
             <div class="sc-keys"><kbd class="kbd-pill">Ctrl</kbd> + <kbd class="kbd-pill">K</kbd></div>
-            <div class="sc-action">Raycast Command Palette</div>
+            <div class="sc-action">Command Palette</div>
             <div class="sc-scope">Global Windows / In-App</div>
           </div>
           <div class="shortcut-row-card">
@@ -670,14 +727,14 @@
             <div class="sc-scope">Global Windows Overlay</div>
           </div>
           <div class="shortcut-row-card">
-            <div class="sc-keys"><kbd class="kbd-pill">Ctrl</kbd> + <kbd class="kbd-pill">1 .. 6</kbd></div>
+            <div class="sc-keys"><kbd class="kbd-pill">1 .. 6</kbd> / <kbd class="kbd-pill">Ctrl</kbd> + <kbd class="kbd-pill">1 .. 6</kbd></div>
             <div class="sc-action">Switch View (Tasks, Notes, Focus, Plan, Diary, Stats)</div>
             <div class="sc-scope">Active App Window</div>
           </div>
           <div class="shortcut-row-card">
             <div class="sc-keys"><kbd class="kbd-pill">Space</kbd></div>
-            <div class="sc-action">Start / Pause Focus Studio Pomodoro Timer</div>
-            <div class="sc-scope">Focus Studio</div>
+            <div class="sc-action">Toggle highlighted task / Start or pause timer (in Focus view)</div>
+            <div class="sc-scope">Tasks / Focus View</div>
           </div>
           <div class="shortcut-row-card">
             <div class="sc-keys"><kbd class="kbd-pill">Esc</kbd></div>
@@ -762,7 +819,7 @@
           <div class="download-content">
             <img src="assets/icon.png" alt="Canonical Doing It Logo" class="download-app-icon" width="64" height="64">
             <h2 class="download-card-title">Experience deep flow on Windows 11 today.</h2>
-            <p class="download-card-lead">Install in seconds. No cloud account required. 100% offline and MIT open source.</p>
+            <p class="download-card-lead">Install in seconds. No cloud account required. Local-first, zero telemetry, and MIT open source.</p>
 
             <div class="download-buttons-group">
               <a href="https://github.com/sidhu1512/doing-it/releases/download/v4.4.0/Doing.It.Setup.4.4.0.exe" class="btn-download-hero">
